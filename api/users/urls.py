@@ -5,6 +5,7 @@ from .views import (
     UsersView,
     ProfileView,
     UserDetailsView,
+    SuggestUsernameView,
     PasswordChangeView,
     PhoneNumberView,
 )
@@ -31,7 +32,7 @@ urlpatterns = [
     path(
         "me/password/",
         PasswordChangeView.as_api_view(client=client),
-        name="password",
+        name="change-password",
     ),
     path(
         "me/phone-number/",
@@ -42,5 +43,10 @@ urlpatterns = [
         "<str:username>/",
         UserDetailsView.as_view(),
         name="user-details",
+    ),
+    path(
+        "suggest/username",
+        SuggestUsernameView.as_view(),
+        name="suggest-username",
     ),
 ]

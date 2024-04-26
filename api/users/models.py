@@ -15,6 +15,14 @@ from api.common.utils import LazyProxy
 
 
 class UserModel(AbstractUser):
+    MALE = "M"
+    FEMALE = "F"
+    
+    GENDER_CHOICES = {
+        MALE: 'Male',
+        FEMALE: 'Female',
+    }
+    
     first_name = None
     last_name = None
     name = models.CharField(
@@ -22,6 +30,7 @@ class UserModel(AbstractUser):
         max_length=255,
         null=True,
     )
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     phone_number = PhoneNumberField(_("Phone Number"), null=True)
     avatar = models.ImageField(
         _("Avatar"),

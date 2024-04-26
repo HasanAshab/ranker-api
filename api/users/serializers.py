@@ -1,3 +1,5 @@
+import re
+from django.conf import settings
 from rest_framework import serializers
 from api.common.utils import (
     twilio_verification,
@@ -14,6 +16,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             "is_email_verified",
             "username",
             "name",
+            "gender",
             "phone_number",
             "avatar",
             "date_joined",
@@ -31,13 +34,11 @@ class ProfileSerializer(serializers.ModelSerializer):
             "phone_number",
         )
 
-
 class ListUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
         fields = ("id", "username", "avatar")
-
 
 class UserDetailsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -46,11 +47,23 @@ class UserDetailsSerializer(serializers.ModelSerializer):
             "id",
             "username",
             "name",
+            "gender",
             "avatar",
             "date_joined",
             "is_superuser",
             "is_staff",
         )
+
+class SuggestUsernameSerializer(serializers.Serializer):
+    prefix = serializers.CharField(required=False)
+    max_suggestions = serializers.IntegerField(
+        max_value=settings.USERNAME_MAX_SUGGESTIONS,
+        default=settings.USERNAME_MAX_SUGGESTIONS
+    )
+    
+    def clean_prefix(self, prefix):
+        return re.sub(r'[^a-zA-Z0-9@/.\+\-_]', '', prefix)
+        
 
 
 class PhoneNumberSerializer(serializers.ModelSerializer):

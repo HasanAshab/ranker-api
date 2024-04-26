@@ -226,8 +226,8 @@ REST_FRAMEWORK = {
 
 # Api Docs
 SPECTACULAR_SETTINGS = {
-    "TITLE": "App Name",
-    "DESCRIPTION": "app description",
+    "TITLE": "Ranker",
+    "DESCRIPTION": "The api documentation of Ranker-API",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
     "EXTERNAL_DOCS": {
@@ -252,7 +252,7 @@ ACCOUNT_CHANGE_EMAIL = True
 ACCOUNT_EMAIL_NOTIFICATIONS = True
 ACCOUNT_USERNAME_MIN_LENGTH = 3
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
-MFA_TOTP_ISSUER = "App Name"
+MFA_TOTP_ISSUER = "Ranker"
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "APP": {
@@ -285,7 +285,12 @@ HEADLESS_FRONTEND_URLS = {
     "account_reset_password_from_key": "/account/password/reset/{key}",
 }
 
-# Twilio
+# api.common
 TWILIO_ACCOUNT_SID = env("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = env("TWILIO_AUTH_TOKEN")
 TWILIO_VERIFY_SERVICE_SID = env("TWILIO_VERIFY_SERVICE_SID")
+
+# api.users
+USERNAME_MAX_LENGTH = 35
+USERNAME_MAX_SUGGESTIONS = 3
+USERNAME_GENERATION_MAX_ATTEMPTS = 10
