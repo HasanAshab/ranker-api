@@ -1,3 +1,5 @@
 from django.contrib import admin
+from api.challenges.models import Challenge
 
-# Register your models here.
+
+admin.site.register(Challenge)

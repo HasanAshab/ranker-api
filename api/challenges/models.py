@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import (
     gettext_lazy as _,
 )
+from api.common.validators import date_time_is_future_validator
 
 
 class Challenge(models.Model):
@@ -16,17 +17,21 @@ class Challenge(models.Model):
     description = models.TextField(
         _("Description"),
         max_length=200,
+        blank=True,
         help_text="Description of the challenge.",
-        required=False,
     )
-    is_pinned = models.CharField(
+    is_pinned = models.BooleanField(
         _("Is Pinned"),
-        max_length=30,
-        help_text=" challenge.",
+        default=False,
+        help_text="Whether the challenge is pinned.",
     )
-    due_date = models.CharField(
+    due_date = models.DateTimeField(
         _("Due Date"),
-        max_length=30,
-        help_text="Title of the challenge.",
+        null=True,
+        help_text="Due date of the challenge.",
+        validators=[date_time_is_future_validator],
     )
-    difficulty = models.B
+    difficulty = models.ForeignKey(
+        "difficulties.Difficulty",
+        on_delete=models.CASCADE,
+    )
