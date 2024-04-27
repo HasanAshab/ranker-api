@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.utils.translation import (
     gettext_lazy as _,
@@ -25,6 +26,11 @@ class Challenge(models.Model):
         default=False,
         help_text="Whether the challenge is pinned.",
     )
+    is_completed = models.BooleanField(
+        _("Is Completed"),
+        default=False,
+        help_text="Whether the challenge is completed.",
+    )
     due_date = models.DateTimeField(
         _("Due Date"),
         null=True,
@@ -33,5 +39,9 @@ class Challenge(models.Model):
     )
     difficulty = models.ForeignKey(
         "difficulties.Difficulty",
+        on_delete=models.CASCADE,
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )

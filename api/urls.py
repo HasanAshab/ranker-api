@@ -18,4 +18,8 @@ urlpatterns = [
         "api/",
         include("api.difficulties.urls"),
     ),
+    path(
+        "api/",
+        include("api.challenges.urls"),
+    ),
 ]

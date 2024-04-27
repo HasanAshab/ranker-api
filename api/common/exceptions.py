@@ -29,6 +29,6 @@ def validation_exception_handler(exc, context):
 
 
 def handler(exc, context):
-    if isinstance(exc, ValidationError):
-        return validation_exception_handler(exc, context)
+    # if isinstance(exc, ValidationError):
+    #     return validation_exception_handler(exc, context)
     return exception_handler(exc, context)
