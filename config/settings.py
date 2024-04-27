@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "corsheaders",
     "phonenumber_field",
+    "colorfield",
     "rest_framework",
     "rest_framework.authtoken",
     "drf_spectacular",
@@ -68,6 +69,7 @@ INSTALLED_APPS = [
     "api.common",
     "api.authentication",
     "api.users",
+    "api.difficulties",
 ]
 
 

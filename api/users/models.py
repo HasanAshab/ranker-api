@@ -19,12 +19,10 @@ from api.common.utils import LazyProxy
 
 
 class UserModel(AbstractUser):
-    MALE = "M"
-    FEMALE = "F"
-    GENDER_CHOICES = {
-        MALE: "Male",
-        FEMALE: "Female",
-    }
+    class Gender(models.TextChoices):
+        MALE = "M", _("Male")
+        FEMALE = "F", _("Female")
+
     username_validator = UnicodeUsernameValidator()
 
     first_name = None
@@ -34,7 +32,7 @@ class UserModel(AbstractUser):
         max_length=255,
         null=True,
     )
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    gender = models.CharField(max_length=1, choices=Gender)
     username = models.CharField(
         _("username"),
         max_length=settings.USERNAME_MAX_LENGTH,

@@ -19,5 +19,5 @@ def generate_username(
         username = f"{prefix}{separator}{postfix}"[
             : settings.USERNAME_MAX_LENGTH
         ]
-        if User.objects.filter(username=username).exists():
+        if not User.objects.filter(username=username).exists():
             return username
