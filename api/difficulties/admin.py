@@ -1,5 +1,8 @@
 from django.contrib import admin
 from .models import Difficulty
+from .forms import DifficultyForm
 
 
-admin.site.register(Difficulty)
+@admin.register(Difficulty)
+class AuthorAdmin(admin.ModelAdmin):
+    form = DifficultyForm
