@@ -12,7 +12,7 @@ class AutoSchema(BaseAutoSchema):
         schema_ref = response["content"]["application/json"]["schema"]["$ref"]
         if isinstance(serializer, OpenApiResponse):
             serializer = serializer.response
-        
+
         if not getattr(
             serializer,
             "should_format",

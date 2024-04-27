@@ -48,29 +48,28 @@ class UserDetailsView(RetrieveDestroyAPIView):
     serializer_class = UserDetailsSerializer
 
 
-
 class SuggestUsernameView(APIView):
-    serializer_class = SuggestUsernameSerializer
-    
     @extend_schema(
+        parameters=[SuggestUsernameSerializer],
         responses={
-            200: successful_api_response({
-                'data': serializers.ListField(child=serializers.CharField())
-            }),
+            200: successful_api_response(
+                {"data": serializers.ListField(child=serializers.CharField())},
+                name="SuggestUsername",
+            ),
         },
     )
     def get(self, request):
-        serializer = self.serializer_class(data=request.query_params)
+        serializer = SuggestUsernameSerializer(data=request.query_params)
         serializer.is_valid(raise_exception=True)
-        prefix = serializer.validated_data.get('prefix')
-        max_suggestions = serializer.validated_data['max_suggestions']
-        
-        suggested_usernames = []
-        for _ in range(max_suggestions):
-            if suggested_username := generate_username(prefix):
-                suggested_usernames.append(suggested_username)
-        
+        prefix = serializer.validated_data.get("prefix")
+        max_suggestions = serializer.validated_data["max_suggestions"]
+        suggested_usernames = [
+            generate_username(prefix)
+            for _ in range(max_suggestions)
+            if generate_username(prefix)
+        ]
         return Response(suggested_usernames)
+
 
 class PasswordChangeView(ChangePasswordView):
     http_method_names = ("patch",)
@@ -111,4 +110,3 @@ class PhoneNumberView(APIView):
         user.phone_number = None
         user.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
-        

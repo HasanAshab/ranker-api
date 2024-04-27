@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.models import (
     AbstractUser,
 )
@@ -5,6 +6,9 @@ from django.contrib.auth import (
     get_user_model,
 )
 from django.db import models
+from django.contrib.auth.validators import (
+    UnicodeUsernameValidator,
+)
 from django.utils.translation import (
     gettext_lazy as _,
 )
@@ -17,12 +21,12 @@ from api.common.utils import LazyProxy
 class UserModel(AbstractUser):
     MALE = "M"
     FEMALE = "F"
-    
     GENDER_CHOICES = {
-        MALE: 'Male',
-        FEMALE: 'Female',
+        MALE: "Male",
+        FEMALE: "Female",
     }
-    
+    username_validator = UnicodeUsernameValidator()
+
     first_name = None
     last_name = None
     name = models.CharField(
@@ -31,6 +35,19 @@ class UserModel(AbstractUser):
         null=True,
     )
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    username = models.CharField(
+        _("username"),
+        max_length=settings.USERNAME_MAX_LENGTH,
+        unique=True,
+        help_text=_(
+            f"Required. {settings.USERNAME_MAX_LENGTH} characters or fewer."
+            "Letters, digits and @/./+/-/_ only."
+        ),
+        validators=[username_validator],
+        error_messages={
+            "unique": _("A user with that username already exists."),
+        },
+    )
     phone_number = PhoneNumberField(_("Phone Number"), null=True)
     avatar = models.ImageField(
         _("Avatar"),

@@ -6,15 +6,14 @@ from allauth.headless.mfa import views as mfa_views
 from allauth.headless.socialaccount import views as socialaccount_views
 
 client = Client.APP
-
 mfa_urlpatterns = [
     path(
-        "authenticate",
+        "authenticate/",
         mfa_views.AuthenticateView.as_api_view(client=client),
         name="authenticate",
     ),
     path(
-        "reauthenticate",
+        "reauthenticate/",
         mfa_views.ReauthenticateView.as_api_view(client=client),
         name="reauthenticate",
     ),
@@ -24,12 +23,12 @@ mfa_urlpatterns = [
         name="authenticators",
     ),
     path(
-        "authenticators/totp",
+        "authenticators/totp/",
         mfa_views.ManageTOTPView.as_api_view(client=client),
         name="manage_totp",
     ),
     path(
-        "authenticators/recovery-codes",
+        "authenticators/recovery-codes/",
         mfa_views.ManageRecoveryCodesView.as_api_view(client=client),
         name="manage_recovery_codes",
     ),
@@ -37,17 +36,17 @@ mfa_urlpatterns = [
 
 social_urlpatterns = [
     path(
-        "providers",
+        "providers/",
         socialaccount_views.ManageProvidersView.as_api_view(client=client),
         name="manage_providers",
     ),
     path(
-        "provider/signup",
+        "provider/signup/",
         socialaccount_views.ProviderSignupView.as_api_view(client=client),
         name="provider_signup",
     ),
     path(
-        "provider/token",
+        "provider/token/",
         socialaccount_views.ProviderTokenView.as_api_view(client=client),
         name="provider_token",
     ),
@@ -55,40 +54,40 @@ social_urlpatterns = [
 
 urlpatterns = [
     path(
-        "signup",
+        "auth/signup/",
         account_views.SignupView.as_api_view(client=client),
         name="signup",
     ),
     path(
-        "login",
+        "auth/login/",
         account_views.LoginView.as_api_view(client=client),
         name="login",
     ),
     path(
-        "reauthenticate",
+        "auth/reauthenticate/",
         account_views.ReauthenticateView.as_api_view(client=client),
         name="reauthenticate",
     ),
     path(
-        "session",
+        "auth/session/",
         account_views.SessionView.as_api_view(client=client),
         name="current-session",
     ),
     path(
-        "email/verify",
+        "auth/email/verify/",
         account_views.VerifyEmailView.as_api_view(client=client),
         name="verify-email",
     ),
     path(
-        "password/reset/request",
+        "auth/password/reset/request/",
         account_views.RequestPasswordResetView.as_api_view(client=client),
         name="request-reset-password",
     ),
     path(
-        "password/reset/confirm",
+        "auth/password/reset/confirm/",
         account_views.ResetPasswordView.as_api_view(client=client),
         name="confirm-reset-password",
     ),
-    path("two-factor/", include(mfa_urlpatterns)),
-    path("social/", include(social_urlpatterns)),
+    path("auth/two-factor/", include(mfa_urlpatterns)),
+    path("auth/social/", include(social_urlpatterns)),
 ]
