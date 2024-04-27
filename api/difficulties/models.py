@@ -7,10 +7,6 @@ from colorfield.fields import ColorField
 
 
 class Difficulty(models.Model):
-    """
-    A level of difficulty for a challenge.
-    """
-
     def __str__(self):
         return self.name
 

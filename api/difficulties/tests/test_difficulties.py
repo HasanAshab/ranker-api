@@ -10,7 +10,7 @@ from api.difficulties.factories import (
     DifficultyFactory,
 )
 from api.difficulties.serializers import (
-    ListDifficultySerializer,
+    DifficultySerializer,
 )
 
 
@@ -29,7 +29,7 @@ class DifficultiesTestCase(APITestCase):
 
     def test_list_difficulties(self):
         difficulties = DifficultyFactory.create_batch(3)
-        data = ListDifficultySerializer(difficulties, many=True).data
+        data = DifficultySerializer(difficulties, many=True).data
 
         self.client.force_authenticate(user=self.user)
         response = self.client.get(self.url)
