@@ -1,12 +1,14 @@
 from rest_framework.permissions import (
     IsAuthenticated,
 )
+from rest_framework.views import APIView
 from rest_framework.generics import (
-    ListAPIView,
     ListCreateAPIView,
     RetrieveUpdateDestroyAPIView,
 )
 from rest_framework import filters
+from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema
 from .models import Challenge
 from .filters import ChallengeFilter
 from .serializers import (
@@ -44,10 +46,14 @@ class ChallengeView(RetrieveUpdateDestroyAPIView):
         return Challenge.objects.active().filter(user=self.request.user)
 
 
-class ChallengeActivitiesView(ListAPIView):
+class ChallengeActivitiesView(APIView):
     permission_classes = (IsAuthenticated,)
-    serializer_class = ChallengeActivitiesSerializer
-    queryset = Challenge.objects.none()
 
-    def get_queryset(self):
-        return Challenge.objects.activities(user=self.request.user)
+    @extend_schema(
+        responses={
+            200: ChallengeActivitiesSerializer,
+        }
+    )
+    def get(self, request):
+        challenge_activities = Challenge.objects.activities(user=request.user)
+        return Response(challenge_activities)

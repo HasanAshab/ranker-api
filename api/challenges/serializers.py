@@ -14,7 +14,18 @@ class ChallengeSerializer(serializers.ModelSerializer):
         exclude = ("user",)
 
 
-class ChallengeActivitiesSerializer(serializers.Serializer):
+class CompletedChallengeDifficultySerializer(serializers.Serializer):
     id = serializers.IntegerField()
     name = serializers.CharField()
     count = serializers.IntegerField()
+
+
+class CompletedChallengeActivitiesSerializer(serializers.Serializer):
+    total = serializers.IntegerField()
+    difficulties = CompletedChallengeDifficultySerializer(many=True)
+
+
+class ChallengeActivitiesSerializer(serializers.Serializer):
+    total = serializers.IntegerField()
+    failed = serializers.IntegerField()
+    completed = CompletedChallengeActivitiesSerializer()
