@@ -55,6 +55,18 @@ class DeleteChallengeTestCase(APITestCase):
             status.HTTP_404_NOT_FOUND,
         )
 
+    def test_can_not_delete_failed_challenge(self):
+        challenge = ChallengeFactory(user=self.user, failed=True)
+
+        url = self._reverse_challenge_url(challenge)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(url)
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_404_NOT_FOUND,
+        )
+
     def test_can_not_delete_others_challenge(self):
         other_user = UserFactory()
         challenge = ChallengeFactory(user=other_user)

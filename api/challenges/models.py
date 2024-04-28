@@ -4,11 +4,17 @@ from django.utils.translation import (
     gettext_lazy as _,
 )
 from api.common.validators import date_time_is_future_validator
+from .managers import ChallengeManager
 
 
 class Challenge(models.Model):
     def __str__(self):
         return self.title
+
+    class Status(models.TextChoices):
+        ACTIVE = "active", _("Active")
+        COMPLETED = "completed", _("Completed")
+        FAILED = "failed", _("Failed")
 
     title = models.CharField(
         _("Title"),
@@ -21,15 +27,17 @@ class Challenge(models.Model):
         blank=True,
         help_text="Description of the challenge.",
     )
+    status = models.CharField(
+        _("Status"),
+        max_length=10,
+        choices=Status,
+        default=Status.ACTIVE,
+        help_text="Status of the challenge.",
+    )
     is_pinned = models.BooleanField(
         _("Is Pinned"),
         default=False,
         help_text="Whether the challenge is pinned.",
-    )
-    is_completed = models.BooleanField(
-        _("Is Completed"),
-        default=False,
-        help_text="Whether the challenge is completed.",
     )
     due_date = models.DateTimeField(
         _("Due Date"),
@@ -45,3 +53,17 @@ class Challenge(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
+
+    objects = ChallengeManager()
+
+    @property
+    def is_active(self):
+        return self.status == self.Status.ACTIVE
+
+    @property
+    def is_completed(self):
+        return self.status == self.Status.COMPLETED
+
+    @property
+    def is_failed(self):
+        return self.status == self.Status.FAILED

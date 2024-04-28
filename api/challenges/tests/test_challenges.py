@@ -54,6 +54,19 @@ class ChallengesTestCase(APITestCase):
         )
         self.assertEqual(len(response.data["results"]), 0)
 
+    def test_not_list_failed_challenges(self):
+        url = reverse("challenges")
+        ChallengeFactory(user=self.user, failed=True)
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url)
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+        self.assertEqual(len(response.data["results"]), 0)
+
     def test_retrieve_challenge_needs_authentication(self):
         url = reverse("challenge", args=[1])
         response = self.client.get(url)
@@ -78,6 +91,18 @@ class ChallengesTestCase(APITestCase):
 
     def test_can_not_retrieve_completed_challenge(self):
         challenge = ChallengeFactory(user=self.user, completed=True)
+
+        url = reverse("challenge", kwargs={"pk": challenge.pk})
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url)
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_404_NOT_FOUND,
+        )
+
+    def test_can_not_retrieve_failed_challenge(self):
+        challenge = ChallengeFactory(user=self.user, failed=True)
 
         url = reverse("challenge", kwargs={"pk": challenge.pk})
         self.client.force_authenticate(user=self.user)

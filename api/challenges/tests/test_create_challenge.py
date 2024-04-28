@@ -42,3 +42,4 @@ class CreateChallengeTestCase(APITestCase):
         )
 
         self.assertIsNotNone(challenge)
+        self.assertTrue(challenge.is_active)

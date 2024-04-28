@@ -7,7 +7,8 @@ class ChallengeFactory(factory.django.DjangoModelFactory):
         model = Challenge
 
     class Params:
-        completed = factory.Trait(is_completed=True)
+        completed = factory.Trait(status=Challenge.Status.COMPLETED)
+        failed = factory.Trait(status=Challenge.Status.FAILED)
         pinned = factory.Trait(is_pinned=True)
 
     title = factory.Faker("sentence", nb_words=3)

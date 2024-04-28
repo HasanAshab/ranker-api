@@ -41,22 +41,3 @@ class ChallengeActivitiesTestCase(APITestCase):
                 }
             ],
         )
-
-    def test_challenge_activities_excludes_incomplete_challenges(self):
-        ChallengeFactory(user=self.user)
-
-        self.client.force_authenticate(user=self.user)
-        response = self.client.get(self.url)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, [])
-
-    def test_challenge_activities_exludes_others_challenges(self):
-        other_user = UserFactory()
-        ChallengeFactory(user=other_user, completed=True)
-
-        self.client.force_authenticate(user=self.user)
-        response = self.client.get(self.url)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, [])

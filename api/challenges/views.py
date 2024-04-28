@@ -1,4 +1,3 @@
-from django.db.models import F, Count
 from rest_framework.permissions import (
     IsAuthenticated,
 )
@@ -31,10 +30,7 @@ class ChallengesView(ListCreateAPIView):
     ordering = ("-is_pinned", "-id")
 
     def get_queryset(self):
-        return Challenge.objects.filter(
-            user=self.request.user,
-            is_completed=False,
-        )
+        return Challenge.objects.active().filter(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -45,10 +41,7 @@ class ChallengeView(RetrieveUpdateDestroyAPIView):
     serializer_class = ChallengeSerializer
 
     def get_queryset(self):
-        return Challenge.objects.filter(
-            user=self.request.user,
-            is_completed=False,
-        )
+        return Challenge.objects.active().filter(user=self.request.user)
 
 
 class ChallengeActivitiesView(ListAPIView):
@@ -57,12 +50,4 @@ class ChallengeActivitiesView(ListAPIView):
     queryset = Challenge.objects.none()
 
     def get_queryset(self):
-        return (
-            Challenge.objects.filter(user=self.request.user, is_completed=True)
-            .values("difficulty__id", "difficulty__name")
-            .annotate(
-                id=F("difficulty__id"),
-                name=F("difficulty__name"),
-                count=Count("id"),
-            )
-        )
+        return Challenge.objects.activities(user=self.request.user)
