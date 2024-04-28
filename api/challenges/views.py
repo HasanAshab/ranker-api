@@ -1,3 +1,4 @@
+from django.db.models import Count
 from rest_framework.permissions import (
     IsAuthenticated,
 )
@@ -15,6 +16,7 @@ from .serializers import (
     ListChallengeSerializer,
     ChallengeSerializer,
     ChallengeActivitiesSerializer,
+    CompletedChallengeDifficultySerializer,
 )
 from .pagination import ChallengeCursorPagination
 
@@ -55,5 +57,29 @@ class ChallengeActivitiesView(APIView):
         }
     )
     def get(self, request):
-        challenge_activities = Challenge.objects.activities(user=request.user)
+        user = request.user
+        challenge_activities = {
+            "total": Challenge.objects.filter(user=user).count(),
+            "failed": Challenge.objects.failed().filter(user=user).count(),
+        }
+
+        completed_challenge_activities = {
+            "total": Challenge.objects.completed().filter(user=user).count(),
+        }
+
+        completed_challenge_difficulties_queryset = (
+            Challenge.objects.completed()
+            .filter(user=user)
+            .values("difficulty__id", "difficulty__name")
+            .annotate(
+                count=Count("id"),
+            )
+        )
+        completed_challenge_activities["difficulties"] = (
+            CompletedChallengeDifficultySerializer(
+                completed_challenge_difficulties_queryset, many=True
+            ).data
+        )
+
+        challenge_activities["completed"] = completed_challenge_activities
         return Response(challenge_activities)

@@ -6,6 +6,9 @@ from rest_framework.test import (
 from api.users.factories import (
     UserFactory,
 )
+from api.difficulties.factories import (
+    DifficultyFactory,
+)
 from api.challenges.factories import (
     ChallengeFactory,
 )
@@ -25,19 +28,36 @@ class ChallengeActivitiesTestCase(APITestCase):
         )
 
     def test_show_challenge_activities(self):
-        challenge = ChallengeFactory(user=self.user, completed=True)
+        difficulty1, difficulty2 = DifficultyFactory.create_batch(2)
+        ChallengeFactory.create_batch(2, user=self.user, failed=True)
+        ChallengeFactory.create_batch(
+            2, user=self.user, difficulty=difficulty1, completed=True
+        )
+        ChallengeFactory(
+            user=self.user, difficulty=difficulty2, completed=True
+        )
+        expected_data = {
+            "total": 5,
+            "failed": 2,
+            "completed": {
+                "total": 3,
+                "difficulties": [
+                    {
+                        "id": difficulty1.id,
+                        "name": difficulty1.name,
+                        "count": 2,
+                    },
+                    {
+                        "id": difficulty2.id,
+                        "name": difficulty2.name,
+                        "count": 1,
+                    },
+                ],
+            },
+        }
 
         self.client.force_authenticate(user=self.user)
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            response.data,
-            [
-                {
-                    "id": challenge.difficulty.id,
-                    "name": challenge.difficulty.name,
-                    "count": 1,
-                }
-            ],
-        )
+        self.assertEqual(response.data, expected_data)
