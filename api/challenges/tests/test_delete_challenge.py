@@ -18,12 +18,13 @@ class DeleteChallengeTestCase(APITestCase):
 
     def _reverse_challenge_url(self, challenge):
         return reverse(
-            "user-details",
+            "challenge",
             kwargs={"pk": challenge.pk},
         )
-    
+
     def test_needs_authentication(self):
-        response = self.client.post(self.url)
+        url = reverse("challenge", args=[1])
+        response = self.client.delete(url)
         self.assertEqual(
             response.status_code,
             status.HTTP_401_UNAUTHORIZED,
@@ -31,20 +32,39 @@ class DeleteChallengeTestCase(APITestCase):
 
     def test_delete_challenge(self):
         challenge = ChallengeFactory(user=self.user)
-        
+
         url = self._reverse_challenge_url(challenge)
         self.client.force_authenticate(user=self.user)
-        response = self.client.post(url, payload)
-        challenge_deleted = not Challenge.objects.filter(user=self.user).exists()
+        response = self.client.delete(url)
 
         self.assertEqual(
             response.status_code,
-            status.HTTP_201_CREATED,
+            status.HTTP_204_NO_CONTENT,
         )
-        self.assertTrue(challenge_deleted)
+        self.assertFalse(Challenge.objects.filter(user=self.user).exists())
 
-    def test_can_not_delete_incomplete_challenge(self):
-        pass
-    
+    def test_can_not_delete_completed_challenge(self):
+        challenge = ChallengeFactory(user=self.user, completed=True)
+
+        url = self._reverse_challenge_url(challenge)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(url)
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_404_NOT_FOUND,
+        )
+
     def test_can_not_delete_others_challenge(self):
-        pass
+        other_user = UserFactory()
+        challenge = ChallengeFactory(user=other_user)
+
+        url = self._reverse_challenge_url(challenge)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(url)
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_404_NOT_FOUND,
+        )
+        self.assertTrue(Challenge.objects.filter(user=other_user).exists())

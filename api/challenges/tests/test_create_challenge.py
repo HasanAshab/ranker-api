@@ -40,5 +40,5 @@ class CreateChallengeTestCase(APITestCase):
             response.status_code,
             status.HTTP_201_CREATED,
         )
-        
+
         self.assertIsNotNone(challenge)
