@@ -1,4 +1,4 @@
-from django.db.models import Count
+from django.db import models
 from rest_framework.permissions import (
     IsAuthenticated,
 )
@@ -57,29 +57,42 @@ class ChallengeActivitiesView(APIView):
         }
     )
     def get(self, request):
-        user = request.user
+        totals = Challenge.objects.filter(user=request.user).aggregate(
+            submitted=models.Count("id"),
+            completed=models.Count(
+                models.Case(
+                    models.When(
+                        status=Challenge.Status.COMPLETED, then=models.Value(1)
+                    ),
+                    output_field=models.IntegerField(),
+                )
+            ),
+            failed=models.Count(
+                models.Case(
+                    models.When(
+                        status=Challenge.Status.FAILED, then=models.Value(1)
+                    ),
+                    output_field=models.IntegerField(),
+                )
+            ),
+        )
         challenge_activities = {
-            "total": Challenge.objects.filter(user=user).count(),
-            "failed": Challenge.objects.failed().filter(user=user).count(),
+            "total": totals["submitted"],
+            "failed": totals["failed"],
+            "completed": {
+                "total": totals["completed"],
+            },
         }
-
-        completed_challenge_activities = {
-            "total": Challenge.objects.completed().filter(user=user).count(),
-        }
-
-        completed_challenge_difficulties_queryset = (
+        difficulties_queryset = (
             Challenge.objects.completed()
-            .filter(user=user)
+            .filter(user=request.user)
             .values("difficulty__id", "difficulty__name")
             .annotate(
-                count=Count("id"),
+                count=models.Count("id"),
             )
         )
-        completed_challenge_activities["difficulties"] = (
-            CompletedChallengeDifficultySerializer(
-                completed_challenge_difficulties_queryset, many=True
-            ).data
-        )
-
-        challenge_activities["completed"] = completed_challenge_activities
+        difficulties = CompletedChallengeDifficultySerializer(
+            difficulties_queryset, many=True
+        ).data
+        challenge_activities["completed"]["difficulties"] = difficulties
         return Response(challenge_activities)
