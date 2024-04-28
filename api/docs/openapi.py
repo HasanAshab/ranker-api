@@ -9,26 +9,36 @@ class AutoSchema(BaseAutoSchema):
         response = super()._get_response_for_code(
             serializer, status_code, media_types, direction
         )
-        schema_ref = response["content"]["application/json"]["schema"]["$ref"]
+
         if isinstance(serializer, OpenApiResponse):
             serializer = serializer.response
+
+        if not (content := response.get("content")):
+            return response
+        if "application/json" not in content:
+            return response
+
+        schema = content["application/json"]["schema"]
 
         if not getattr(
             serializer,
             "should_format",
-            not schema_ref.startswith("#/components/schemas/Paginated"),
+            not schema.get("$ref", "").startswith(
+                "#/components/schemas/Paginated"
+            ),
         ):
             return response
-        schema = self._format_response_schema(schema_ref)
-        response["content"]["application/json"]["schema"] = schema
+
+        formatted_schema = self.format_response_schema(schema)
+        content["application/json"]["schema"] = formatted_schema
         return response
 
-    def _format_response_schema(self, schema_ref):
+    def format_response_schema(self, schema):
         return {
             "type": "object",
             "properties": {
                 "success": {"type": "boolean"},
                 "message": {"type": "string"},
-                "data": {"$ref": schema_ref},
+                "data": schema,
             },
         }

@@ -240,6 +240,7 @@ SPECTACULAR_SETTINGS = {
         "url": "https://allauth.org/docs/draft-api",
         "description": "Authentication",
     },
+    "SCHEMA_PATH_PREFIX": r"/api/",
 }
 
 # Knox (For Auth Token Management)
