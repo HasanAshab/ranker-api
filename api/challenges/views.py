@@ -3,6 +3,7 @@ from rest_framework.permissions import (
 )
 from rest_framework.views import APIView
 from rest_framework.generics import (
+    ListAPIView,
     ListCreateAPIView,
     RetrieveUpdateDestroyAPIView,
 )
@@ -41,24 +42,27 @@ class ChallengeView(RetrieveUpdateDestroyAPIView):
         )
 
 
-from django.db.models import Count
+from django.db.models import F, Count
+
+from rest_framework import serializers
+
+class ChallengeActivitiesSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField()
+    count = serializers.IntegerField()
 
 
-class ChallengeActivitiesView(APIView):
-    def get(self, request):
-        completed_counts = (
+class ChallengeActivitiesView(ListAPIView):
+    serializer_class = ChallengeActivitiesSerializer
+    queryset = Challenge.objects.none()
+
+    def get_queryset(self):
+        return (
             Challenge.objects.filter(user=self.request.user, is_completed=True)
             .values("difficulty__id", "difficulty__name")
-            .annotate(count=Count("id"))
+            .annotate(
+                id=F("difficulty__id"),
+                name=F("difficulty__name"),
+                count=Count("id")
+            )
         )
-        print(list(completed_counts))
-
-        response_data = [
-            {
-                "id": difficulty["difficulty__id"],
-                "name": difficulty["difficulty__name"],
-                "count": difficulty["count"],
-            }
-            for difficulty in completed_counts
-        ]
-        return Response(response_data)
