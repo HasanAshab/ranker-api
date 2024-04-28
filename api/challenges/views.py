@@ -86,7 +86,7 @@ class ChallengeActivitiesView(APIView):
         difficulties_queryset = (
             Challenge.objects.completed()
             .filter(user=request.user)
-            .values("difficulty__id", "difficulty__name")
+            .values("difficulty__id")
             .annotate(
                 count=models.Count("id"),
             )

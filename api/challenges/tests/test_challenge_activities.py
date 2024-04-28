@@ -44,12 +44,10 @@ class ChallengeActivitiesTestCase(APITestCase):
                 "difficulties": [
                     {
                         "id": difficulty1.id,
-                        "name": difficulty1.name,
                         "count": 2,
                     },
                     {
                         "id": difficulty2.id,
-                        "name": difficulty2.name,
                         "count": 1,
                     },
                 ],

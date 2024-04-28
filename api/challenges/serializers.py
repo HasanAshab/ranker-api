@@ -16,7 +16,6 @@ class ChallengeSerializer(serializers.ModelSerializer):
 
 class CompletedChallengeDifficultySerializer(serializers.Serializer):
     id = serializers.IntegerField(source="difficulty__id")
-    name = serializers.CharField(source="difficulty__name")
     count = serializers.IntegerField()
 
 
