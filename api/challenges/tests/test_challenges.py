@@ -6,30 +6,31 @@ from rest_framework.test import (
 from api.users.factories import (
     UserFactory,
 )
-from api.difficulties.factories import (
-    DifficultyFactory,
+from api.challenges.factories import (
+    ChallengeFactory,
 )
-from api.difficulties.serializers import (
-    DifficultySerializer,
+from api.challenges.serializers import (
+    ListChallengeSerializer,
+    ChallengeSerializer,
 )
 
 
-class DifficultiesTestCase(APITestCase):
+class challengesTestCase(APITestCase):
     def setUp(self):
         self.user = UserFactory()
 
-    def test_list_difficulties_needs_authentication(self):
-        url = reverse("difficulties")
+    def test_list_challenges_needs_authentication(self):
+        url = reverse("challenges")
         response = self.client.get(url)
         self.assertEqual(
             response.status_code,
             status.HTTP_401_UNAUTHORIZED,
         )
 
-    def test_list_difficulties(self):
-        url = reverse("difficulties")
-        difficulties = DifficultyFactory.create_batch(3)
-        data = DifficultySerializer(difficulties, many=True).data
+    def test_list_challenges(self):
+        url = reverse("challenges")
+        challenges = ChallengeFactory.create_batch(3)
+        data = ListChallengeSerializer(challenges, many=True).data
 
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
@@ -40,18 +41,18 @@ class DifficultiesTestCase(APITestCase):
         )
         self.assertEqual(response.data, data)
 
-    def test_retrieve_difficulty_needs_authentication(self):
-        url = reverse("difficulty", args=[1])
+    def test_retrieve_challenge_needs_authentication(self):
+        url = reverse("challenge", args=[1])
         response = self.client.get(url)
         self.assertEqual(
             response.status_code,
             status.HTTP_401_UNAUTHORIZED,
         )
 
-    def test_retrieve_difficulty(self):
-        difficulty = DifficultyFactory()
-        data = DifficultySerializer(difficulty).data
-        url = reverse("difficulty", kwargs={"pk": difficulty.pk})
+    def test_retrieve_challenge(self):
+        challenge = ChallengeFactory()
+        data = ChallengeSerializer(challenge).data
+        url = reverse("challenge", kwargs={"pk": challenge.pk})
 
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)

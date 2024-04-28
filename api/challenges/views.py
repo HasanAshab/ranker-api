@@ -7,6 +7,7 @@ from rest_framework.generics import (
     ListCreateAPIView,
     RetrieveUpdateDestroyAPIView,
 )
+from rest_framework import filters
 from .models import Challenge
 from .filters import ChallengeFilter
 from .serializers import (
@@ -21,8 +22,13 @@ class ChallengesView(ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = ListChallengeSerializer
     pagination_class = ChallengeCursorPagination
-    filterset_class = ChallengeFilter
     queryset = Challenge.objects.none()
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
+    # search_fields = ("@title", "@description")
+    search_fields = ("title", "description")
+    filterset_class = ChallengeFilter
+    ordering_fields = ("-is_pinned", "-id", "difficulty")
+    ordering = ("-is_pinned", "-id")
 
     def get_queryset(self):
         return Challenge.objects.filter(
