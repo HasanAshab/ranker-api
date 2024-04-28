@@ -6,7 +6,7 @@ urlpatterns = [
     path(
         "challenges/activities",
         ChallengeActivitiesView.as_view(),
-        name="challenges-activity",
+        name="challenge-activities",
     ),
     path("challenges/<int:pk>/", ChallengeView.as_view(), name="challenge"),
 ]

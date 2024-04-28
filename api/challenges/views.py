@@ -52,6 +52,7 @@ class ChallengeView(RetrieveUpdateDestroyAPIView):
 
 
 class ChallengeActivitiesView(ListAPIView):
+    permission_classes = (IsAuthenticated,)
     serializer_class = ChallengeActivitiesSerializer
     queryset = Challenge.objects.none()
 
