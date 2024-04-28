@@ -14,7 +14,9 @@ class ChallengesView(ListAPIView):
 
     def get_queryset(self):
 
-        return self.request.user.challenge_set.exclude(is_completed=True).prefetch_related('difficulty')
+        return self.request.user.challenge_set.exclude(
+            is_completed=True
+        ).prefetch_related("difficulty")
 
 
 class ChallengesActivityView(APIView):

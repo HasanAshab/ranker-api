@@ -12,8 +12,6 @@ class ListChallengeSerializer(serializers.ModelSerializer):
 
 
 class ChallengeSerializer(serializers.ModelSerializer):
-    difficulty = DifficultySerializer()
-
     class Meta:
         model = Challenge
         exclude = ("user",)
