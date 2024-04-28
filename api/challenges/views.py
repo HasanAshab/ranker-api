@@ -3,6 +3,7 @@ from rest_framework.permissions import (
 )
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
+from .filters import ChallengeFilter
 from .serializers import ListChallengeSerializer, ChallengeSerializer
 from .pagination import ChallengeCursorPagination
 
@@ -11,6 +12,7 @@ class ChallengesView(ListAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = ListChallengeSerializer
     pagination_class = ChallengeCursorPagination
+    filterset_class = ChallengeFilter
 
     def get_queryset(self):
 

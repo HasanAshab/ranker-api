@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_filters",
     "django_extensions",
     "corsheaders",
     "phonenumber_field",
@@ -218,13 +219,17 @@ REST_FRAMEWORK = {
     # Exception
     "EXCEPTION_HANDLER": "api.common.exceptions.handler",
     # Response
-    "DEFAULT_RENDERER_CLASSES": [
+    "DEFAULT_RENDERER_CLASSES": (
         "api.common.renderers.JSONRenderer",
-    ],
+    ),
     # Test
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
     # Docs
     "DEFAULT_SCHEMA_CLASS": "api.docs.openapi.AutoSchema",
+    # Filters
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
 }
 
 # Api Docs
