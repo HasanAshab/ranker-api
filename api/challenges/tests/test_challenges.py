@@ -10,12 +10,11 @@ from api.challenges.factories import (
     ChallengeFactory,
 )
 from api.challenges.serializers import (
-    ListChallengeSerializer,
     ChallengeSerializer,
 )
 
 
-class challengesTestCase(APITestCase):
+class ChallengesTestCase(APITestCase):
     def setUp(self):
         self.user = UserFactory()
 
@@ -28,9 +27,23 @@ class challengesTestCase(APITestCase):
         )
 
     def test_list_challenges(self):
+        challenge = ChallengeFactory(user=self.user)
+
         url = reverse("challenges")
-        challenges = ChallengeFactory.create_batch(3)
-        data = ListChallengeSerializer(challenges, many=True).data
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url)
+        results = response.data["results"]
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]["id"], challenge.id)
+    
+    def test_not_list_completed_challenges(self):
+        url = reverse("challenges")
+        ChallengeFactory(user=self.user, completed=True)
 
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
@@ -39,7 +52,7 @@ class challengesTestCase(APITestCase):
             response.status_code,
             status.HTTP_200_OK,
         )
-        self.assertEqual(response.data, data)
+        self.assertEqual(len(response.data['results']), 0)
 
     def test_retrieve_challenge_needs_authentication(self):
         url = reverse("challenge", args=[1])
@@ -50,7 +63,7 @@ class challengesTestCase(APITestCase):
         )
 
     def test_retrieve_challenge(self):
-        challenge = ChallengeFactory()
+        challenge = ChallengeFactory(user=self.user)
         data = ChallengeSerializer(challenge).data
         url = reverse("challenge", kwargs={"pk": challenge.pk})
 
@@ -62,3 +75,15 @@ class challengesTestCase(APITestCase):
             status.HTTP_200_OK,
         )
         self.assertEqual(response.data, data)
+    
+    def test_can_not_retrieve_completed_challenge(self):
+        challenge = ChallengeFactory(user=self.user, completed=True)
+        
+        url = reverse("challenge", kwargs={"pk": challenge.pk})
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url)
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_404_NOT_FOUND,
+        )
