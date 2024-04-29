@@ -16,7 +16,7 @@ from .serializers import (
     ListChallengeSerializer,
     ChallengeSerializer,
     ChallengeActivitiesSerializer,
-    CompletedChallengeDifficultySerializer,
+    ChallengeDifficultySerializer,
 )
 from .pagination import ChallengeCursorPagination
 
@@ -91,7 +91,7 @@ class ChallengeActivitiesView(APIView):
                 count=models.Count("id"),
             )
         )
-        difficulties = CompletedChallengeDifficultySerializer(
+        difficulties = ChallengeDifficultySerializer(
             difficulties_queryset, many=True
         ).data
         challenge_activities["completed"]["difficulties"] = difficulties
