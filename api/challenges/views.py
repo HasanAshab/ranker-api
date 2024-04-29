@@ -34,7 +34,7 @@ class ChallengesView(ListCreateAPIView):
     ordering = ("-is_pinned", "-id")
 
     def get_queryset(self):
-        return Challenge.objects.active().filter(user=self.request.user)
+        return self.request.user.challenge_set.active()
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -45,7 +45,7 @@ class ChallengeView(RetrieveUpdateDestroyAPIView):
     serializer_class = ChallengeSerializer
 
     def get_queryset(self):
-        return Challenge.objects.active().filter(user=self.request.user)
+        return self.request.user.challenge_set.active().filter()
 
 
 class ChallengeActivitiesView(APIView):
@@ -57,7 +57,7 @@ class ChallengeActivitiesView(APIView):
         }
     )
     def get(self, request):
-        totals = Challenge.objects.filter(user=request.user).aggregate(
+        totals = self.request.user.challenge_set.aggregate(
             submitted=models.Count("id"),
             completed=models.Count(
                 models.Case(
@@ -84,8 +84,7 @@ class ChallengeActivitiesView(APIView):
             },
         }
         difficulties_queryset = (
-            Challenge.objects.completed()
-            .filter(user=request.user)
+            self.request.user.challenge_set.completed()
             .values("difficulty__id")
             .annotate(
                 count=models.Count("id"),

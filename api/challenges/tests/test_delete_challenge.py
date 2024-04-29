@@ -3,7 +3,6 @@ from rest_framework import status
 from rest_framework.test import (
     APITestCase,
 )
-from api.challenges.models import Challenge
 from api.users.factories import (
     UserFactory,
 )
@@ -41,7 +40,7 @@ class DeleteChallengeTestCase(APITestCase):
             response.status_code,
             status.HTTP_204_NO_CONTENT,
         )
-        self.assertFalse(Challenge.objects.filter(user=self.user).exists())
+        self.assertFalse(self.user.challenge_set.exists())
 
     def test_can_not_delete_completed_challenge(self):
         challenge = ChallengeFactory(user=self.user, completed=True)
@@ -79,4 +78,4 @@ class DeleteChallengeTestCase(APITestCase):
             response.status_code,
             status.HTTP_404_NOT_FOUND,
         )
-        self.assertTrue(Challenge.objects.filter(user=other_user).exists())
+        self.assertTrue(self.user.challenge_set.exists())
