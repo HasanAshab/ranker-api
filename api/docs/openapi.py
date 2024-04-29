@@ -1,4 +1,4 @@
-from drf_spectacular.openapi import AutoSchema as BaseAutoSchema
+from drf_standardized_errors.openapi import AutoSchema as BaseAutoSchema
 from drf_spectacular.utils import OpenApiResponse
 
 
@@ -14,18 +14,24 @@ class AutoSchema(BaseAutoSchema):
             serializer = serializer.response
 
         if not (content := response.get("content")):
+
             return response
         if "application/json" not in content:
             return response
 
         schema = content["application/json"]["schema"]
+        reference = schema.get("$ref", schema.get("items", {}).get("$ref"))
+        if not reference:
+            return response
+        is_paginated_response = reference.startswith(
+            "#/components/schemas/Paginated"
+        )
+        is_error_response = "ErrorResponse" in reference
 
         if not getattr(
             serializer,
             "should_format",
-            not schema.get("$ref", "").startswith(
-                "#/components/schemas/Paginated"
-            ),
+            not (is_paginated_response or is_error_response),
         ):
             return response
 
