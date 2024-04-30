@@ -21,20 +21,40 @@ from .serializers import (
 from .pagination import ChallengeCursorPagination
 
 
+class MultiFieldOrderingFilter(filters.OrderingFilter):
+    def get_ordering_fields(self, view, ordering):
+        return getattr(view, 'order_set', {}).get(ordering)
+
+    def get_default_ordering(self, view):
+        ordering = getattr(view, 'ordering', None)
+        if ordering:
+            return self.get_ordering_fields(view, ordering)
+
+    def get_ordering(self, request, queryset, view):
+        ordering = request.query_params.get(self.ordering_param)
+        if ordering:
+            fields = self.get_ordering_fields(view, ordering)
+            if fields:
+                return fields
+        return self.get_default_ordering(view)
+    
 class ChallengesView(ListCreateAPIView):
-    permission_classes = (IsAuthenticated,)
+    #permission_classes = (IsAuthenticated,)
     serializer_class = ListChallengeSerializer
-    pagination_class = ChallengeCursorPagination
+    #pagination_class = ChallengeCursorPagination
     queryset = Challenge.objects.none()
-    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
+    filter_backends = (filters.SearchFilter, MultiFieldOrderingFilter)
     # search_fields = ("@title", "@description")
     search_fields = ("title", "description")
     filterset_class = ChallengeFilter
-    ordering_fields = ("-is_pinned", "-id", "difficulty")
-    ordering = ("-is_pinned", "-id")
-
+    ordering = "ordered"
+    order_set = {
+        'ordered': ('-is_pinned', '-id'),
+        'difficulty': ('difficulty__points', '-is_pinned', '-id'),
+    }
+    
     def get_queryset(self):
-        return self.request.user.challenge_set.active()
+        return Challenge.objects.all()#self.request.user.challenge_set.active()
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
