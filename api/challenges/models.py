@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.translation import (
     gettext_lazy as _,
 )
-from api.common.validators import date_time_is_future_validator
+from datetime_validators.validators import date_time_is_future_validator
 from .managers import ChallengeManager
 
 
