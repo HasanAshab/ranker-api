@@ -78,4 +78,4 @@ class DeleteChallengeTestCase(APITestCase):
             response.status_code,
             status.HTTP_404_NOT_FOUND,
         )
-        self.assertTrue(self.user.challenge_set.exists())
+        self.assertTrue(other_user.challenge_set.exists())
