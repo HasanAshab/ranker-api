@@ -10,6 +10,7 @@ from rest_framework.generics import (
 from rest_framework import filters
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
+from django_filters.rest_framework import DjangoFilterBackend
 from api.common.filters import MultiFieldOrderingFilter
 from .models import Challenge
 from .filters import ChallengeFilter
@@ -27,14 +28,23 @@ class ChallengesView(ListCreateAPIView):
     serializer_class = ListChallengeSerializer
     pagination_class = ChallengeCursorPagination
     queryset = Challenge.objects.none()
-    filter_backends = (filters.SearchFilter, MultiFieldOrderingFilter)
+    filter_backends = (
+        filters.SearchFilter,
+        MultiFieldOrderingFilter,
+        DjangoFilterBackend,
+    )
     # search_fields = ("@title", "@description")
     search_fields = ("title", "description")
     filterset_class = ChallengeFilter
     ordering = "ordered"
     order_set = {
         "ordered": ("-is_pinned", "-id"),
-        "difficulty": ("difficulty__points", "-is_pinned", "-id"),
+        "difficulty": (
+            "-difficulty",
+            models.F("due_date").asc(nulls_last=True),
+            "-is_pinned",
+            "-id",
+        ),
     }
 
     def get_queryset(self):

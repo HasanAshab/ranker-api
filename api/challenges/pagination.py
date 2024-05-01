@@ -10,7 +10,7 @@ from .serializers import (
 
 
 class ChallengeCursorPagination(CursorPagination):
-    ordering = "id"
+    ordering = "-id"
 
     def get_additional_metadata(self):
         active_challenge_difficulties_queryset = (

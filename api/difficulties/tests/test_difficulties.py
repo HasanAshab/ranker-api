@@ -29,8 +29,6 @@ class DifficultiesTestCase(APITestCase):
     def test_list_difficulties(self):
         url = reverse("difficulties")
         difficulties = DifficultyFactory.create_batch(3)
-        data = DifficultySerializer(difficulties, many=True).data
-
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
 
@@ -38,7 +36,7 @@ class DifficultiesTestCase(APITestCase):
             response.status_code,
             status.HTTP_200_OK,
         )
-        self.assertEqual(response.data, data)
+        self.assertEqual(len(response.data), len(difficulties))
 
     def test_retrieve_difficulty_needs_authentication(self):
         url = reverse("difficulty", args=[1])

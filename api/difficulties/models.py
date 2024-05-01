@@ -29,6 +29,9 @@ class Difficulty(models.Model):
         help_text="Number of points associated with this difficulty level.",
     )
 
+    class Meta:
+        ordering = ("points",)
+
     def save(self, *args, **kwargs):
         if self.name and not self.slug:
             self.slug = slugify(self.name)
