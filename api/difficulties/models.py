@@ -8,7 +8,7 @@ from colorfield.fields import ColorField
 
 class Difficulty(models.Model):
     def __str__(self):
-        return self.name
+        return self.slug
 
     name = models.CharField(
         _("Name"),
@@ -21,8 +21,13 @@ class Difficulty(models.Model):
         max_length=30,
         help_text="The slugyfied version of the difficulty name.",
     )
-    color = ColorField(
-        _("Color"), help_text="The display color of the difficulty level."
+    light_color = ColorField(
+        _("Ligth Color"),
+        help_text="The display color for ligth theme."
+    )
+    dark_color = ColorField(
+        _("Dark Color"),
+        help_text="The display color for dark theme."
     )
     points = models.PositiveIntegerField(
         _("Points"),

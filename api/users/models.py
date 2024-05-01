@@ -1,3 +1,4 @@
+import math
 from django.conf import settings
 from django.contrib.auth.models import (
     AbstractUser,
@@ -31,8 +32,14 @@ class UserModel(AbstractUser):
         _("Name"),
         max_length=255,
         null=True,
+        help_text="Name of the user"
     )
-    gender = models.CharField(max_length=1, choices=Gender)
+    gender = models.CharField(
+        _('Gender'),
+        max_length=1,
+        choices=Gender,
+        help_text="Gender of the user"
+    )
     username = models.CharField(
         _("username"),
         max_length=settings.USERNAME_MAX_LENGTH,
@@ -46,22 +53,35 @@ class UserModel(AbstractUser):
             "unique": _("A user with that username already exists."),
         },
     )
-    phone_number = PhoneNumberField(_("Phone Number"), null=True)
+    phone_number = PhoneNumberField(
+        _("Phone Number"),
+        null=True,
+        help_text="Phone number of the user"
+    )
     avatar = models.ImageField(
         _("Avatar"),
         upload_to="uploads/avatars/",
         max_length=100,
         null=True,
+        help_text="Avatar (or profile pic) of the user"
     )
+    total_points = models.IntegerField(
+        _("Total Points"),
+        default=0,
+        help_text="Total points (XP) of the user"
+    )
+    
+    class Meta:
+        db_table = "users"
 
     @property
     def is_email_verified(self) -> bool:
         return self.emailaddress_set.filter(
             primary=True, verified=True
         ).exists()
-
-    class Meta:
-        db_table = "users"
-
+      
+    @property
+    def level(self):
+        return 1 + math.floor(self.total_points / 1000)
 
 User = LazyProxy(get_user_model)

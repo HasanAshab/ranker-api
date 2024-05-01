@@ -6,8 +6,16 @@ from api.common.utils import (
 )
 from .models import User
 
+from api.statuses.models import Status
+
+class StatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Status
+        exclude = ('required_level',)
 
 class ProfileSerializer(serializers.ModelSerializer):
+    status = serializers.SerializerMethodField()
+    
     class Meta:
         model = User
         fields = (
@@ -22,6 +30,9 @@ class ProfileSerializer(serializers.ModelSerializer):
             "date_joined",
             "is_superuser",
             "is_staff",
+            "status",
+            "total_points",
+            "level",
         )
         read_only_fields = (
             "date_joined",
@@ -33,7 +44,10 @@ class ProfileSerializer(serializers.ModelSerializer):
             "is_superuser",
             "phone_number",
         )
-
+    
+    def get_status(self, user):
+        status = Status.objects.get_for_user(user)
+        return StatusSerializer(status).data
 
 class ListUserSerializer(serializers.ModelSerializer):
 

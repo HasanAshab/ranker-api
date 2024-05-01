@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     "api.common",
     "api.authentication",
     "api.users",
+    "api.statuses",
     "api.difficulties",
     "api.challenges",
 ]
