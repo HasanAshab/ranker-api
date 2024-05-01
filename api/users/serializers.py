@@ -5,17 +5,10 @@ from api.common.utils import (
     twilio_verification,
 )
 from .models import User
+from .mixins import UserStatusMixin
 
-from api.statuses.models import Status
 
-class StatusSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Status
-        exclude = ('required_level',)
-
-class ProfileSerializer(serializers.ModelSerializer):
-    status = serializers.SerializerMethodField()
-    
+class ProfileSerializer(serializers.ModelSerializer, UserStatusMixin):
     class Meta:
         model = User
         fields = (
@@ -38,25 +31,29 @@ class ProfileSerializer(serializers.ModelSerializer):
             "date_joined",
             "last_login",
             "email",
+            "total_points",
             "is_email_verified",
             "is_active",
             "is_staff",
             "is_superuser",
             "phone_number",
         )
-    
-    def get_status(self, user):
-        status = Status.objects.get_for_user(user)
-        return StatusSerializer(status).data
 
-class ListUserSerializer(serializers.ModelSerializer):
 
+class ListUserSerializer(serializers.ModelSerializer, UserStatusMixin):
     class Meta:
         model = User
-        fields = ("id", "username", "avatar")
+        fields = (
+            "id",
+            "name",
+            "username",
+            "avatar",
+            "status",
+            "level",
+        )
 
 
-class UserDetailsSerializer(serializers.ModelSerializer):
+class UserDetailsSerializer(serializers.ModelSerializer, UserStatusMixin):
     class Meta:
         model = User
         fields = (
@@ -68,6 +65,9 @@ class UserDetailsSerializer(serializers.ModelSerializer):
             "date_joined",
             "is_superuser",
             "is_staff",
+            "status",
+            "total_points",
+            "level",
         )
 
 

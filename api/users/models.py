@@ -20,6 +20,8 @@ from api.common.utils import LazyProxy
 
 
 class UserModel(AbstractUser):
+    REQUIRED_FIELDS = ('gender',)
+    
     class Gender(models.TextChoices):
         MALE = "M", _("Male")
         FEMALE = "F", _("Female")
@@ -31,7 +33,7 @@ class UserModel(AbstractUser):
     name = models.CharField(
         _("Name"),
         max_length=255,
-        null=True,
+        blank=True,
         help_text="Name of the user"
     )
     gender = models.CharField(
@@ -41,7 +43,7 @@ class UserModel(AbstractUser):
         help_text="Gender of the user"
     )
     username = models.CharField(
-        _("username"),
+        _("Username"),
         max_length=settings.USERNAME_MAX_LENGTH,
         unique=True,
         help_text=_(
@@ -55,14 +57,14 @@ class UserModel(AbstractUser):
     )
     phone_number = PhoneNumberField(
         _("Phone Number"),
-        null=True,
+        blank=True,
         help_text="Phone number of the user"
     )
     avatar = models.ImageField(
         _("Avatar"),
         upload_to="uploads/avatars/",
         max_length=100,
-        null=True,
+        blank=True,
         help_text="Avatar (or profile pic) of the user"
     )
     total_points = models.IntegerField(
