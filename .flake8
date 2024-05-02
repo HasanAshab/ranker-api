@@ -6,3 +6,4 @@ exclude =
     settings.py
     .venv
     .env
+extend-ignore = E203

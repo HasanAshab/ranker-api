@@ -10,6 +10,7 @@ from rest_framework.generics import (
     RetrieveUpdateDestroyAPIView,
 )
 from rest_framework import serializers
+from rest_framework import filters
 from drf_spectacular.utils import extend_schema
 from allauth.headless.account.views import ChangePasswordView
 from api.docs.utils import successful_api_response
@@ -28,9 +29,11 @@ from .pagination import UserCursorPagination
 
 class UsersView(ListAPIView):
     permission_classes = (IsAuthenticated,)
+    filter_backends = (filters.OrderingFilter,)
     queryset = User.objects.all()
     serializer_class = ListUserSerializer
     pagination_class = UserCursorPagination
+    ordering_fields = ("rank",)
 
 
 class ProfileView(RetrieveUpdateDestroyAPIView):

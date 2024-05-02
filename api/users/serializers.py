@@ -26,17 +26,18 @@ class ProfileSerializer(serializers.ModelSerializer, UserStatusMixin):
             "status",
             "total_xp",
             "level",
+            "rank",
         )
         read_only_fields = (
             "date_joined",
             "last_login",
             "email",
-            "total_xp",
-            "is_email_verified",
             "is_active",
             "is_staff",
             "is_superuser",
             "phone_number",
+            "total_xp",
+            "rank",
         )
 
 
@@ -68,6 +69,7 @@ class UserDetailsSerializer(serializers.ModelSerializer, UserStatusMixin):
             "status",
             "total_xp",
             "level",
+            "rank",
         )
 
 
