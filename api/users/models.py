@@ -20,8 +20,8 @@ from api.common.utils import LazyProxy
 
 
 class UserModel(AbstractUser):
-    REQUIRED_FIELDS = ('gender',)
-    
+    REQUIRED_FIELDS = ("gender",)
+
     class Gender(models.TextChoices):
         MALE = "M", _("Male")
         FEMALE = "F", _("Female")
@@ -31,16 +31,13 @@ class UserModel(AbstractUser):
     first_name = None
     last_name = None
     name = models.CharField(
-        _("Name"),
-        max_length=255,
-        blank=True,
-        help_text="Name of the user"
+        _("Name"), max_length=255, blank=True, help_text="Name of the user"
     )
     gender = models.CharField(
-        _('Gender'),
+        _("Gender"),
         max_length=1,
         choices=Gender,
-        help_text="Gender of the user"
+        help_text="Gender of the user",
     )
     username = models.CharField(
         _("Username"),
@@ -56,23 +53,19 @@ class UserModel(AbstractUser):
         },
     )
     phone_number = PhoneNumberField(
-        _("Phone Number"),
-        blank=True,
-        help_text="Phone number of the user"
+        _("Phone Number"), blank=True, help_text="Phone number of the user"
     )
     avatar = models.ImageField(
         _("Avatar"),
         upload_to="uploads/avatars/",
         max_length=100,
         blank=True,
-        help_text="Avatar (or profile pic) of the user"
+        help_text="Avatar (or profile pic) of the user",
     )
-    total_points = models.IntegerField(
-        _("Total Points"),
-        default=0,
-        help_text="Total points (XP) of the user"
+    total_xp = models.IntegerField(
+        _("Total XP"), default=0, help_text="Total xp points of the user"
     )
-    
+
     class Meta:
         db_table = "users"
 
@@ -81,9 +74,10 @@ class UserModel(AbstractUser):
         return self.emailaddress_set.filter(
             primary=True, verified=True
         ).exists()
-      
+
     @property
     def level(self):
-        return 1 + math.floor(self.total_points / 1000)
+        return 1 + math.floor(self.total_xp / 1000)
+
 
 User = LazyProxy(get_user_model)

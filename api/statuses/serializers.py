@@ -5,4 +5,4 @@ from .models import Status
 class StatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Status
-        exclude = ('required_level',)
+        exclude = ("required_level",)

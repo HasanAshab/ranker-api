@@ -2,4 +2,6 @@ from django.contrib import admin
 from .models import Status
 
 
-admin.site.register(Status)
+@admin.register(Status)
+class StatusAdmin(admin.ModelAdmin):
+    prepopulated_fields = {"slug": ["name"]}
