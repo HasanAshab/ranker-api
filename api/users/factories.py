@@ -7,6 +7,7 @@ from allauth.account.models import (
     EmailAddress,
 )
 
+
 class UserFactory(factory.django.DjangoModelFactory):
     email = factory.Faker("email")
     username = factory.Faker("user_name")
