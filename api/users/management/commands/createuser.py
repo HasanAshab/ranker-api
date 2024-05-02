@@ -4,20 +4,17 @@ from django.core.management.base import (
 from api.users.factories import (
     UserFactory,
 )
-from knox.views import LoginView
+from knox.models import get_token_model
 
-
-class R:
-    def __init__(self, user):
-        self.user = user
 
 
 class Command(BaseCommand):
     help = "Create a user and obtain auth token for testing"
 
     def handle(self, *args, **options):
+        AuthToken = get_token_model()
         user = UserFactory()
-        token = LoginView(request=R(user)).create_token()
+        token = AuthToken.objects.create(user)
         self.stdout.write("Email: " + user.email)
         self.stdout.write("Username: " + user.username)
         self.stdout.write("Password: " + UserFactory.plain_password)
