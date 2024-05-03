@@ -3,7 +3,6 @@ from colorfield.fields import ColorField
 from django.utils.translation import (
     gettext_lazy as _,
 )
-from django.utils.text import slugify
 from .managers import StatusManager
 
 
@@ -29,13 +28,8 @@ class Status(models.Model):
     dark_color = ColorField(
         _("Dark Color"), help_text="The display color for dark theme."
     )
-
+    
     objects = StatusManager()
 
     def __str__(self):
         return self.slug
-
-    def save(self, *args, **kwargs):
-        if self.name and not self.slug:
-            self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
