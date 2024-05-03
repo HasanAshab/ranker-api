@@ -67,3 +67,10 @@ class Challenge(models.Model):
     @property
     def is_failed(self):
         return self.status == self.Status.FAILED
+
+    def adjust_xp(self, status):
+        xp_value = self.difficulty.xp_value
+        if status == Challenge.Status.COMPLETED:
+            self.user.add_xp(xp_value)
+        elif status == Challenge.Status.FAILED:
+            self.user.subtract_xp(xp_value)

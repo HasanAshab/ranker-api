@@ -82,5 +82,14 @@ class UserModel(AbstractUser):
     def level(self):
         return 1 + math.floor(self.total_xp / 1000)
 
+    def add_xp(self, amount):
+        self.total_xp += amount
+        self.save()
+
+    def subtract_xp(self, amount):
+        if self.total_xp >= amount:
+            self.total_xp -= amount
+            self.save()
+
 
 User = LazyProxy(get_user_model)
