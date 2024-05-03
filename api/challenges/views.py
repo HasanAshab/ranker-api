@@ -60,12 +60,11 @@ class ChallengeView(RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return self.request.user.challenge_set.active()
-    
+
     def perform_update(self, serializer):
-        data = serializer['validated_data']
-        status = data.get('status')
-        if status == Challenge.Status.COMPLETED
-    
+        serializer.save()
+
+
 class ChallengeActivitiesView(APIView):
     permission_classes = (IsAuthenticated,)
 

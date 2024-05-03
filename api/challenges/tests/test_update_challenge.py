@@ -11,7 +11,7 @@ from api.challenges.factories import (
 )
 
 
-class CreateChallengeTestCase(APITestCase):
+class UpdateChallengeTestCase(APITestCase):
     def setUp(self):
         self.user = UserFactory()
 
@@ -42,8 +42,8 @@ class CreateChallengeTestCase(APITestCase):
         challenge.refresh_from_db()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(challenge.title, "Updated Title")
-        self.assertEqual(challenge.description, "Updated Description")
+        self.assertEqual(challenge.title, data["title"])
+        self.assertEqual(challenge.description, data["description"])
 
     def test_can_not_update_completed_challenge(self):
         challenge = ChallengeFactory(user=self.user, completed=True)

@@ -35,7 +35,7 @@ class PhoneNumberTestCase(APITestCase):
             response.status_code,
             status.HTTP_202_ACCEPTED,
         )
-        self.assertIsNone(self.user.phone_number)
+        self.assertEqual(self.user.phone_number, "")
         mocked_verification_sender.assert_called_once_with(phone_number)
 
     @patch("api.common.utils.twilio_verification.is_valid")
@@ -75,7 +75,7 @@ class PhoneNumberTestCase(APITestCase):
             response.status_code,
             status.HTTP_400_BAD_REQUEST,
         )
-        self.assertIsNone(self.user.phone_number)
+        self.assertEqual(self.user.phone_number, "")
         mocked_verification_checker.assert_called_once_with(phone_number, otp)
 
     def test_remove_phone_number(
@@ -90,4 +90,4 @@ class PhoneNumberTestCase(APITestCase):
             response.status_code,
             status.HTTP_204_NO_CONTENT,
         )
-        self.assertIsNone(user.phone_number)
+        self.assertEqual(user.phone_number, "")

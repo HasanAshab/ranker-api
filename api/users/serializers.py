@@ -5,10 +5,10 @@ from api.common.utils import (
     twilio_verification,
 )
 from .models import User
-from .mixins import UserStatusMixin
+from .mixins import UserLevelTitleMixin
 
 
-class ProfileSerializer(serializers.ModelSerializer, UserStatusMixin):
+class ProfileSerializer(serializers.ModelSerializer, UserLevelTitleMixin):
     class Meta:
         model = User
         fields = (
@@ -23,9 +23,9 @@ class ProfileSerializer(serializers.ModelSerializer, UserStatusMixin):
             "date_joined",
             "is_superuser",
             "is_staff",
-            "status",
             "total_xp",
             "level",
+            "level_title",
             "rank",
         )
         read_only_fields = (
@@ -41,7 +41,7 @@ class ProfileSerializer(serializers.ModelSerializer, UserStatusMixin):
         )
 
 
-class ListUserSerializer(serializers.ModelSerializer, UserStatusMixin):
+class ListUserSerializer(serializers.ModelSerializer, UserLevelTitleMixin):
     class Meta:
         model = User
         fields = (
@@ -49,12 +49,12 @@ class ListUserSerializer(serializers.ModelSerializer, UserStatusMixin):
             "name",
             "username",
             "avatar",
-            "status",
             "level",
+            "level_title",
         )
 
 
-class UserDetailsSerializer(serializers.ModelSerializer, UserStatusMixin):
+class UserDetailsSerializer(serializers.ModelSerializer, UserLevelTitleMixin):
     class Meta:
         model = User
         fields = (
@@ -66,9 +66,9 @@ class UserDetailsSerializer(serializers.ModelSerializer, UserStatusMixin):
             "date_joined",
             "is_superuser",
             "is_staff",
-            "status",
             "total_xp",
             "level",
+            "level_title",
             "rank",
         )
 

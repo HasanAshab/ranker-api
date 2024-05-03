@@ -7,7 +7,6 @@ from api.users.factories import (
 from knox.models import get_token_model
 
 
-
 class Command(BaseCommand):
     help = "Create a user and obtain auth token for testing"
 

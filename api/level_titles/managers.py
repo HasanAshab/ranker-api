@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class StatusManager(models.Manager):
+class LevelTitleManager(models.Manager):
     def get_for_user(self, user):
         status = (
             self.filter(required_level__lte=user.level)
@@ -9,8 +9,5 @@ class StatusManager(models.Manager):
             .first()
         )
         if not status:
-            raise Exception(
-                f"""At least one status should be exist
-                on database for level: {user.level}"""
-            )
+            raise Exception(f"No title exists for level: {user.level}")
         return status

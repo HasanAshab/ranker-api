@@ -110,6 +110,6 @@ class PhoneNumberView(APIView):
 
     def delete(self, request):
         user = self.request.user
-        user.phone_number = None
+        user.phone_number = ""
         user.save()
         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -1,11 +1,11 @@
 from rest_framework import serializers
-from api.statuses.models import Status
-from api.statuses.serializers import StatusSerializer
+from api.level_titles.models import LevelTitle
+from api.level_titles.serializers import LevelTitleSerializer
 
 
-class UserStatusMixin(metaclass=serializers.SerializerMetaclass):
-    status = serializers.SerializerMethodField()
+class UserLevelTitleMixin(metaclass=serializers.SerializerMetaclass):
+    level_title = serializers.SerializerMethodField()
 
-    def get_status(self, user):
-        status = Status.objects.get_for_user(user)
-        return StatusSerializer(status).data
+    def get_level_title(self, user):
+        level_title = LevelTitle.objects.get_for_user(user)
+        return LevelTitleSerializer(level_title).data
