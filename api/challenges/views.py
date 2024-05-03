@@ -62,6 +62,17 @@ class ChallengeView(RetrieveUpdateDestroyAPIView):
         return self.request.user.challenge_set.active()
 
     def perform_update(self, serializer):
+        challenge = serializer.instance
+        data = serializer.validated_data
+        if status := data.get("status"):
+            if status == Challenge.Status.COMPLETED:
+                challenge.user.total_xp += challenge.difficulty.xp_value
+            if (
+                status == Challenge.Status.FAILED
+                and challenge.user.total_xp > 0
+            ):
+                challenge.user.total_xp -= challenge.difficulty.xp_value
+            challenge.user.save()
         serializer.save()
 
 

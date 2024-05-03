@@ -12,7 +12,7 @@ class LevelTitle(models.Model):
         max_length=50,
         help_text="The title of the level",
     )
-    required_level = models.IntegerField(
+    required_level = models.PositiveIntegerField(
         _("Required Level"),
         unique=True,
         help_text="Minimum level requirement to achieve the title",

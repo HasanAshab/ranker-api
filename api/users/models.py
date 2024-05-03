@@ -62,10 +62,10 @@ class UserModel(AbstractUser):
         blank=True,
         help_text="Avatar (or profile pic) of the user",
     )
-    rank = models.IntegerField(
+    rank = models.PositiveBigIntegerField(
         _("Rank"), default=0, help_text="Global rank of the user"
     )
-    total_xp = models.IntegerField(
+    total_xp = models.PositiveBigIntegerField(
         _("Total XP"), default=0, help_text="Total xp points of the user"
     )
 

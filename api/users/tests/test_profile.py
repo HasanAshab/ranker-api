@@ -47,6 +47,7 @@ class ProfileTestCase(APITestCase):
         response = self.client.patch(
             self.url, {"name": name, "username": username}
         )
+        self.user.refresh_from_db()
 
         self.assertEqual(
             response.status_code,
