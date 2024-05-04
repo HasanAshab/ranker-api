@@ -1,14 +1,15 @@
 import re
 from django.conf import settings
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field, inline_serializer
 from api.common.utils import (
     twilio_verification,
 )
 from .models import User
-from .mixins import UserLevelTitleMixin
+from .mixins import UserLevelTitleMixin, UserAvatarLinkSerializerMixin
 
 
-class ProfileSerializer(serializers.ModelSerializer, UserLevelTitleMixin):
+class ProfileSerializer(UserAvatarLinkSerializerMixin, UserLevelTitleMixin, serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
@@ -27,6 +28,7 @@ class ProfileSerializer(serializers.ModelSerializer, UserLevelTitleMixin):
             "level",
             "level_title",
             "rank",
+            "links",
         )
         read_only_fields = (
             "date_joined",
@@ -39,22 +41,41 @@ class ProfileSerializer(serializers.ModelSerializer, UserLevelTitleMixin):
             "total_xp",
             "rank",
         )
+        extra_kwargs = {"avatar": {"write_only": True}}
 
 
-class ListUserSerializer(serializers.ModelSerializer, UserLevelTitleMixin):
+class ListUserSerializer(UserAvatarLinkSerializerMixin, UserLevelTitleMixin, serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
             "id",
             "name",
             "username",
-            "avatar",
             "level",
             "level_title",
+            "links",
         )
+    
+    @extend_schema_field(
+        inline_serializer(
+            name="ListUserLinks",
+            fields={
+                "self": serializers.URLField(),
+                "avatar": serializers.URLField(),
+            },
+        )
+    )
+    def get_links(self, user):
+        return {
+            **super().get_links(user),
+            "self": reverse(
+                "user-details", kwargs={"username": user.username}
+            ),
+        }
 
 
-class UserDetailsSerializer(serializers.ModelSerializer, UserLevelTitleMixin):
+
+class UserDetailsSerializer(UserAvatarLinkSerializerMixin, UserLevelTitleMixin, serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
@@ -70,7 +91,9 @@ class UserDetailsSerializer(serializers.ModelSerializer, UserLevelTitleMixin):
             "level",
             "level_title",
             "rank",
+            "links",
         )
+        extra_kwargs = {"avatar": {"write_only": True}}
 
 
 class SuggestUsernameSerializer(serializers.Serializer):
