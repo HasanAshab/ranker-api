@@ -1,3 +1,4 @@
+from django.test import tag
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import (
@@ -11,6 +12,7 @@ from api.level_titles.factories import (
 )
 
 
+@tag("level_titles")
 class LevelTitlesTestCase(APITestCase):
     url = reverse("level_titles")
 

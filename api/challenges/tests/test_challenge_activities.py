@@ -1,3 +1,4 @@
+from django.test import tag
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import (
@@ -14,6 +15,7 @@ from api.challenges.factories import (
 )
 
 
+@tag("challenge_activities")
 class ChallengeActivitiesTestCase(APITestCase):
     url = reverse("challenge-activities")
 

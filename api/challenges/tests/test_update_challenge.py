@@ -1,3 +1,4 @@
+from django.test import tag
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import (
@@ -12,6 +13,7 @@ from api.challenges.factories import (
 )
 
 
+@tag("update_challenge")
 class UpdateChallengeTestCase(APITestCase):
     def setUp(self):
         self.user = UserFactory()
