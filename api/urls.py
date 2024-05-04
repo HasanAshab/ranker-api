@@ -16,6 +16,10 @@ urlpatterns = [
     ),
     path(
         "api/",
+        include("api.level_titles.urls"),
+    ),
+    path(
+        "api/",
         include("api.difficulties.urls"),
     ),
     path(
