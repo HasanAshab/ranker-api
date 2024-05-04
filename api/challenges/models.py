@@ -8,6 +8,8 @@ from .managers import ChallengeManager
 
 
 class Challenge(models.Model):
+    XP_PERCENTAGE_BONUS_FOR_DUE_DATE = 15
+
     def __str__(self):
         return self.title
 
@@ -68,9 +70,19 @@ class Challenge(models.Model):
     def is_failed(self):
         return self.status == self.Status.FAILED
 
+    def calculate_xp_bonus(self):
+        xp_bonus = 0
+        if self.due_date:
+            xp_bonus += round(
+                (self.difficulty.xp_value / 100)
+                * Challenge.XP_PERCENTAGE_BONUS_FOR_DUE_DATE
+            )
+        return xp_bonus
+
     def adjust_xp(self, status):
         xp_value = self.difficulty.xp_value
         if status == Challenge.Status.COMPLETED:
+            xp_value += self.calculate_xp_bonus()
             self.user.add_xp(xp_value)
         elif status == Challenge.Status.FAILED:
             self.user.subtract_xp(xp_value)
