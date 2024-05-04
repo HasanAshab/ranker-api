@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.utils import timezone
 from django.db import models
 from django.utils.translation import (
     gettext_lazy as _,
@@ -72,7 +73,7 @@ class Challenge(models.Model):
 
     def calculate_xp_bonus(self):
         xp_bonus = 0
-        if self.due_date:
+        if self.due_date and self.due_date > timezone.now():
             xp_bonus += round(
                 (self.difficulty.xp_value / 100)
                 * Challenge.XP_PERCENTAGE_BONUS_FOR_DUE_DATE

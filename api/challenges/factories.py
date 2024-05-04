@@ -1,6 +1,6 @@
+from datetime import timedelta
 from django.utils import timezone
 import factory
-import factory.fuzzy
 from .models import Challenge
 
 
@@ -20,5 +20,5 @@ class ChallengeFactory(factory.django.DjangoModelFactory):
         failed = factory.Trait(status=Challenge.Status.FAILED)
         pinned = factory.Trait(is_pinned=True)
         has_due_date = factory.Trait(
-            due_date=factory.fuzzy.FuzzyDateTime(timezone.now())
+            due_date=timezone.now() + timedelta(days=1)
         )

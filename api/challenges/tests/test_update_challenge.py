@@ -1,4 +1,6 @@
+from datetime import timedelta
 from django.test import tag
+from django.utils import timezone
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import (
@@ -85,6 +87,23 @@ class UpdateChallengeTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(challenge.status, Challenge.Status.COMPLETED)
         self.assertEqual(self.user.total_xp, xp_value)
+
+    def test_completing_challenge_after_due_date_does_not_receive_bonus(self):
+        challenge = ChallengeFactory(
+            user=self.user, due_date=timezone.now() - timedelta(days=1)
+        )
+
+        url = self._reverse_challenge_url(challenge)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.patch(
+            url, {"status": Challenge.Status.COMPLETED}
+        )
+        challenge.refresh_from_db()
+        self.user.refresh_from_db()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(challenge.status, Challenge.Status.COMPLETED)
+        self.assertEqual(self.user.total_xp, challenge.difficulty.xp_value)
 
     def test_failing_challenge_decrease_xp(self):
         challenge = ChallengeFactory(user=self.user)
