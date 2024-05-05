@@ -1,5 +1,6 @@
 import re
 from django.conf import settings
+from django.urls import reverse
 from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_field, inline_serializer
 from api.common.utils import (
@@ -9,7 +10,11 @@ from .models import User
 from .mixins import UserLevelTitleMixin, UserAvatarLinkSerializerMixin
 
 
-class ProfileSerializer(UserAvatarLinkSerializerMixin, UserLevelTitleMixin, serializers.ModelSerializer):
+class ProfileSerializer(
+    UserAvatarLinkSerializerMixin,
+    UserLevelTitleMixin,
+    serializers.ModelSerializer,
+):
     class Meta:
         model = User
         fields = (
@@ -44,7 +49,11 @@ class ProfileSerializer(UserAvatarLinkSerializerMixin, UserLevelTitleMixin, seri
         extra_kwargs = {"avatar": {"write_only": True}}
 
 
-class ListUserSerializer(UserAvatarLinkSerializerMixin, UserLevelTitleMixin, serializers.ModelSerializer):
+class ListUserSerializer(
+    UserAvatarLinkSerializerMixin,
+    UserLevelTitleMixin,
+    serializers.ModelSerializer,
+):
     class Meta:
         model = User
         fields = (
@@ -55,7 +64,7 @@ class ListUserSerializer(UserAvatarLinkSerializerMixin, UserLevelTitleMixin, ser
             "level_title",
             "links",
         )
-    
+
     @extend_schema_field(
         inline_serializer(
             name="ListUserLinks",
@@ -74,8 +83,11 @@ class ListUserSerializer(UserAvatarLinkSerializerMixin, UserLevelTitleMixin, ser
         }
 
 
-
-class UserDetailsSerializer(UserAvatarLinkSerializerMixin, UserLevelTitleMixin, serializers.ModelSerializer):
+class UserDetailsSerializer(
+    UserAvatarLinkSerializerMixin,
+    UserLevelTitleMixin,
+    serializers.ModelSerializer,
+):
     class Meta:
         model = User
         fields = (
