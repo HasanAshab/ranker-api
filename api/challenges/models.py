@@ -4,6 +4,9 @@ from django.db import models
 from django.utils.translation import (
     gettext_lazy as _,
 )
+
+# from django.contrib.postgres.indexes import GinIndex
+# from django.contrib.postgres.search import SearchVector, SearchVectorField
 from datetime_validators.validators import date_time_is_future_validator
 from .managers import ChallengeManager
 
@@ -56,8 +59,12 @@ class Challenge(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
+    # search_vector = SearchVectorField(editable=False, null=True)
 
     objects = ChallengeManager()
+
+    # class Meta:
+    # indexes = [GinIndex(fields=["search_vector"])]
 
     @property
     def is_active(self):
