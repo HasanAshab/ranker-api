@@ -15,7 +15,7 @@ from api.challenges.factories import (
 )
 
 
-@tag("challenge_activities")
+@tag("challenges", "challenge_activities")
 class ChallengeActivitiesTestCase(APITestCase):
     url = reverse("challenge-activities")
 

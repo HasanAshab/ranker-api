@@ -13,7 +13,7 @@ from api.difficulties.factories import (
 )
 
 
-@tag("create_challenge")
+@tag("challenges", "create_challenge")
 class CreateChallengeTestCase(APITestCase):
     url = reverse("challenges")
 

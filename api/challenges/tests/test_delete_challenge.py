@@ -12,7 +12,7 @@ from api.challenges.factories import (
 )
 
 
-@tag("delete_challenge")
+@tag("challenges", "delete_challenge")
 class DeleteChallengeTestCase(APITestCase):
     def setUp(self):
         self.user = UserFactory()

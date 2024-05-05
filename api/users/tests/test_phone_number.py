@@ -1,3 +1,4 @@
+from django.test import tag
 from unittest.mock import patch
 from django.urls import reverse
 from rest_framework import status
@@ -9,6 +10,7 @@ from api.users.factories import (
 )
 
 
+@tag("users", "phone-number")
 class PhoneNumberTestCase(APITestCase):
     url = reverse("phone-number")
 

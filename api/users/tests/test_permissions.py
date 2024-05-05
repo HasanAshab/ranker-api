@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, tag
 from api.users.permissions import (
     DeleteUserPermission,
 )
@@ -7,6 +7,7 @@ from api.users.factories import (
 )
 
 
+@tag("users", "permissions")
 class DeleteUserPermissionTestCase(TestCase):
     permission = DeleteUserPermission()
 

@@ -15,7 +15,7 @@ from api.challenges.serializers import (
 )
 
 
-@tag("challenges")
+@tag("challenges", "list_challenges")
 class ChallengesTestCase(APITestCase):
     def setUp(self):
         self.user = UserFactory()

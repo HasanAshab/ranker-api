@@ -15,7 +15,7 @@ from api.challenges.factories import (
 )
 
 
-@tag("update_challenge")
+@tag("challenges", "update_challenge")
 class UpdateChallengeTestCase(APITestCase):
     def setUp(self):
         self.user = UserFactory()
