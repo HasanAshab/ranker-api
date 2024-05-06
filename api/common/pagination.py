@@ -1,5 +1,5 @@
 from rest_framework import pagination
-from .mixins import (
+from drf_pagination_meta_wrap.mixins import (
     WrapPaginationMetadataMixin,
 )
 
