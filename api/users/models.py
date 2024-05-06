@@ -79,7 +79,7 @@ class UserModel(AbstractUser):
         ).exists()
 
     @property
-    def level(self):
+    def level(self) -> int:
         return 1 + math.floor(self.total_xp / 1000)
 
     def add_xp(self, amount):

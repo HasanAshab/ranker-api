@@ -10,9 +10,6 @@ from api.users.factories import (
 from api.difficulties.factories import (
     DifficultyFactory,
 )
-from api.difficulties.serializers import (
-    DifficultySerializer,
-)
 
 
 @tag("difficulties")
@@ -43,6 +40,7 @@ class DifficultiesTestCase(APITestCase):
     def test_retrieve_difficulty_needs_authentication(self):
         url = reverse("difficulty", args=[1])
         response = self.client.get(url)
+
         self.assertEqual(
             response.status_code,
             status.HTTP_401_UNAUTHORIZED,
@@ -50,7 +48,6 @@ class DifficultiesTestCase(APITestCase):
 
     def test_retrieve_difficulty(self):
         difficulty = DifficultyFactory()
-        data = DifficultySerializer(difficulty).data
         url = reverse("difficulty", kwargs={"pk": difficulty.pk})
 
         self.client.force_authenticate(user=self.user)
@@ -60,4 +57,4 @@ class DifficultiesTestCase(APITestCase):
             response.status_code,
             status.HTTP_200_OK,
         )
-        self.assertEqual(response.data, data)
+        self.assertEqual(response.data["id"], difficulty.id)

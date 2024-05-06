@@ -24,6 +24,7 @@ class UserAvatarLinkSerializerMixin(metaclass=serializers.SerializerMetaclass):
 class UserLevelTitleMixin(metaclass=serializers.SerializerMetaclass):
     level_title = serializers.SerializerMethodField()
 
+    @extend_schema_field(LevelTitleSerializer)
     def get_level_title(self, user):
         level_title = LevelTitle.objects.get_for_user(user)
         return LevelTitleSerializer(level_title).data

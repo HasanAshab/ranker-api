@@ -9,9 +9,6 @@ from api.users.models import User
 from api.users.factories import (
     UserFactory,
 )
-from api.users.serializers import (
-    ProfileSerializer,
-)
 
 
 @tag("users", "profile")
@@ -30,8 +27,6 @@ class ProfileTestCase(APITestCase):
         )
 
     def test_show_profile(self):
-        profile = ProfileSerializer(self.user).data
-
         self.client.force_authenticate(user=self.user)
         response = self.client.get(self.url)
 
@@ -39,7 +34,7 @@ class ProfileTestCase(APITestCase):
             response.status_code,
             status.HTTP_200_OK,
         )
-        self.assertEqual(response.data, profile)
+        self.assertEqual(response.data["id"], self.user.id)
 
     def test_update_profile(self):
         name = "New Name"

@@ -1,6 +1,5 @@
 from rest_framework import pagination
 from .mixins import (
-    ImmutablePaginationResponseMixin,
     WrapPaginationMetadataMixin,
 )
 
@@ -13,7 +12,6 @@ class BasePagination(pagination.BasePagination):
 class PageNumberPagination(
     BasePagination,
     WrapPaginationMetadataMixin,
-    ImmutablePaginationResponseMixin,
     pagination.PageNumberPagination,
 ):
     pass
@@ -22,7 +20,6 @@ class PageNumberPagination(
 class LimitOffsetPagination(
     BasePagination,
     WrapPaginationMetadataMixin,
-    ImmutablePaginationResponseMixin,
     pagination.LimitOffsetPagination,
 ):
     pass
@@ -31,7 +28,6 @@ class LimitOffsetPagination(
 class CursorPagination(
     BasePagination,
     WrapPaginationMetadataMixin,
-    ImmutablePaginationResponseMixin,
     pagination.CursorPagination,
 ):
     pass

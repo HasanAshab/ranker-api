@@ -1,4 +1,3 @@
-from .response import ImmutableResponse
 from api.docs.utils import to_openapi_schema
 
 
@@ -48,9 +47,3 @@ class WrapPaginationMetadataMixin:
             data_key: data_schema,
         }
         return schema
-
-
-class ImmutablePaginationResponseMixin:
-    def get_paginated_response(self, data):
-        response = super().get_paginated_response(data)
-        return ImmutableResponse(response.data)

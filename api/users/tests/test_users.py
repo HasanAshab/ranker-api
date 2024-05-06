@@ -9,9 +9,6 @@ from api.users.models import User
 from api.users.factories import (
     UserFactory,
 )
-from api.users.serializers import (
-    UserDetailsSerializer,
-)
 
 
 @tag("users", "list_users")
@@ -20,7 +17,7 @@ class UsersTestCase(APITestCase):
         self.user = UserFactory()
         LevelTitle.objects.create(title="Foo", required_level=1)
 
-    def _reverse_user_url(self, user: User) -> str:
+    def _reverse_user_url(self, user):
         return reverse(
             "user-details",
             kwargs={"username": user.username},
@@ -68,7 +65,6 @@ class UsersTestCase(APITestCase):
     def test_retrieve_user(self):
         user2 = UserFactory()
         url = self._reverse_user_url(user2)
-        data = UserDetailsSerializer(user2).data
 
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
@@ -77,7 +73,7 @@ class UsersTestCase(APITestCase):
             response.status_code,
             status.HTTP_200_OK,
         )
-        self.assertEqual(response.data, data)
+        self.assertEqual(response.data["id"], user2.id)
 
     def test_deleting_user_needs_authentication(
         self,

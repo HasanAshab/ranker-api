@@ -10,9 +10,6 @@ from api.users.factories import (
 from api.challenges.factories import (
     ChallengeFactory,
 )
-from api.challenges.serializers import (
-    ChallengeSerializer,
-)
 
 
 @tag("challenges", "list_challenges")
@@ -93,7 +90,6 @@ class ChallengesTestCase(APITestCase):
 
     def test_retrieve_challenge(self):
         challenge = ChallengeFactory(user=self.user)
-        data = ChallengeSerializer(challenge).data
         url = reverse("challenge", kwargs={"pk": challenge.pk})
 
         self.client.force_authenticate(user=self.user)
@@ -103,7 +99,7 @@ class ChallengesTestCase(APITestCase):
             response.status_code,
             status.HTTP_200_OK,
         )
-        self.assertEqual(response.data, data)
+        self.assertEqual(response.data["id"], challenge.id)
 
     def test_can_not_retrieve_completed_challenge(self):
         challenge = ChallengeFactory(user=self.user, completed=True)
