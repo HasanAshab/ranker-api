@@ -22,6 +22,7 @@ SITE_ID = 1
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SILENCED_SYSTEM_CHECKS = ["rest_framework.W001"]
 
 ENV_FILE = ".env"
 ENV_FILE_PATH = BASE_DIR / ENV_FILE
@@ -227,6 +228,8 @@ REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": (
         "drf_standardized_response.renderers.StandardizedJSONRenderer",
     ),
+    # Pagination
+    "PAGE_SIZE": 15,
     # Test
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
     # Docs

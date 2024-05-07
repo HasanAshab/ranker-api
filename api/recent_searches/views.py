@@ -2,7 +2,7 @@ from rest_framework.generics import ListAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from .models import RecentUserSearch
 from .serializers import ListRecentUserSearchSerializer
-from .pagination import RecentUserSearchCursorPagination
+from .pagination import RecentUserSearchPagination
 
 
 from rest_framework.response import Response
@@ -36,7 +36,7 @@ class RecentUserSearchesView(ListBulkDestroyAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = RecentUserSearch.objects.none()
     serializer_class = ListRecentUserSearchSerializer
-    pagination_class = RecentUserSearchCursorPagination
+    pagination_class = RecentUserSearchPagination
 
     def get_queryset(self):
         return self.request.user.searches.all()

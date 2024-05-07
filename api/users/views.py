@@ -29,16 +29,12 @@ from .pagination import UserCursorPagination
 
 class UsersView(ListAPIView):
     permission_classes = (IsAuthenticated,)
-    filter_backends = (
-        filters.SearchFilter,
-        filters.OrderingFilter,
-    )
+    filter_backends = (filters.SearchFilter,)
     queryset = User.objects.all()
     serializer_class = ListUserSerializer
     pagination_class = UserCursorPagination
     # search_fields = ("@username", "@name")
     search_fields = ("username", "name")
-    ordering_fields = ("rank",)
 
 
 class ProfileView(RetrieveUpdateDestroyAPIView):

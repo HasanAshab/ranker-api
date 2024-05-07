@@ -1,17 +1,15 @@
-from api.common.pagination import (
-    CursorPagination,
-)
-from .models import Challenge
-
 from django.db import models
+from rest_framework.pagination import (
+    LimitOffsetPagination,
+)
+from drf_pagination_meta_wrap.mixins import WrapPaginationMetadataMixin
+from .models import Challenge
 from .serializers import (
     ChallengeDifficultySerializer,
 )
 
 
-class ChallengeCursorPagination(CursorPagination):
-    ordering = "-id"
-
+class ChallengePagination(WrapPaginationMetadataMixin, LimitOffsetPagination):
     def get_additional_metadata(self):
         active_challenge_difficulties_queryset = (
             Challenge.objects.active()

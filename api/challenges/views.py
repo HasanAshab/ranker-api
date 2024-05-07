@@ -11,7 +11,6 @@ from rest_framework import filters
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
 from django_filters.rest_framework import DjangoFilterBackend
-from api.common.filters import MultiFieldOrderingFilter
 from .models import Challenge
 from .filters import ChallengeFilter
 from .serializers import (
@@ -20,32 +19,21 @@ from .serializers import (
     ChallengeActivitiesSerializer,
     ChallengeDifficultySerializer,
 )
-from .pagination import ChallengeCursorPagination
+from .pagination import ChallengePagination
 
 
 class ChallengesView(ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = ListChallengeSerializer
-    pagination_class = ChallengeCursorPagination
+    pagination_class = ChallengePagination
     queryset = Challenge.objects.none()
     filter_backends = (
         filters.SearchFilter,
-        MultiFieldOrderingFilter,
         DjangoFilterBackend,
     )
     # search_fields = ("@title", "@description")
     search_fields = ("title", "description")
     filterset_class = ChallengeFilter
-    ordering = "ordered"
-    order_set = {
-        "ordered": ("-is_pinned", "-id"),
-        "difficulty": (
-            "-difficulty",
-            models.F("due_date").asc(nulls_last=True),
-            "-is_pinned",
-            "-id",
-        ),
-    }
 
     def get_queryset(self):
         return self.request.user.challenge_set.active()
