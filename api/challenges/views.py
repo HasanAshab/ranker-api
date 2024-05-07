@@ -111,16 +111,18 @@ class ChallengeOrdersView(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = ChallengeOrderSerializer
 
+    def get_serializer(self, *args, **kwargs):
+        serializer_class = self.serializer_class
+        kwargs.setdefault("many", True)
+        return serializer_class(*args, **kwargs)
+
     @extend_schema(
         responses={
             200: successful_api_response(),
         }
     )
     def patch(self, request):
-        serializer = self.serializer_class(
-            data=request.data,
-            many=True,
-        )
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         challenges = []
@@ -135,4 +137,4 @@ class ChallengeOrdersView(APIView):
             challenges, ["order"]
         )
 
-        return Response("Challenges reordered successfully")
+        return Response("Challenges reordered.")
