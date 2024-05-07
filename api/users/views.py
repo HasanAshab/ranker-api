@@ -29,10 +29,15 @@ from .pagination import UserCursorPagination
 
 class UsersView(ListAPIView):
     permission_classes = (IsAuthenticated,)
-    filter_backends = (filters.OrderingFilter,)
+    filter_backends = (
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    )
     queryset = User.objects.all()
     serializer_class = ListUserSerializer
     pagination_class = UserCursorPagination
+    # search_fields = ("@username", "@name")
+    search_fields = ("username", "name")
     ordering_fields = ("rank",)
 
 
@@ -49,6 +54,14 @@ class UserDetailsView(RetrieveDestroyAPIView):
     queryset = User.objects.all()
     lookup_field = "username"
     serializer_class = UserDetailsSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        user = self.get_object()
+        is_search = request.query_params.get("is_search")
+        if is_search == "true" and request.user != user:
+            request.user.searches.update_or_create(searched_user=user)
+
+        return super().retrieve(request, *args, **kwargs)
 
 
 class SuggestUsernameView(APIView):

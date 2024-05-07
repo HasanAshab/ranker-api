@@ -75,11 +75,17 @@ class ListUserSerializer(
         )
     )
     def get_links(self, user):
+        request = self.context["request"]
+        profile_url = reverse(
+            "user-details", kwargs={"username": user.username}
+        )
+
+        if "search" in request.query_params:
+            return profile_url + "?is_search=true"
+
         return {
             **super().get_links(user),
-            "self": reverse(
-                "user-details", kwargs={"username": user.username}
-            ),
+            "self": profile_url,
         }
 
 

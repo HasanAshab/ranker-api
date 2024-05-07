@@ -75,6 +75,38 @@ class UsersTestCase(APITestCase):
         )
         self.assertEqual(response.data["id"], user2.id)
 
+    def test_retrieving_user_with_is_search_set_true_creates_recent_search(
+        self,
+    ):
+        user2 = UserFactory()
+
+        url = self._reverse_user_url(user2)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url, {"is_search": "true"})
+        search = self.user.searches.filter(searched_user=user2).exists()
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+        self.assertEqual(response.data["id"], user2.id)
+        self.assertTrue(search)
+
+    def test_retrieving_self_with_is_search_set_true_not_creates_recent_search(
+        self,
+    ):
+        url = self._reverse_user_url(self.user)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url, {"is_search": "true"})
+        search = self.user.searches.filter(searched_user=self.user).exists()
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+        self.assertEqual(response.data["id"], self.user.id)
+        self.assertFalse(search)
+
     def test_deleting_user_needs_authentication(
         self,
     ):
