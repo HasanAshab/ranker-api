@@ -131,10 +131,8 @@ class ChallengeOrdersView(APIView):
             )
             challenges.append(challenge)
 
-        Challenge.objects.filter(
-            user=request.user,
-            is_pinned=False,
-            id__in=[challenge.pk for challenge in challenges],
-        ).bulk_update(challenges, ["order"])
+        request.user.challenge_set.unpinned().bulk_update(
+            challenges, ["order"]
+        )
 
         return Response("Challenges reordered successfully")
