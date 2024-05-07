@@ -42,6 +42,7 @@ class UserModel(AbstractUser):
         _("Gender"),
         max_length=1,
         choices=Gender,
+        default=Gender.MALE,
         help_text="Gender of the user",
     )
     username = models.CharField(
