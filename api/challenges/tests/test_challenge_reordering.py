@@ -51,8 +51,8 @@ class ChallengeReorderingTestCase(APITestCase):
         challenge = ChallengeFactory(user=self.user)
         pinned_challenge = ChallengeFactory(user=self.user, pinned=True)
         data = [
-            {"id": challenge.id, "order": 1},
-            {"id": pinned_challenge.id, "order": 2},
+            {"id": challenge.id, "order": 2},
+            {"id": pinned_challenge.id, "order": 3},
         ]
 
         self.client.force_authenticate(user=self.user)
@@ -61,5 +61,5 @@ class ChallengeReorderingTestCase(APITestCase):
         pinned_challenge.refresh_from_db()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(challenge.order, 1)
+        self.assertEqual(challenge.order, 2)
         self.assertEqual(pinned_challenge.order, 0)

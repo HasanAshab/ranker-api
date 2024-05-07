@@ -123,15 +123,18 @@ class ChallengeOrdersView(APIView):
         )
         serializer.is_valid(raise_exception=True)
 
+        challenges = []
         for challenge_order in serializer.validated_data:
-            challenge = (
-                request.user.challenge_set.unpinned()
-                .filter(pk=challenge_order["id"])
-                .first()
+            challenge = Challenge(
+                id=challenge_order["id"],
+                order=challenge_order["order"],
             )
+            challenges.append(challenge)
 
-            if challenge:
-                challenge.order = challenge_order["order"]
-                challenge.save()
+        Challenge.objects.filter(
+            user=request.user,
+            is_pinned=False,
+            id__in=[challenge.pk for challenge in challenges],
+        ).bulk_update(challenges, ["order"])
 
         return Response("Challenges reordered successfully")
