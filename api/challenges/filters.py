@@ -23,7 +23,7 @@ class ChallengeFilter(filters.FilterSet):
 
     def ordering_queryset(self, queryset, name, value):
         if value == "ordered":
-            return queryset.order_by("-is_pinned", "-id")
+            return queryset.order_by("order", "-id")
         elif value == "difficulty":
             return queryset.order_by(
                 "-difficulty",

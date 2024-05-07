@@ -13,3 +13,6 @@ class ChallengeManager(models.Manager):
 
     def pinned(self):
         return self.filter(is_pinned=True)
+
+    def unpinned(self):
+        return self.filter(is_pinned=False)

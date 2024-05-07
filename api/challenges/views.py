@@ -11,6 +11,7 @@ from rest_framework import filters
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
 from django_filters.rest_framework import DjangoFilterBackend
+from api.docs.utils import successful_api_response
 from .models import Challenge
 from .filters import ChallengeFilter
 from .serializers import (
@@ -18,6 +19,7 @@ from .serializers import (
     ChallengeSerializer,
     ChallengeActivitiesSerializer,
     ChallengeDifficultySerializer,
+    ChallengeOrderSerializer,
 )
 from .pagination import ChallengePagination
 
@@ -103,3 +105,33 @@ class ChallengeActivitiesView(APIView):
         ).data
         challenge_activities["completed"]["difficulties"] = difficulties
         return Response(challenge_activities)
+
+
+class ChallengeOrdersView(APIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ChallengeOrderSerializer
+
+    @extend_schema(
+        responses={
+            200: successful_api_response(),
+        }
+    )
+    def patch(self, request):
+        serializer = self.serializer_class(
+            data=request.data,
+            many=True,
+        )
+        serializer.is_valid(raise_exception=True)
+
+        for challenge_order in serializer.validated_data:
+            challenge = (
+                request.user.challenge_set.unpinned()
+                .filter(pk=challenge_order["id"])
+                .first()
+            )
+
+            if challenge:
+                challenge.order = challenge_order["order"]
+                challenge.save()
+
+        return Response("Challenges reordered successfully")

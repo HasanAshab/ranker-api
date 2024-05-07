@@ -51,6 +51,11 @@ class Challenge(models.Model):
         help_text="Due date of the challenge.",
         validators=[date_time_is_future_validator],
     )
+    order = models.IntegerField(
+        _("Order"),
+        default=1,
+        help_text="Priority order of the challenge.",
+    )
     difficulty = models.ForeignKey(
         "difficulties.Difficulty",
         on_delete=models.CASCADE,
@@ -94,3 +99,8 @@ class Challenge(models.Model):
             self.user.add_xp(xp_value)
         elif status == Challenge.Status.FAILED:
             self.user.subtract_xp(xp_value)
+
+    def save(self, *args, **kwargs):
+        if self.is_pinned:
+            self.order = 0
+        return super().save(*args, **kwargs)

@@ -5,13 +5,29 @@ from .models import Challenge
 class ListChallengeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Challenge
-        exclude = ("description", "user")
+        fields = (
+            "id",
+            "title",
+            "status",
+            "is_pinned",
+            "due_date",
+            "difficulty",
+            "order",
+        )
 
 
 class ChallengeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Challenge
-        exclude = ("user",)
+        fields = (
+            "id",
+            "title",
+            "description",
+            "status",
+            "is_pinned",
+            "due_date",
+            "difficulty",
+        )
 
 
 class ChallengeDifficultySerializer(serializers.Serializer):
@@ -28,3 +44,8 @@ class ChallengeActivitiesSerializer(serializers.Serializer):
     total = serializers.IntegerField()
     failed = serializers.IntegerField()
     completed = CompletedChallengeActivitiesSerializer()
+
+
+class ChallengeOrderSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    order = serializers.IntegerField(min_value=0)
