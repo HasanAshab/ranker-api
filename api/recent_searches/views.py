@@ -43,6 +43,9 @@ class RecentUserSearchesView(ListBulkDestroyAPIView):
 
 
 class RecentUserSearchView(DestroyAPIView):
+    def get_serializer(self, *args, **kwargs):
+        return None
+
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
