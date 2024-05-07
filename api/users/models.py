@@ -19,6 +19,11 @@ from phonenumber_field.modelfields import (
 from api.common.utils import LazyProxy
 
 
+def get_default_rank():
+    total_users = UserModel.objects.count()
+    return total_users + 1
+
+
 class UserModel(AbstractUser):
     REQUIRED_FIELDS = ("gender",)
 
@@ -63,7 +68,9 @@ class UserModel(AbstractUser):
         help_text="Avatar (or profile pic) of the user",
     )
     rank = models.PositiveBigIntegerField(
-        _("Rank"), default=0, help_text="Global rank of the user"
+        _("Rank"),
+        default=get_default_rank,
+        help_text="Global rank of the user",
     )
     total_xp = models.PositiveBigIntegerField(
         _("Total XP"), default=0, help_text="Total xp points of the user"
