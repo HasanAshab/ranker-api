@@ -32,7 +32,7 @@ class ChallengesTestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
         results = response.data["results"]
-        active_challenges_meta = response.data["meta"]["active_challenges"]
+        difficulties_meta = response.data["meta"]["difficulties"]
 
         self.assertEqual(
             response.status_code,
@@ -40,12 +40,10 @@ class ChallengesTestCase(APITestCase):
         )
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]["id"], challenge.id)
+        self.assertEqual(len(difficulties_meta), 1)
         self.assertEqual(
-            active_challenges_meta,
-            {
-                "total": 1,
-                "difficulties": [{"id": challenge.difficulty.id, "count": 1}],
-            },
+            difficulties_meta[0],
+            {"id": challenge.difficulty.id, "count": 1},
         )
 
     def test_not_list_completed_challenges(self):
@@ -54,15 +52,14 @@ class ChallengesTestCase(APITestCase):
 
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
-        active_challenges_meta = response.data["meta"]["active_challenges"]
+        difficulties_meta = response.data["meta"]["difficulties"]
 
         self.assertEqual(
             response.status_code,
             status.HTTP_200_OK,
         )
         self.assertEqual(len(response.data["results"]), 0)
-        self.assertEqual(active_challenges_meta["total"], 0)
-        self.assertEqual(len(active_challenges_meta["difficulties"]), 0)
+        self.assertEqual(len(difficulties_meta), 0)
 
     def test_not_list_failed_challenges(self):
         url = reverse("challenges")
@@ -70,15 +67,14 @@ class ChallengesTestCase(APITestCase):
 
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
-        active_challenges_meta = response.data["meta"]["active_challenges"]
+        difficulties_meta = response.data["meta"]["difficulties"]
 
         self.assertEqual(
             response.status_code,
             status.HTTP_200_OK,
         )
         self.assertEqual(len(response.data["results"]), 0)
-        self.assertEqual(active_challenges_meta["total"], 0)
-        self.assertEqual(len(active_challenges_meta["difficulties"]), 0)
+        self.assertEqual(len(difficulties_meta), 0)
 
     def test_retrieve_challenge_needs_authentication(self):
         url = reverse("challenge", args=[1])

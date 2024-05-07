@@ -11,7 +11,7 @@ from .serializers import (
 
 class ChallengePagination(WrapPaginationMetadataMixin, LimitOffsetPagination):
     def get_additional_metadata(self):
-        active_challenge_difficulties_queryset = (
+        difficulties_queryset = (
             Challenge.objects.active()
             .filter(user=self.request.user)
             .values("difficulty__id")
@@ -20,36 +20,21 @@ class ChallengePagination(WrapPaginationMetadataMixin, LimitOffsetPagination):
             )
         )
 
-        active_challenge_difficulties = ChallengeDifficultySerializer(
-            active_challenge_difficulties_queryset, many=True
+        difficulties = ChallengeDifficultySerializer(
+            difficulties_queryset, many=True
         ).data
 
-        total_active_challenges = sum(
-            difficulty["count"] for difficulty in active_challenge_difficulties
-        )
-
-        return {
-            "active_challenges": {
-                "total": total_active_challenges,
-                "difficulties": active_challenge_difficulties,
-            }
-        }
+        return {"difficulties": difficulties}
 
     def get_additional_metadata_properties_schema(self):
         return {
-            "active_challenges": {
-                "type": "object",
-                "properties": {
-                    "total": {"type": "integer"},
-                    "difficulties": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "id": {"type": "integer"},
-                                "count": {"type": "integer"},
-                            },
-                        },
+            "difficulties": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {"type": "integer"},
+                        "count": {"type": "integer"},
                     },
                 },
             }
