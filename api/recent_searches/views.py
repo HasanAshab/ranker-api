@@ -1,7 +1,7 @@
 from rest_framework.generics import DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema, extend_schema_view
-from api.common.generics import ListBulkDestroyAPIView
+from drf_generic_views.generics import ListBulkDestroyAPIView
 from .models import RecentUserSearch
 from .serializers import ListRecentUserSearchSerializer
 from .pagination import RecentUserSearchPagination
