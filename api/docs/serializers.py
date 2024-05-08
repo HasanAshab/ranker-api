@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 
-class SuccessfulApiResponse(serializers.Serializer):
+class StandardResponseSerializer(serializers.Serializer):
     success = serializers.BooleanField()
     message = serializers.CharField()
 

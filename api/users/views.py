@@ -12,7 +12,7 @@ from rest_framework.generics import (
 from rest_framework import serializers
 from rest_framework import filters
 from drf_spectacular.utils import extend_schema
-from api.docs.utils import successful_api_response
+from drf_standardized_response.openapi.utils import standard_openapi_response
 from .utils import generate_username
 from .models import User
 from .permissions import DeleteUserPermission
@@ -63,9 +63,9 @@ class SuggestUsernameView(APIView):
     @extend_schema(
         parameters=[SuggestUsernameSerializer],
         responses={
-            200: successful_api_response(
+            200: standard_openapi_response(
+                "SuggestUsername",
                 {"data": serializers.ListField(child=serializers.CharField())},
-                name="SuggestUsername",
             ),
         },
     )
@@ -89,8 +89,8 @@ class PhoneNumberView(APIView):
     @extend_schema(
         request=PhoneNumberSerializer,
         responses={
-            200: successful_api_response(),
-            202: successful_api_response(
+            200: standard_openapi_response(),
+            202: standard_openapi_response(
                 description="Verification code sent to the phone number"
             ),
         },

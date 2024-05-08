@@ -11,7 +11,7 @@ from rest_framework import filters
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
 from django_filters.rest_framework import DjangoFilterBackend
-from api.docs.utils import successful_api_response
+from api.docs.utils import standard_openapi_response
 from .models import Challenge
 from .filters import ChallengeFilter
 from .serializers import (
@@ -118,7 +118,7 @@ class ChallengeOrdersView(APIView):
 
     @extend_schema(
         responses={
-            200: successful_api_response(),
+            200: standard_openapi_response(),
         }
     )
     def patch(self, request):
