@@ -11,7 +11,7 @@ from rest_framework import filters
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
 from django_filters.rest_framework import DjangoFilterBackend
-from api.docs.utils import standard_openapi_response
+from drf_standardized_response.openapi.utils import standard_openapi_response
 from .models import Challenge
 from .filters import ChallengeFilter
 from .serializers import (
