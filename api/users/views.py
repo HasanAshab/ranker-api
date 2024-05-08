@@ -12,7 +12,6 @@ from rest_framework.generics import (
 from rest_framework import serializers
 from rest_framework import filters
 from drf_spectacular.utils import extend_schema
-from allauth.headless.account.views import ChangePasswordView
 from api.docs.utils import successful_api_response
 from .utils import generate_username
 from .models import User
@@ -81,13 +80,6 @@ class SuggestUsernameView(APIView):
             if generate_username(prefix)
         ]
         return Response(suggested_usernames)
-
-
-class PasswordChangeView(ChangePasswordView):
-    http_method_names = ("patch",)
-
-    def patch(self, *args, **kwargs):
-        return super().post(*args, **kwargs)
 
 
 class PhoneNumberView(APIView):

@@ -6,7 +6,6 @@ from .views import (
     ProfileView,
     UserDetailsView,
     SuggestUsernameView,
-    PasswordChangeView,
     PhoneNumberView,
 )
 
@@ -28,11 +27,6 @@ urlpatterns = [
         "users/me/email/",
         ManageEmailView.as_api_view(client=client),
         name="manage_email",
-    ),
-    path(
-        "users/me/password/",
-        PasswordChangeView.as_api_view(client=client),
-        name="password",
     ),
     path(
         "users/me/phone-number/",
