@@ -10,7 +10,7 @@ from api.users.factories import (
 )
 
 
-@tag("users", "phone-number")
+@tag("account", "phone-number")
 class PhoneNumberTestCase(APITestCase):
     url = reverse("phone-number")
 

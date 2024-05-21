@@ -1,8 +1,10 @@
+from django.test import tag
 from rest_framework.test import APITestCase
 from rest_framework import status
 from django.urls import reverse
 
 
+@tag("account", "suggest-username")
 class SuggestUsernameViewTestCase(APITestCase):
     url = reverse("suggest-username")
 

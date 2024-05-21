@@ -1,7 +1,7 @@
 import random
 from faker import Faker
 from django.conf import settings
-from .models import User
+from api.users.models import User
 
 
 faker = Faker()

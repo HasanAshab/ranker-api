@@ -11,7 +11,7 @@ from api.users.factories import (
 )
 
 
-@tag("users", "profile")
+@tag("account", "profile")
 class ProfileTestCase(APITestCase):
     url = reverse("profile")
 
