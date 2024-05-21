@@ -1,17 +1,30 @@
 import random
+from typing import Optional
 from faker import Faker
 from django.conf import settings
-from api.users.models import User
 
 
 faker = Faker()
 
 
+def generate_name_from_username(username: str) -> str:
+    return (
+        username.replace("@", " ")
+        .replace(".", " ")
+        .replace("+", " ")
+        .replace("-", " ")
+        .replace("_", " ")
+        .title()
+    )
+
+
 def generate_username(
-    prefix=None,
-    separators=["", "-", "_"],
-    max_attempts=settings.USERNAME_GENERATION_MAX_ATTEMPTS,
-):
+    prefix: Optional[str] = None,
+    separators: Optional[list[str]] = ["", "-", "_"],
+    max_attempts: Optional[int] = settings.USERNAME_GENERATION_MAX_ATTEMPTS,
+) -> Optional[str]:
+    from api.users.models import User
+
     prefix = prefix if prefix else faker.word()
     for _ in range(max_attempts):
         separator = random.choice(separators)

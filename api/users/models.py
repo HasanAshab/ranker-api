@@ -1,5 +1,6 @@
 import math
 from django.conf import settings
+from django.dispatch import receiver
 from django.contrib.auth.models import (
     AbstractUser,
 )
@@ -13,15 +14,12 @@ from django.contrib.auth.validators import (
 from django.utils.translation import (
     gettext_lazy as _,
 )
+from allauth.account.signals import user_signed_up
 from phonenumber_field.modelfields import (
     PhoneNumberField,
 )
 from api.common.utils import LazyProxy
-
-
-def get_default_rank():
-    total_users = UserModel.objects.count()
-    return total_users + 1
+from api.accounts.utils import generate_name_from_username
 
 
 class UserModel(AbstractUser):
@@ -70,7 +68,6 @@ class UserModel(AbstractUser):
     )
     rank = models.PositiveBigIntegerField(
         _("Rank"),
-        default=get_default_rank,
         help_text="Global rank of the user",
     )
     total_xp = models.PositiveBigIntegerField(
@@ -101,3 +98,19 @@ class UserModel(AbstractUser):
 
 
 User = LazyProxy(get_user_model)
+
+
+@receiver(
+    models.signals.pre_save,
+    sender=settings.AUTH_USER_MODEL,
+    dispatch_uid="set_default_rank",
+)
+def set_default_rank(sender, instance, **kwargs):
+    if instance._state.adding and not instance.rank:
+        instance.rank = User.objects.count() + 1
+
+
+@receiver(user_signed_up, dispatch_uid="generate_name")
+def generate_name(sender, request, user, **kwargs):
+    user.name = generate_name_from_username(user.username)
+    user.save()
