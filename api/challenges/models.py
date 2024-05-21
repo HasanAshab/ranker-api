@@ -8,7 +8,7 @@ from django.utils.translation import (
 # from django.contrib.postgres.indexes import GinIndex
 # from django.contrib.postgres.search import SearchVector, SearchVectorField
 from datetime_validators.validators import date_time_is_future_validator
-from .managers import ChallengeManager
+from .querysets import ChallengeQuerySet
 
 
 class Challenge(models.Model):
@@ -66,7 +66,7 @@ class Challenge(models.Model):
     )
     # search_vector = SearchVectorField(editable=False, null=True)
 
-    objects = ChallengeManager()
+    objects = ChallengeQuerySet.as_manager()
 
     # class Meta:
     # indexes = [GinIndex(fields=["search_vector"])]

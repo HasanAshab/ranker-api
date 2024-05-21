@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class ChallengeManager(models.Manager):
+class ChallengeQuerySet(models.QuerySet):
     def active(self):
         return self.filter(status=self.model.Status.ACTIVE)
 
