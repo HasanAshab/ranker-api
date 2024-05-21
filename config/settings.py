@@ -25,9 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SILENCED_SYSTEM_CHECKS = ["rest_framework.W001"]
 
 ENV_FILE = ".env"
-ENV_FILE_PATH = BASE_DIR / ENV_FILE
 
-Env.read_env(ENV_FILE_PATH)
+Env.read_env(BASE_DIR / ENV_FILE)
 env = Env()
 
 # Quick-start development settings - unsuitable for production
