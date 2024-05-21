@@ -27,12 +27,6 @@ class Challenge(models.Model):
         max_length=50,
         help_text="Title of the challenge.",
     )
-    description = models.TextField(
-        _("Description"),
-        max_length=200,
-        blank=True,
-        help_text="Description of the challenge.",
-    )
     status = models.CharField(
         _("Status"),
         max_length=10,
@@ -48,6 +42,7 @@ class Challenge(models.Model):
     due_date = models.DateTimeField(
         _("Due Date"),
         null=True,
+        blank=True,
         help_text="Due date of the challenge.",
         validators=[date_time_is_future_validator],
     )
@@ -55,6 +50,13 @@ class Challenge(models.Model):
         _("Order"),
         default=1,
         help_text="Priority order of the challenge.",
+    )
+    parent = models.ForeignKey(
+        "self",
+        null=True,
+        blank=True,
+        related_name="sub_challenges",
+        on_delete=models.CASCADE,
     )
     difficulty = models.ForeignKey(
         "difficulties.Difficulty",
