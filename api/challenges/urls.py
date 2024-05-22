@@ -4,6 +4,8 @@ from .views import (
     ChallengeActivitiesView,
     ChallengeView,
     ChallengeOrdersView,
+    ChallengeStepsView,
+    ChallengeStepView,
 )
 
 urlpatterns = [
@@ -19,4 +21,14 @@ urlpatterns = [
         name="challenge-orders",
     ),
     path("challenges/<int:pk>/", ChallengeView.as_view(), name="challenge"),
+    path(
+        "challenges/<int:pk>/steps/",
+        ChallengeStepsView.as_view(),
+        name="challenge_steps",
+    ),
+    path(
+        "challenges/<int:pk>/steps/<int:step_pk>/",
+        ChallengeStepView.as_view(),
+        name="challenge_step",
+    ),
 ]

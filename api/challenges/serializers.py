@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from .models import Challenge
+from .models import Challenge, ChallengeStep
 
 
-class ListChallengeSerializer(serializers.ModelSerializer):
+class ChallengeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Challenge
         fields = (
@@ -13,20 +13,6 @@ class ListChallengeSerializer(serializers.ModelSerializer):
             "due_date",
             "difficulty",
             "order",
-        )
-
-
-class ChallengeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Challenge
-        fields = (
-            "id",
-            "title",
-            "description",
-            "status",
-            "is_pinned",
-            "due_date",
-            "difficulty",
         )
 
 
@@ -49,3 +35,14 @@ class ChallengeActivitiesSerializer(serializers.Serializer):
 class ChallengeOrderSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     order = serializers.IntegerField(min_value=0)
+
+
+class ChallengeStepSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChallengeStep
+        fields = (
+            "id",
+            "title",
+            "is_completed",
+            "order",
+        )

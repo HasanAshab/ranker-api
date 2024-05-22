@@ -1,4 +1,5 @@
 from django.db import models
+from django.shortcuts import get_object_or_404
 from rest_framework.permissions import (
     IsAuthenticated,
 )
@@ -12,21 +13,21 @@ from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_standardized_response.openapi.utils import standard_openapi_response
-from .models import Challenge
+from .models import Challenge, ChallengeStep
 from .filters import ChallengeFilter
 from .serializers import (
-    ListChallengeSerializer,
     ChallengeSerializer,
     ChallengeActivitiesSerializer,
     ChallengeDifficultySerializer,
     ChallengeOrderSerializer,
+    ChallengeStepSerializer,
 )
 from .pagination import ChallengePagination
 
 
 class ChallengesView(ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
-    serializer_class = ListChallengeSerializer
+    serializer_class = ChallengeSerializer
     pagination_class = ChallengePagination
     queryset = Challenge.objects.none()
     filter_backends = (
@@ -34,7 +35,7 @@ class ChallengesView(ListCreateAPIView):
         DjangoFilterBackend,
     )
     # search_fields = ("@title", "@description")
-    search_fields = ("title", "description")
+    search_fields = ("title",)
     filterset_class = ChallengeFilter
 
     def get_queryset(self):
@@ -138,3 +139,42 @@ class ChallengeOrdersView(APIView):
         )
 
         return Response("Challenges reordered.")
+
+
+class ChallengeStepsView(ListCreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ChallengeStepSerializer
+    queryset = ChallengeStep.objects.none()
+
+    def get_queryset(self):
+        challenge = get_object_or_404(
+            self.request.user.challenge_set.active(),
+            pk=self.kwargs["pk"],
+        )
+        return challenge.steps.all()
+
+    def perform_create(self, serializer):
+        challenge = get_object_or_404(
+            self.request.user.challenge_set.active(),
+            pk=self.kwargs["pk"],
+        )
+        serializer.save(challenge=challenge)
+
+
+class ChallengeStepView(RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ChallengeStepSerializer
+    queryset = ChallengeStep.objects.none()
+
+    def get_queryset(self):
+        challenge = get_object_or_404(
+            self.request.user.challenge_set.active(),
+            pk=self.kwargs["pk"],
+        )
+        return challenge.steps.all()
+
+    def get_object(self):
+        return get_object_or_404(
+            self.get_queryset(),
+            pk=self.kwargs["step_pk"],
+        )

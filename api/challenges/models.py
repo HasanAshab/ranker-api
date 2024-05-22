@@ -14,9 +14,6 @@ from .querysets import ChallengeQuerySet
 class Challenge(models.Model):
     XP_PERCENTAGE_BONUS_FOR_DUE_DATE = 15
 
-    def __str__(self):
-        return self.title
-
     class Status(models.TextChoices):
         ACTIVE = "active", _("Active")
         COMPLETED = "completed", _("Completed")
@@ -51,13 +48,6 @@ class Challenge(models.Model):
         default=1,
         help_text="Priority order of the challenge.",
     )
-    parent = models.ForeignKey(
-        "self",
-        null=True,
-        blank=True,
-        related_name="sub_challenges",
-        on_delete=models.CASCADE,
-    )
     difficulty = models.ForeignKey(
         "difficulties.Difficulty",
         on_delete=models.CASCADE,
@@ -72,6 +62,9 @@ class Challenge(models.Model):
 
     # class Meta:
     # indexes = [GinIndex(fields=["search_vector"])]
+
+    def __str__(self):
+        return self.title
 
     @property
     def is_active(self):
@@ -106,3 +99,29 @@ class Challenge(models.Model):
         if self.is_pinned:
             self.order = 0
         return super().save(*args, **kwargs)
+
+
+class ChallengeStep(models.Model):
+    title = models.CharField(
+        _("Title"),
+        max_length=50,
+        help_text="Title of the step.",
+    )
+    is_completed = models.BooleanField(
+        _("Completed"),
+        default=False,
+        help_text="Whether the step is completed.",
+    )
+    order = models.IntegerField(
+        _("Order"),
+        default=1,
+        help_text="Priority order of the step.",
+    )
+    challenge = models.ForeignKey(
+        "challenges.Challenge",
+        related_name="steps",
+        on_delete=models.CASCADE,
+    )
+
+    def __str__(self):
+        return self.title
