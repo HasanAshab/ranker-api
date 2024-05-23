@@ -39,6 +39,7 @@ SECRET_KEY = env("SECRET_KEY")
 DEBUG = True
 
 ALLOWED_HOSTS = ["127.0.0.1"]
+INTERNAL_IPS = ["127.0.0.1"]
 
 
 # Application definition
@@ -54,6 +55,7 @@ INSTALLED_APPS = [
     "notifications",
     "django_filters",
     "django_extensions",
+    "debug_toolbar",
     "phonenumber_field",
     "colorfield",
     "rest_framework",
@@ -81,8 +83,8 @@ INSTALLED_APPS = [
     "api.challenges",
 ]
 
-
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",

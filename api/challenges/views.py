@@ -35,7 +35,7 @@ class ChallengesView(ListCreateAPIView):
         DjangoFilterBackend,
     )
     # search_fields = ("@title", "@description")
-    search_fields = ("title",)
+    search_fields = ("title", "steps__title")
     filterset_class = ChallengeFilter
 
     def get_queryset(self):
