@@ -5,26 +5,32 @@ from .views import (
     ChallengeView,
     ChallengeOrdersView,
     ChallengeStepsView,
+    ChallengeStepOrdersView,
     ChallengeStepView,
 )
 
 urlpatterns = [
     path("challenges/", ChallengesView.as_view(), name="challenges"),
     path(
-        "challenges/activities",
+        "challenges/activities/",
         ChallengeActivitiesView.as_view(),
-        name="challenge-activities",
+        name="challenge_activities",
     ),
     path(
-        "challenges/order",
+        "challenges/order/",
         ChallengeOrdersView.as_view(),
-        name="challenge-orders",
+        name="challenge_orders",
     ),
     path("challenges/<int:pk>/", ChallengeView.as_view(), name="challenge"),
     path(
         "challenges/<int:pk>/steps/",
         ChallengeStepsView.as_view(),
         name="challenge_steps",
+    ),
+    path(
+        "challenges/<int:pk>/steps/order/",
+        ChallengeStepOrdersView.as_view(),
+        name="challenge_step_orders",
     ),
     path(
         "challenges/<int:pk>/steps/<int:step_pk>/",

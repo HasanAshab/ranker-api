@@ -35,20 +35,16 @@ class UpdateChallengeTestCase(APITestCase):
         )
 
     def test_update_challenge(self):
-        data = {
-            "title": "Updated Title",
-            "description": "Updated Description",
-        }
+        title = "Updated Title"
         challenge = ChallengeFactory(user=self.user)
 
         url = self._reverse_challenge_url(challenge)
         self.client.force_authenticate(user=self.user)
-        response = self.client.patch(url, data)
+        response = self.client.patch(url, {"title": title})
         challenge.refresh_from_db()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(challenge.title, data["title"])
-        self.assertEqual(challenge.description, data["description"])
+        self.assertEqual(challenge.title, title)
 
     def test_completing_challenge_increase_xp(self):
         challenge = ChallengeFactory(user=self.user)

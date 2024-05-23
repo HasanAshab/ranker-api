@@ -17,7 +17,7 @@ from api.challenges.factories import (
 
 @tag("challenges", "challenge_activities")
 class ChallengeActivitiesTestCase(APITestCase):
-    url = reverse("challenge-activities")
+    url = reverse("challenge_activities")
 
     def setUp(self):
         self.user = UserFactory()

@@ -14,7 +14,7 @@ from api.challenges.factories import (
 
 @tag("challenges", "challenge_reordering")
 class ChallengeReorderingTestCase(APITestCase):
-    url = reverse("challenge-orders")
+    url = reverse("challenge_orders")
 
     def setUp(self):
         self.user = UserFactory()

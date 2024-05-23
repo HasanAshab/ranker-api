@@ -19,7 +19,7 @@ from .serializers import (
     ChallengeSerializer,
     ChallengeActivitiesSerializer,
     ChallengeDifficultySerializer,
-    ChallengeOrderSerializer,
+    ReOrderingSerializer,
     ChallengeStepSerializer,
 )
 from .pagination import ChallengePagination
@@ -110,7 +110,7 @@ class ChallengeActivitiesView(APIView):
 
 class ChallengeOrdersView(APIView):
     permission_classes = (IsAuthenticated,)
-    serializer_class = ChallengeOrderSerializer
+    serializer_class = ReOrderingSerializer
 
     def get_serializer(self, *args, **kwargs):
         serializer_class = self.serializer_class
@@ -134,7 +134,7 @@ class ChallengeOrdersView(APIView):
             )
             challenges.append(challenge)
 
-        request.user.challenge_set.unpinned().bulk_update(
+        request.user.challenge_set.unpinned().active().bulk_update(
             challenges, ["order"]
         )
 
@@ -151,7 +151,7 @@ class ChallengeStepsView(ListCreateAPIView):
             self.request.user.challenge_set.active(),
             pk=self.kwargs["pk"],
         )
-        return challenge.steps.all()
+        return challenge.steps.all().order_by("order", "id")
 
     def perform_create(self, serializer):
         challenge = get_object_or_404(
@@ -178,3 +178,38 @@ class ChallengeStepView(RetrieveUpdateDestroyAPIView):
             self.get_queryset(),
             pk=self.kwargs["step_pk"],
         )
+
+
+class ChallengeStepOrdersView(APIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ReOrderingSerializer
+
+    def get_serializer(self, *args, **kwargs):
+        serializer_class = self.serializer_class
+        kwargs.setdefault("many", True)
+        return serializer_class(*args, **kwargs)
+
+    @extend_schema(
+        responses={
+            200: standard_openapi_response(),
+        }
+    )
+    def patch(self, request, pk):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        challenge = get_object_or_404(
+            request.user.challenge_set.active(),
+            pk=pk,
+        )
+        challenge_steps = []
+        for challenge_step_order in serializer.validated_data:
+            challenge_step = ChallengeStep(
+                id=challenge_step_order["id"],
+                order=challenge_step_order["order"],
+            )
+            challenge_steps.append(challenge_step)
+
+        challenge.steps.bulk_update(challenge_steps, ["order"])
+
+        return Response("Challenges steps reordered.")

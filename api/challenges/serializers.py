@@ -32,7 +32,7 @@ class ChallengeActivitiesSerializer(serializers.Serializer):
     completed = CompletedChallengeActivitiesSerializer()
 
 
-class ChallengeOrderSerializer(serializers.Serializer):
+class ReOrderingSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     order = serializers.IntegerField(min_value=0)
 
