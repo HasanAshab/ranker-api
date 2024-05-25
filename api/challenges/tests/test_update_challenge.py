@@ -147,8 +147,7 @@ class UpdateChallengeTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_can_not_update_others_challenge(self):
-        other_user = UserFactory()
-        challenge = ChallengeFactory(user=other_user)
+        challenge = ChallengeFactory()
 
         url = self._reverse_challenge_url(challenge)
         self.client.force_authenticate(user=self.user)

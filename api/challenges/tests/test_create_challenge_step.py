@@ -7,37 +7,38 @@ from rest_framework.test import (
 from api.users.factories import (
     UserFactory,
 )
-from api.difficulties.factories import (
-    DifficultyFactory,
+from api.challenges.factories import (
+    ChallengeFactory,
 )
 
 
-@tag("challenges", "create_challenge")
-class CreateChallengeTestCase(APITestCase):
-    url = reverse("challenges")
-
+@tag("challenges", "challenge_steps", "create_challenge_step")
+class CreateChallengeStepTestCase(APITestCase):
     def setUp(self):
         self.user = UserFactory()
 
     def test_needs_authentication(self):
-        response = self.client.post(self.url)
+        url = reverse("challenge_steps", args=[1])
+        response = self.client.post(url)
+
         self.assertEqual(
             response.status_code,
             status.HTTP_401_UNAUTHORIZED,
         )
 
-    def test_create_challenge(self):
-        difficulty = DifficultyFactory()
+    def test_create_challenge_step(self):
+        challenge = ChallengeFactory(user=self.user)
         payload = {
             "title": "test",
-            "difficulty": difficulty.pk,
+            "challenge": challenge.pk,
         }
 
+        url = reverse("challenge_steps", kwargs={"pk": challenge.pk})
         self.client.force_authenticate(user=self.user)
-        response = self.client.post(self.url, payload)
+        response = self.client.post(url, payload)
 
         self.assertEqual(
             response.status_code,
             status.HTTP_201_CREATED,
         )
-        self.assertIsNotNone(self.user.challenge_set.first())
+        self.assertIsNotNone(challenge.steps.first())

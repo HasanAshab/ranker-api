@@ -9,11 +9,12 @@ from api.users.factories import (
 )
 from api.challenges.factories import (
     ChallengeFactory,
+    ChallengeStepFactory,
 )
 
 
-@tag("challenges", "list_challenge_steps")
-class ChallengesTestCase(APITestCase):
+@tag("challenges", "challenge_steps", "list_challenge_steps")
+class ChallengeStepsTestCase(APITestCase):
     def setUp(self):
         self.user = UserFactory()
 
@@ -25,68 +26,37 @@ class ChallengesTestCase(APITestCase):
             status.HTTP_401_UNAUTHORIZED,
         )
 
-    def test_list_challenges(self):
+    def test_list_challenge_steps(self):
         challenge = ChallengeFactory(user=self.user)
+        challenge_step = ChallengeStepFactory(challenge=challenge)
 
-        url = reverse("challenges")
+        url = reverse("challenge_steps", kwargs={"pk": challenge.pk})
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
-        results = response.data["results"]
-        difficulties_meta = response.data["meta"]["difficulties"]
 
         self.assertEqual(
             response.status_code,
             status.HTTP_200_OK,
         )
-        self.assertEqual(len(results), 1)
-        self.assertEqual(results[0]["id"], challenge.id)
-        self.assertEqual(len(difficulties_meta), 1)
-        self.assertEqual(
-            difficulties_meta[0],
-            {"id": challenge.difficulty.id, "count": 1},
-        )
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["id"], challenge_step.id)
 
-    def test_not_list_completed_challenges(self):
-        url = reverse("challenges")
-        ChallengeFactory(user=self.user, completed=True)
-
-        self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
-        difficulties_meta = response.data["meta"]["difficulties"]
-
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_200_OK,
-        )
-        self.assertEqual(len(response.data["results"]), 0)
-        self.assertEqual(len(difficulties_meta), 0)
-
-    def test_not_list_failed_challenges(self):
-        url = reverse("challenges")
-        ChallengeFactory(user=self.user, failed=True)
-
-        self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
-        difficulties_meta = response.data["meta"]["difficulties"]
-
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_200_OK,
-        )
-        self.assertEqual(len(response.data["results"]), 0)
-        self.assertEqual(len(difficulties_meta), 0)
-
-    def test_retrieve_challenge_needs_authentication(self):
-        url = reverse("challenge", args=[1])
+    def test_retrieve_challenge_step_needs_authentication(self):
+        url = reverse("challenge_step", args=[1, 1])
         response = self.client.get(url)
         self.assertEqual(
             response.status_code,
             status.HTTP_401_UNAUTHORIZED,
         )
 
-    def test_retrieve_challenge(self):
+    def test_retrieve_challenge_step(self):
         challenge = ChallengeFactory(user=self.user)
-        url = reverse("challenge", kwargs={"pk": challenge.pk})
+        challenge_step = ChallengeStepFactory(challenge=challenge)
+
+        url = reverse(
+            "challenge_step",
+            kwargs={"pk": challenge.pk, "step_pk": challenge_step.pk},
+        )
 
         self.client.force_authenticate(user=self.user)
         response = self.client.get(url)
@@ -95,28 +65,4 @@ class ChallengesTestCase(APITestCase):
             response.status_code,
             status.HTTP_200_OK,
         )
-        self.assertEqual(response.data["id"], challenge.id)
-
-    def test_can_not_retrieve_completed_challenge(self):
-        challenge = ChallengeFactory(user=self.user, completed=True)
-
-        url = reverse("challenge", kwargs={"pk": challenge.pk})
-        self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
-
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_404_NOT_FOUND,
-        )
-
-    def test_can_not_retrieve_failed_challenge(self):
-        challenge = ChallengeFactory(user=self.user, failed=True)
-
-        url = reverse("challenge", kwargs={"pk": challenge.pk})
-        self.client.force_authenticate(user=self.user)
-        response = self.client.get(url)
-
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_404_NOT_FOUND,
-        )
+        self.assertEqual(response.data["id"], challenge_step.id)
