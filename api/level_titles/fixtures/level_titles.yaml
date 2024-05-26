@@ -1,0 +1,95 @@
+- model: level_titles.LevelTitle
+  pk: 1
+  fields:
+    title: Beginner
+    required_level: 1
+    light_color: "#a8e6cf"
+    dark_color: "#379683"
+
+- model: level_titles.LevelTitle
+  pk: 2
+  fields:
+    title: Learner
+    required_level: 5
+    light_color: "#ff8c94"
+    dark_color: "#e55039"
+
+- model: level_titles.LevelTitle
+  pk: 3
+  fields:
+    title: Challenger
+    required_level: 10
+    light_color: "#ffcc5c"
+    dark_color: "#ffab00"
+
+- model: level_titles.LevelTitle
+  pk: 4
+  fields:
+    title: Achiever
+    required_level: 20
+    light_color: "#d8bfd8"
+    dark_color: "#8a2be2"
+
+- model: level_titles.LevelTitle
+  pk: 5
+  fields:
+    title: Expert
+    required_level: 25
+    light_color: "#ffeb3b"
+    dark_color: "#ffc107"
+
+- model: level_titles.LevelTitle
+  pk: 6
+  fields:
+    title: Master
+    required_level: 30
+    light_color: "#f6b93b"
+    dark_color: "#e58e26"
+
+- model: level_titles.LevelTitle
+  pk: 7
+  fields:
+    title: Legend
+    required_level: 40
+    light_color: "#78e08f"
+    dark_color: "#38ada9"
+
+- model: level_titles.LevelTitle
+  pk: 8
+  fields:
+    title: Champion
+    required_level: 45
+    light_color: "#e74c3c"
+    dark_color: "#c0392b"
+
+- model: level_titles.LevelTitle
+  pk: 9
+  fields:
+    title: Virtuoso
+    required_level: 50
+    light_color: "#16a085"
+    dark_color: "#1abc9c"
+
+- model: level_titles.LevelTitle
+  pk: 10
+  fields:
+    title: Sage
+    required_level: 55
+    light_color: "#2ecc71"
+    dark_color: "#27ae60"
+
+- model: level_titles.LevelTitle
+  pk: 11
+  fields:
+    title: Luminary
+    required_level: 60
+    light_color: "#3498db"
+    dark_color: "#2980b9"
+
+- model: level_titles.LevelTitle
+  pk: 12
+  fields:
+    title: Titan
+    required_level: 70
+    light_color: "#34495e"
+    dark_color: "#2c3e50"

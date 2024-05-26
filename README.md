@@ -1,6 +1,6 @@
 # Ranker API
 
-Ranker is a Django API that allows users to create challenges to gain XP. XP helps users achieve levels, and at specific levels, they gain titles like sigma, alpha, (can be customized) etc. Daily ranks are calculated based on total XP.
+Ranker is a Django API that allows users to create challenges to gain XP. XP helps users achieve levels, and at specific levels, they gain titles like Beginner, Challenger (customizable) etc. Daily ranks are calculated based on total XP.
 
 ## Features
 Here are some core features:
@@ -8,12 +8,15 @@ Here are some core features:
 - **Challenge Creation:** Users can create challenges with specific goals, difficulty and due date (optional).
 - **Challenge Reordering:** Users can reorder challenges based on their personal preference and priority.
 - **Difficulty:** Admin and staffs can create custom difficulty levels with associated colors and XP.
-- **Level Titles:** It is also dynamic (Can be managed by admin, staffs).
 - **XP Tracking:** Users earn XP for completing challenges.
 - **Leveling Up:** Users achieve higher levels based on their total XP.
-- **Title Achievement:** Users gain titles like sigma, alpha, etc., at specific levels.
+- **Title Achievement:** Users gain titles from Beginner to Titan at specific levels (customizable by admin and staffs).
 - **Daily Ranks:** Daily ranks are calculated based on total XP.
+
+## Comming Soon
 - **Notifications:** Users receive notifications for weekly progress, level title achievements, and more.
+- **Challenge Steps:** Users can break challenge into several steps to complete it faster.
+- **Challenge Steps Generation:** Users can auto generate steps for completing a challenge (Open AI).
 
 ## Setup
 
