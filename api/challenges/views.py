@@ -1,5 +1,6 @@
 from django.db import models
 from django.shortcuts import get_object_or_404
+from rest_framework import status
 from rest_framework.permissions import (
     IsAuthenticated,
 )
@@ -13,6 +14,7 @@ from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_standardized_response.openapi.utils import standard_openapi_response
+from .utils import generate_challenge_steps
 from .models import Challenge, ChallengeStep
 from .filters import ChallengeFilter
 from .serializers import (
@@ -185,9 +187,8 @@ class ChallengeStepOrdersView(APIView):
     serializer_class = ReOrderingSerializer
 
     def get_serializer(self, *args, **kwargs):
-        serializer_class = self.serializer_class
         kwargs.setdefault("many", True)
-        return serializer_class(*args, **kwargs)
+        return self.serializer_class(*args, **kwargs)
 
     @extend_schema(
         responses={
@@ -213,3 +214,24 @@ class ChallengeStepOrdersView(APIView):
         challenge.steps.bulk_update(challenge_steps, ["order"])
 
         return Response("Challenges steps reordered.")
+
+
+class ChallengeStepsGenerationView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get_serializer(self, *args, **kwargs):
+        return None
+
+    @extend_schema(
+        responses={
+            201: ChallengeStepSerializer(many=True),
+        }
+    )
+    def post(self, request, pk):
+        challenge = get_object_or_404(
+            request.user.challenge_set.active(),
+            pk=pk,
+        )
+        challenge_steps = generate_challenge_steps(challenge)
+        serializer = ChallengeStepSerializer(challenge_steps, many=True)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -6,6 +6,7 @@ from .views import (
     ChallengeOrdersView,
     ChallengeStepsView,
     ChallengeStepOrdersView,
+    ChallengeStepsGenerationView,
     ChallengeStepView,
 )
 
@@ -30,6 +31,11 @@ urlpatterns = [
     path(
         "challenges/<int:pk>/steps/order/",
         ChallengeStepOrdersView.as_view(),
+        name="challenge_step_orders",
+    ),
+    path(
+        "challenges/<int:pk>/steps/generation/",
+        ChallengeStepsGenerationView.as_view(),
         name="challenge_step_orders",
     ),
     path(
