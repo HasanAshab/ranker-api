@@ -22,31 +22,31 @@ class Challenge(models.Model):
     title = models.CharField(
         _("Title"),
         max_length=50,
-        help_text="Title of the challenge.",
+        help_text=_("Title of the challenge."),
     )
     status = models.CharField(
         _("Status"),
         max_length=10,
         choices=Status,
         default=Status.ACTIVE,
-        help_text="Status of the challenge.",
+        help_text=_("Status of the challenge."),
     )
     is_pinned = models.BooleanField(
         _("Is Pinned"),
         default=False,
-        help_text="Whether the challenge is pinned.",
+        help_text=_("Whether the challenge is pinned."),
     )
     due_date = models.DateTimeField(
         _("Due Date"),
         null=True,
         blank=True,
-        help_text="Due date of the challenge.",
+        help_text=_("Due date of the challenge."),
         validators=[date_time_is_future_validator],
     )
     order = models.IntegerField(
         _("Order"),
         default=1,
-        help_text="Priority order of the challenge.",
+        help_text=_("Priority order of the challenge."),
     )
     difficulty = models.ForeignKey(
         "difficulties.Difficulty",
@@ -105,17 +105,17 @@ class ChallengeStep(models.Model):
     title = models.CharField(
         _("Title"),
         max_length=50,
-        help_text="Title of the step.",
+        help_text=_("Title of the step."),
     )
     is_completed = models.BooleanField(
         _("Completed"),
         default=False,
-        help_text="Whether the step is completed.",
+        help_text=_("Whether the step is completed."),
     )
     order = models.IntegerField(
         _("Order"),
         default=1,
-        help_text="Priority order of the step.",
+        help_text=_("Priority order of the step."),
     )
     challenge = models.ForeignKey(
         "challenges.Challenge",

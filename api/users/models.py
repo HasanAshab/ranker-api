@@ -34,14 +34,14 @@ class UserModel(AbstractUser):
     first_name = None
     last_name = None
     name = models.CharField(
-        _("Name"), max_length=255, blank=True, help_text="Name of the user"
+        _("Name"), max_length=255, blank=True, help_text=_("Name of the user")
     )
     gender = models.CharField(
         _("Gender"),
         max_length=1,
         choices=Gender,
         default=Gender.MALE,
-        help_text="Gender of the user",
+        help_text=_("Gender of the user"),
     )
     username = models.CharField(
         _("Username"),
@@ -57,21 +57,21 @@ class UserModel(AbstractUser):
         },
     )
     phone_number = PhoneNumberField(
-        _("Phone Number"), blank=True, help_text="Phone number of the user"
+        _("Phone Number"), blank=True, help_text=_("Phone number of the user")
     )
     avatar = models.ImageField(
         _("Avatar"),
         upload_to="uploads/avatars/",
         max_length=100,
         blank=True,
-        help_text="Avatar (or profile pic) of the user",
+        help_text=_("Avatar (or profile pic) of the user"),
     )
     rank = models.PositiveBigIntegerField(
         _("Rank"),
-        help_text="Global rank of the user",
+        help_text=_("Global rank of the user"),
     )
     total_xp = models.PositiveBigIntegerField(
-        _("Total XP"), default=0, help_text="Total xp points of the user"
+        _("Total XP"), default=0, help_text=_("Total xp points of the user")
     )
 
     class Meta:
