@@ -36,7 +36,7 @@ urlpatterns = [
     path(
         "challenges/<int:pk>/steps/generation/",
         ChallengeStepsGenerationView.as_view(),
-        name="challenge_step_orders",
+        name="challenge_steps_generation",
     ),
     path(
         "challenges/<int:pk>/steps/<int:step_pk>/",

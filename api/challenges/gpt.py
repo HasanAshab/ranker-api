@@ -1,5 +1,5 @@
 import json
-from api.common.completions import GroqGPTCompletion
+from api.common.gpt import GroqGPTCompletion
 
 
 class ChallengeStepsGPTCompletion(GroqGPTCompletion):

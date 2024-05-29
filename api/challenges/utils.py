@@ -1,5 +1,5 @@
 from django.db import transaction
-from .completions import ChallengeStepsGPTCompletion
+from .gpt import ChallengeStepsGPTCompletion
 from .models import Challenge, ChallengeStep
 
 
