@@ -10,9 +10,9 @@ from api.users.factories import (
 )
 
 
-@tag("account", "phone-number")
+@tag("account", "phone_number")
 class PhoneNumberTestCase(APITestCase):
-    url = reverse("phone-number")
+    url = reverse("phone_number")
 
     def setUp(self):
         self.user = UserFactory()

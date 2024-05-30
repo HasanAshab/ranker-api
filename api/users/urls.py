@@ -14,6 +14,6 @@ urlpatterns = [
     path(
         "users/<str:username>/",
         UserDetailsView.as_view(),
-        name="user-details",
+        name="user_details",
     ),
 ]

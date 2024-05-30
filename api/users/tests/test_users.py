@@ -19,7 +19,7 @@ class UsersTestCase(APITestCase):
 
     def _reverse_user_url(self, user):
         return reverse(
-            "user-details",
+            "user_details",
             kwargs={"username": user.username},
         )
 

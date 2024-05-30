@@ -13,9 +13,9 @@ urlpatterns = [
         name="profile",
     ),
     path(
-        "account/phone-number/",
+        "account/phone_number/",
         PhoneNumberView.as_view(),
-        name="phone-number",
+        name="phone_number",
     ),
     path(
         "account/suggest-username/",
