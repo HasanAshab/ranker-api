@@ -20,6 +20,7 @@ from phonenumber_field.modelfields import (
 )
 from api.common.utils import LazyProxy
 from api.accounts.utils import generate_name_from_username
+from api.level_titles.models import LevelTitle
 
 
 class UserModel(AbstractUser):
@@ -86,6 +87,10 @@ class UserModel(AbstractUser):
     @property
     def level(self) -> int:
         return 1 + math.floor(self.total_xp / 1000)
+
+    @property
+    def level_title(self):
+        return LevelTitle.objects.get_for_user(self)
 
     def add_xp(self, amount):
         self.total_xp += amount

@@ -5,14 +5,16 @@ from api.common.utils import (
     twilio_verification,
 )
 from api.users.models import User
-from api.users.mixins import UserLevelTitleMixin, UserAvatarLinkSerializerMixin
+from api.users.mixins import UserAvatarLinkSerializerMixin
+from api.level_titles.serializers import LevelTitleSerializer
 
 
 class ProfileSerializer(
     UserAvatarLinkSerializerMixin,
-    UserLevelTitleMixin,
     serializers.ModelSerializer,
 ):
+    level_title = LevelTitleSerializer()
+
     class Meta:
         model = User
         fields = (
