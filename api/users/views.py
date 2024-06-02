@@ -9,7 +9,7 @@ from rest_framework import filters
 from .models import User
 from .permissions import DeleteUserPermission
 from .serializers import (
-    ListUserSerializer,
+    UserListSerializer,
     UserDetailsSerializer,
 )
 from .pagination import UserCursorPagination
@@ -19,7 +19,7 @@ class UsersView(ListAPIView):
     permission_classes = (IsAuthenticated,)
     filter_backends = (filters.SearchFilter,)
     queryset = User.objects.all()
-    serializer_class = ListUserSerializer
+    serializer_class = UserListSerializer
     pagination_class = UserCursorPagination
     # search_fields = ("@username", "@name")
     search_fields = ("username", "name")

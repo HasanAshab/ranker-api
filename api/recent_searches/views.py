@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from drf_generic_views.generics import ListBulkDestroyAPIView
 from .models import RecentUserSearch
-from .serializers import ListRecentUserSearchSerializer
+from .serializers import RecentUserSearchListSerializer
 from .pagination import RecentUserSearchPagination
 
 
@@ -15,7 +15,7 @@ from .pagination import RecentUserSearchPagination
 class RecentUserSearchesView(ListBulkDestroyAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = RecentUserSearch.objects.none()
-    serializer_class = ListRecentUserSearchSerializer
+    serializer_class = RecentUserSearchListSerializer
     pagination_class = RecentUserSearchPagination
 
     def get_queryset(self):

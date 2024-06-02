@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from api.users.serializers import ListUserSerializer
+from api.users.serializers import UserListSerializer
 from .models import RecentUserSearch
 
 
-class ListRecentUserSearchSerializer(serializers.ModelSerializer):
-    searched_user = ListUserSerializer()
+class RecentUserSearchListSerializer(serializers.ModelSerializer):
+    searched_user = UserListSerializer()
 
     class Meta:
         model = RecentUserSearch
