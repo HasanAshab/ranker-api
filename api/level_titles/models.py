@@ -3,7 +3,6 @@ from colorfield.fields import ColorField
 from django.utils.translation import (
     gettext_lazy as _,
 )
-from .managers import LevelTitleManager
 
 
 class LevelTitle(models.Model):
@@ -24,7 +23,8 @@ class LevelTitle(models.Model):
         _("Dark Color"), help_text=_("The display color for dark theme.")
     )
 
-    objects = LevelTitleManager()
-
     def __str__(self):
         return self.title
+
+    class Meta:
+        ordering = ("-required_level",)

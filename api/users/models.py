@@ -1,4 +1,3 @@
-import math
 from django.conf import settings
 from django.dispatch import receiver
 from django.contrib.auth.models import (
@@ -18,12 +17,14 @@ from allauth.account.signals import user_signed_up
 from phonenumber_field.modelfields import (
     PhoneNumberField,
 )
+from dirtyfields import DirtyFieldsMixin
 from api.common.utils import LazyProxy
 from api.accounts.utils import generate_name_from_username
 from api.level_titles.models import LevelTitle
+from .utils import calculate_level
 
 
-class UserModel(AbstractUser):
+class UserModel(DirtyFieldsMixin, AbstractUser):
     REQUIRED_FIELDS = ("gender",)
 
     class Gender(models.TextChoices):
@@ -32,6 +33,7 @@ class UserModel(AbstractUser):
 
     username_validator = UnicodeUsernameValidator()
 
+    level_titles = models.ManyToManyField(LevelTitle)
     first_name = None
     last_name = None
     name = models.CharField(
@@ -86,20 +88,38 @@ class UserModel(AbstractUser):
 
     @property
     def level(self) -> int:
-        return 1 + math.floor(self.total_xp / 1000)
+        return calculate_level(self.total_xp)
+
+    @property
+    def previous_level(self):
+        previous_xp = self.get_dirty_fields().get("total_xp")
+        if not previous_xp:
+            return self.level
+        return calculate_level(previous_xp)
 
     @property
     def level_title(self):
-        return LevelTitle.objects.get_for_user(self)
+        return self.level_titles.first()
 
     def add_xp(self, amount):
+        if amount > settings.XP_PER_LEVEL:
+            amount = settings.XP_PER_LEVEL
         self.total_xp += amount
         self.save()
 
     def subtract_xp(self, amount):
+        if amount > settings.XP_PER_LEVEL:
+            amount = settings.XP_PER_LEVEL
         if self.total_xp >= amount:
-            self.total_xp -= amount
-            self.save()
+            amount = self.total_xp
+        self.total_xp -= amount
+        self.save()
+
+    def has_leveled_up(self):
+        return self.level > self.previous_level
+
+    def has_leveled_down(self):
+        return self.level < self.previous_level
 
 
 User = LazyProxy(get_user_model)
@@ -113,6 +133,25 @@ User = LazyProxy(get_user_model)
 def set_default_rank(sender, instance, **kwargs):
     if instance._state.adding and not instance.rank:
         instance.rank = User.objects.count() + 1
+
+
+@receiver(
+    models.signals.post_save,
+    sender=settings.AUTH_USER_MODEL,
+    dispatch_uid="update_level_title",
+)
+def update_level_title(sender, instance, created, **kwargs):
+    if created or instance.has_leveled_up():
+        level_title = LevelTitle.objects.filter(
+            required_level=instance.level,
+        ).first()
+        if level_title:
+            instance.level_titles.add(level_title)
+
+    if instance.has_leveled_down():
+        level_title = instance.level_title
+        if instance.level < level_title.required_level:
+            instance.level_titles.remove(level_title)
 
 
 @receiver(user_signed_up, dispatch_uid="generate_name")
