@@ -18,7 +18,7 @@ from .pagination import UserCursorPagination
 class UsersView(ListAPIView):
     permission_classes = (IsAuthenticated,)
     filter_backends = (filters.SearchFilter,)
-    queryset = User.objects.all()
+    queryset = User.objects.all().prefetch_related("level_titles")
     serializer_class = UserListSerializer
     pagination_class = UserCursorPagination
     # search_fields = ("@username", "@name")

@@ -122,7 +122,7 @@ class UserModel(DirtyFieldsMixin, AbstractUser):
         return self.level < self.previous_level
 
 
-User = LazyProxy(get_user_model)
+User: UserModel = LazyProxy(get_user_model)
 
 
 @receiver(

@@ -25,7 +25,7 @@ class UserListSerializer(
 
     @extend_schema_field(
         inline_serializer(
-            name="ListUserLinks",
+            name="UserListLinks",
             fields={
                 "self": serializers.URLField(),
                 "avatar": serializers.URLField(allow_null=True),
