@@ -33,7 +33,10 @@ class UserModel(DirtyFieldsMixin, AbstractUser):
 
     username_validator = UnicodeUsernameValidator()
 
-    level_titles = models.ManyToManyField(LevelTitle)
+    level_title = models.ForeignKey(
+        "level_titles.LevelTitle",
+        on_delete=models.CASCADE,
+    )
     first_name = None
     last_name = None
     name = models.CharField(
@@ -97,10 +100,6 @@ class UserModel(DirtyFieldsMixin, AbstractUser):
             return self.level
         return calculate_level(previous_xp)
 
-    @property
-    def level_title(self):
-        return self.level_titles.first()
-
     def add_xp(self, amount):
         if amount > settings.XP_PER_LEVEL:
             amount = settings.XP_PER_LEVEL
@@ -136,6 +135,19 @@ def set_default_rank(sender, instance, **kwargs):
 
 
 @receiver(
+    models.signals.pre_save,
+    sender=settings.AUTH_USER_MODEL,
+    dispatch_uid="set_level_title",
+)
+def set_level_title(sender, instance, **kwargs):
+    if not instance.level_title:
+        level_title = LevelTitle.objects.filter(
+            required_level__lte=instance.level
+        )
+        instance.level_title = level_title
+
+
+@receiver(
     models.signals.post_save,
     sender=settings.AUTH_USER_MODEL,
     dispatch_uid="update_level_title",
@@ -146,12 +158,18 @@ def update_level_title(sender, instance, created, **kwargs):
             required_level=instance.level,
         ).first()
         if level_title:
-            instance.level_titles.add(level_title)
+            instance.level_title = level_title
+            instance.save()
 
-    if instance.has_leveled_down():
-        level_title = instance.level_title
-        if instance.level < level_title.required_level:
-            instance.level_titles.remove(level_title)
+    if (
+        instance.has_leveled_down()
+        and instance.level < instance.level_title.required_level
+    ):
+        level_title = LevelTitle.objects.filter(
+            required_level__lte=instance.level
+        )
+        instance.level_title = level_title
+        instance.save()
 
 
 @receiver(user_signed_up, dispatch_uid="generate_name")
