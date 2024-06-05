@@ -31,10 +31,9 @@ class UserDetailsView(RetrieveDestroyAPIView):
     lookup_field = "username"
     serializer_class = UserDetailsSerializer
 
-    def retrieve(self, request, *args, **kwargs):
-        user = self.get_object()
-        is_search = request.query_params.get("is_search")
-        if is_search == "true" and request.user != user:
-            request.user.searches.update_or_create(searched_user=user)
-
-        return super().retrieve(request, *args, **kwargs)
+    def get_object(self):
+        user = super().get_object()
+        is_search = self.request.query_params.get("is_search")
+        if is_search == "true" and self.request.user != user:
+            self.request.user.searches.update_or_create(searched_user=user)
+        return user

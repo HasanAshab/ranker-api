@@ -70,4 +70,3 @@ class UserDetailsSerializer(
             "rank",
             "links",
         )
-        extra_kwargs = {"avatar": {"write_only": True}}
