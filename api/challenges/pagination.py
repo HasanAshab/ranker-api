@@ -4,23 +4,24 @@ from rest_framework.pagination import (
 )
 from drf_pagination_meta_wrap.mixins import WrapPaginationMetadataMixin
 from .serializers import (
-    ChallengeDifficultySerializer,
+    ChallengeDifficultyCountSerializer,
 )
 
 
 class ChallengePagination(WrapPaginationMetadataMixin, LimitOffsetPagination):
     def get_additional_metadata(self):
-        difficulties_queryset = (
-            self.request.user.challenge_set.active()
-            .values("difficulty__id")
-            .annotate(
-                count=models.Count("id"),
-            )
-        )
+        from api.difficulties.models import Difficulty
+        from .models import Challenge
 
-        difficulties = ChallengeDifficultySerializer(
+        difficulties_queryset = Difficulty.objects.filter(
+            challenge__user=self.request.user,
+            challenge__status=Challenge.Status.ACTIVE,
+        ).annotate(count=models.Count("challenge"))
+
+        difficulties = ChallengeDifficultyCountSerializer(
             difficulties_queryset, many=True
         ).data
+        print(difficulties)
 
         return {"difficulties": difficulties}
 
