@@ -20,7 +20,6 @@ from phonenumber_field.modelfields import (
 from dirtyfields import DirtyFieldsMixin
 from api.common.utils import LazyProxy
 from api.accounts.utils import generate_name_from_username
-from api.level_titles.models import LevelTitle
 from .utils import calculate_level
 
 
@@ -132,44 +131,6 @@ User: UserModel = LazyProxy(get_user_model)
 def set_default_rank(sender, instance, **kwargs):
     if instance._state.adding and not instance.rank:
         instance.rank = User.objects.count() + 1
-
-
-@receiver(
-    models.signals.pre_save,
-    sender=settings.AUTH_USER_MODEL,
-    dispatch_uid="set_level_title",
-)
-def set_level_title(sender, instance, **kwargs):
-    if not instance.level_title:
-        level_title = LevelTitle.objects.filter(
-            required_level__lte=instance.level
-        )
-        instance.level_title = level_title
-
-
-@receiver(
-    models.signals.post_save,
-    sender=settings.AUTH_USER_MODEL,
-    dispatch_uid="update_level_title",
-)
-def update_level_title(sender, instance, created, **kwargs):
-    if created or instance.has_leveled_up():
-        level_title = LevelTitle.objects.filter(
-            required_level=instance.level,
-        ).first()
-        if level_title:
-            instance.level_title = level_title
-            instance.save()
-
-    if (
-        instance.has_leveled_down()
-        and instance.level < instance.level_title.required_level
-    ):
-        level_title = LevelTitle.objects.filter(
-            required_level__lte=instance.level
-        )
-        instance.level_title = level_title
-        instance.save()
 
 
 @receiver(user_signed_up, dispatch_uid="generate_name")

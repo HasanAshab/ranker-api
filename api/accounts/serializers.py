@@ -13,7 +13,7 @@ class ProfileSerializer(
     UserAvatarLinkSerializerMixin,
     serializers.ModelSerializer,
 ):
-    level_title = LevelTitleSerializer()
+    level_title = LevelTitleSerializer(read_only=True)
 
     class Meta:
         model = User
