@@ -33,12 +33,11 @@ class ChallengeSerializer(serializers.ModelSerializer):
             "order",
         )
 
-    def update(self, instance, validated_data):
+    def validate(self, validated_data):
         difficulty_id = validated_data.pop("difficulty", {}).get("id")
         if difficulty_id:
-            instance.difficulty_id = difficulty_id
-
-        return super().update(instance, validated_data)
+            validated_data["difficulty_id"] = difficulty_id
+        return validated_data
 
 
 class ChallengeDifficultyCountSerializer(serializers.ModelSerializer):

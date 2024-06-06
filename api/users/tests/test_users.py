@@ -4,7 +4,6 @@ from rest_framework import status
 from rest_framework.test import (
     APITestCase,
 )
-from api.level_titles.models import LevelTitle
 from api.users.models import User
 from api.users.factories import (
     UserFactory,
@@ -15,7 +14,6 @@ from api.users.factories import (
 class UsersTestCase(APITestCase):
     def setUp(self):
         self.user = UserFactory()
-        LevelTitle.objects.create(title="Foo", required_level=1)
 
     def _reverse_user_url(self, user):
         return reverse(

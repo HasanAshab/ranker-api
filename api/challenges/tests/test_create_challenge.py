@@ -30,7 +30,7 @@ class CreateChallengeTestCase(APITestCase):
         difficulty = DifficultyFactory()
         payload = {
             "title": "test",
-            "difficulty": difficulty.pk,
+            "difficulty": {"id": difficulty.pk},
         }
 
         self.client.force_authenticate(user=self.user)

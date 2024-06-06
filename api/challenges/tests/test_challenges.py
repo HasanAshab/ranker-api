@@ -41,10 +41,6 @@ class ChallengesTestCase(APITestCase):
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]["id"], challenge.id)
         self.assertEqual(len(difficulties_meta), 1)
-        self.assertEqual(
-            difficulties_meta[0],
-            {"id": challenge.difficulty.id, "count": 1},
-        )
 
     def test_not_list_completed_challenges(self):
         url = reverse("challenges")

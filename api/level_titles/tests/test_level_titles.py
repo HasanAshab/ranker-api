@@ -12,12 +12,9 @@ from api.level_titles.factories import (
 )
 
 
-@tag("level_titles")
+@tag("level_titles", "list_level_titles")
 class LevelTitlesTestCase(APITestCase):
     url = reverse("level_titles")
-
-    def setUp(self):
-        self.user = UserFactory()
 
     def test_list_level_titles_needs_authentication(self):
         response = self.client.get(self.url)
@@ -29,8 +26,9 @@ class LevelTitlesTestCase(APITestCase):
 
     def test_list_level_titles(self):
         level_titles = LevelTitleFactory.create_batch(3)
+        user = UserFactory(level_title=level_titles[0])
 
-        self.client.force_authenticate(user=self.user)
+        self.client.force_authenticate(user=user)
         response = self.client.get(self.url)
 
         self.assertEqual(
