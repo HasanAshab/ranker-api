@@ -5,6 +5,7 @@ from django.utils.translation import (
     gettext_lazy as _,
 )
 from colorfield.fields import ColorField
+from .querysets import DifficultyQuerySet
 
 
 class Difficulty(models.Model):
@@ -34,6 +35,8 @@ class Difficulty(models.Model):
             "Number of xp value associated with this difficulty level."
         ),
     )
+
+    objects = DifficultyQuerySet.as_manager()
 
     class Meta:
         ordering = ("xp_value",)

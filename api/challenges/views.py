@@ -14,13 +14,14 @@ from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_standardized_response.openapi.utils import standard_openapi_response
+from api.difficulties.models import Difficulty
 from .utils import generate_challenge_steps
 from .models import Challenge, ChallengeStep
 from .filters import ChallengeFilter
 from .serializers import (
     ChallengeSerializer,
     ChallengeActivitiesSerializer,
-    ChallengeDifficultySerializer,
+    ChallengeDifficultyCountSerializer,
     ReOrderingSerializer,
     ChallengeStepSerializer,
 )
@@ -70,8 +71,8 @@ class ChallengeActivitiesView(APIView):
         }
     )
     def get(self, request):
-        totals = self.request.user.challenge_set.aggregate(
-            submitted=models.Count("id"),
+        count = self.request.user.challenge_set.aggregate(
+            total=models.Count("id"),
             completed=models.Count(
                 models.Case(
                     models.When(
@@ -90,22 +91,23 @@ class ChallengeActivitiesView(APIView):
             ),
         )
         challenge_activities = {
-            "total": totals["submitted"],
-            "failed": totals["failed"],
+            "total": count["total"],
+            "failed": count["failed"],
             "completed": {
-                "total": totals["completed"],
+                "total": count["completed"],
             },
         }
+
         difficulties_queryset = (
-            self.request.user.challenge_set.completed()
-            .values("difficulty__id")
-            .annotate(
-                count=models.Count("id"),
+            Difficulty.objects.with_challenge_count().filter(
+                challenge__user=self.request.user,
+                challenge__status=Challenge.Status.COMPLETED,
             )
         )
-        difficulties = ChallengeDifficultySerializer(
+        difficulties = ChallengeDifficultyCountSerializer(
             difficulties_queryset, many=True
         ).data
+
         challenge_activities["completed"]["difficulties"] = difficulties
         return Response(challenge_activities)
 

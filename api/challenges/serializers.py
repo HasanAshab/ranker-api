@@ -41,12 +41,12 @@ class ChallengeSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
 
-class ChallengeDifficultyCountSerializer(serializers.Serializer):
-    count = serializers.IntegerField()
+class ChallengeDifficultyCountSerializer(serializers.ModelSerializer):
+    challenge_count = serializers.IntegerField()
 
     class Meta:
         model = Difficulty
-        fields = ("count", "slug")
+        fields = "__all__"
 
 
 class CompletedChallengeActivitiesSerializer(serializers.Serializer):

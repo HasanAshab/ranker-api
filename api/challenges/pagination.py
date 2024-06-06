@@ -1,8 +1,9 @@
-from django.db import models
 from rest_framework.pagination import (
     LimitOffsetPagination,
 )
 from drf_pagination_meta_wrap.mixins import WrapPaginationMetadataMixin
+from api.difficulties.models import Difficulty
+from .models import Challenge
 from .serializers import (
     ChallengeDifficultyCountSerializer,
 )
@@ -10,18 +11,16 @@ from .serializers import (
 
 class ChallengePagination(WrapPaginationMetadataMixin, LimitOffsetPagination):
     def get_additional_metadata(self):
-        from api.difficulties.models import Difficulty
-        from .models import Challenge
-
-        difficulties_queryset = Difficulty.objects.filter(
-            challenge__user=self.request.user,
-            challenge__status=Challenge.Status.ACTIVE,
-        ).annotate(count=models.Count("challenge"))
+        difficulties_queryset = (
+            Difficulty.objects.with_challenge_count().filter(
+                challenge__user=self.request.user,
+                challenge__status=Challenge.Status.ACTIVE,
+            )
+        )
 
         difficulties = ChallengeDifficultyCountSerializer(
             difficulties_queryset, many=True
         ).data
-        print(difficulties)
 
         return {"difficulties": difficulties}
 
