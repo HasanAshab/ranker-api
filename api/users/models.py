@@ -108,7 +108,7 @@ class UserModel(DirtyFieldsMixin, AbstractUser):
     def subtract_xp(self, amount):
         if amount > settings.XP_PER_LEVEL:
             amount = settings.XP_PER_LEVEL
-        if self.total_xp >= amount:
+        if amount > self.total_xp:
             amount = self.total_xp
         self.total_xp -= amount
         self.save()

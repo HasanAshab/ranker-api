@@ -6,11 +6,7 @@ from django.conf import settings
 class BaseGPTCompletion:
     MAX_ATTEMPTS = 3
     FALLBACK_RESULT = None
-
-    @property
-    @abstractmethod
-    def API_KEY():
-        pass
+    API_KEY = None
 
     @property
     @abstractmethod
@@ -24,7 +20,12 @@ class BaseGPTCompletion:
         self._client = self.get_client()
 
     def get_client(self):
-        return self.client(api_key=self.API_KEY)
+        return self.client(api_key=self.get_api_key())
+
+    def get_api_key(self):
+        if not self.API_KEY:
+            raise Exception("API key is not set")
+        return self.API_KEY
 
     def get_fallback_result(self):
         return self.FALLBACK_RESULT
@@ -60,6 +61,8 @@ class BaseGPTCompletion:
 
 
 class GroqGPTCompletion(BaseGPTCompletion):
-    API_KEY = settings.GROQ_API_KEY
     MODEL = "llama3-8b-8192"
     client = Groq
+
+    def get_api_key(self):
+        return settings.GROQ_API_KEY

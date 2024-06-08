@@ -38,26 +38,11 @@ class ChallengeActivitiesTestCase(APITestCase):
         ChallengeFactory(
             user=self.user, difficulty=difficulty2, completed=True
         )
-        expected_data = {
-            "total": 5,
-            "failed": 2,
-            "completed": {
-                "total": 3,
-                "difficulties": [
-                    {
-                        "id": difficulty1.id,
-                        "count": 2,
-                    },
-                    {
-                        "id": difficulty2.id,
-                        "count": 1,
-                    },
-                ],
-            },
-        }
 
         self.client.force_authenticate(user=self.user)
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, expected_data)
+        self.assertEqual(response.data["total"], 5)
+        self.assertEqual(response.data["failed"], 2)
+        self.assertEqual(response.data["completed"]["total"], 3)

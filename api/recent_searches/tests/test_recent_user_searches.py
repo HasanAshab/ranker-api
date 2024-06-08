@@ -4,7 +4,6 @@ from rest_framework import status
 from rest_framework.test import (
     APITestCase,
 )
-from api.level_titles.models import LevelTitle
 from api.users.factories import (
     UserFactory,
 )
@@ -19,7 +18,6 @@ class RecentUserSearchesTestCase(APITestCase):
 
     def setUp(self):
         self.user = UserFactory()
-        LevelTitle.objects.create(title="Foo", required_level=1)
 
     def test_list_recent_user_searches_needs_authentication(self):
         response = self.client.get(self.url)
