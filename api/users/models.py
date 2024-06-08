@@ -34,7 +34,8 @@ class UserModel(DirtyFieldsMixin, AbstractUser):
 
     level_title = models.ForeignKey(
         "level_titles.LevelTitle",
-        on_delete=models.CASCADE,
+        on_delete=models.DO_NOTHING,
+        related_name="users",
     )
     first_name = None
     last_name = None
