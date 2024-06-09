@@ -42,4 +42,4 @@ class Difficulty(models.Model):
         ordering = ("xp_value",)
 
     def __str__(self):
-        return self.slug
+        return self.name

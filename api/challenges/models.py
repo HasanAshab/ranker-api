@@ -64,7 +64,7 @@ class Challenge(models.Model):
     # indexes = [GinIndex(fields=["search_vector"])]
 
     def __str__(self):
-        return self.title
+        return f"{self.title} ({self.difficulty})"
 
     @property
     def is_active(self):
@@ -125,3 +125,6 @@ class ChallengeStep(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        ordering = ("order", "id")

@@ -42,7 +42,9 @@ class ChallengesView(ListCreateAPIView):
     filterset_class = ChallengeFilter
 
     def get_queryset(self):
-        return self.request.user.challenge_set.active()
+        return self.request.user.challenge_set.active().select_related(
+            "difficulty"
+        )
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -53,7 +55,9 @@ class ChallengeView(RetrieveUpdateDestroyAPIView):
     serializer_class = ChallengeSerializer
 
     def get_queryset(self):
-        return self.request.user.challenge_set.active()
+        return self.request.user.challenge_set.active().select_related(
+            "difficulty"
+        )
 
     def perform_update(self, serializer):
         challenge = serializer.instance
@@ -155,7 +159,7 @@ class ChallengeStepsView(ListCreateAPIView):
             self.request.user.challenge_set.active(),
             pk=self.kwargs["pk"],
         )
-        return challenge.steps.all().order_by("order", "id")
+        return challenge.steps.all()
 
     def perform_create(self, serializer):
         challenge = get_object_or_404(

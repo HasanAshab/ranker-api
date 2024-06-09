@@ -19,14 +19,16 @@ class RecentUserSearchesView(ListBulkDestroyAPIView):
     pagination_class = RecentUserSearchPagination
 
     def get_queryset(self):
-        return self.request.user.searches.all()
+        return self.request.user.searches.all().select_related(
+            "searched_user", "searched_user__level_title"
+        )
 
 
 class RecentUserSearchView(DestroyAPIView):
+    permission_classes = (IsAuthenticated,)
+
     def get_serializer(self, *args, **kwargs):
         return None
-
-    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         return self.request.user.searches.all()

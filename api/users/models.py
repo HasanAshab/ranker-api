@@ -83,6 +83,9 @@ class UserModel(DirtyFieldsMixin, AbstractUser):
     class Meta:
         db_table = "users"
 
+    def __str__(self):
+        return f"{self.username} ({self.level_title.title})"
+
     @property
     def is_email_verified(self) -> bool:
         return self.emailaddress_set.filter(

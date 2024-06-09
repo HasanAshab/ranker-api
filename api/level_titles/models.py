@@ -29,7 +29,7 @@ class LevelTitle(models.Model):
     objects = LevelTitleManager()
 
     def __str__(self):
-        return self.title
+        return f"{self.title}: (LVL {self.required_level})"
 
     class Meta:
         ordering = ("-required_level",)
