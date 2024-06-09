@@ -32,7 +32,12 @@ class ChallengePagination(WrapPaginationMetadataMixin, LimitOffsetPagination):
                     "type": "object",
                     "properties": {
                         "id": {"type": "integer"},
-                        "count": {"type": "integer"},
+                        "challenge_count": {"type": "integer"},
+                        "name": {"type": "string"},
+                        "slug": {"type": "string"},
+                        "light_color": {"type": "string"},
+                        "dark_color": {"type": "string"},
+                        "xp_value": {"type": "integer"},
                     },
                 },
             }
