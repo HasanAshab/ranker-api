@@ -4,34 +4,34 @@ from django.urls import path, include
 urlpatterns = [
     path(
         "api/",
-        include("api.docs.urls"),
+        include("ranker.docs.urls"),
     ),
     path(
         "api/",
-        include("api.authentication.urls"),
+        include("ranker.authentication.urls"),
     ),
     path(
         "api/",
-        include("api.accounts.urls"),
+        include("ranker.accounts.urls"),
     ),
     path(
         "api/",
-        include("api.users.urls"),
+        include("ranker.users.urls"),
     ),
     path(
         "api/",
-        include("api.recent_searches.urls"),
+        include("ranker.recent_searches.urls"),
     ),
     path(
         "api/",
-        include("api.level_titles.urls"),
+        include("ranker.level_titles.urls"),
     ),
     path(
         "api/",
-        include("api.difficulties.urls"),
+        include("ranker.difficulties.urls"),
     ),
     path(
         "api/",
-        include("api.challenges.urls"),
+        include("ranker.challenges.urls"),
     ),
 ]

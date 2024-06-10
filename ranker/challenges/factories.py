@@ -7,9 +7,9 @@ from .models import Challenge, ChallengeStep
 class ChallengeFactory(factory.django.DjangoModelFactory):
     title = factory.Faker("sentence", nb_words=3)
     difficulty = factory.SubFactory(
-        "api.difficulties.factories.DifficultyFactory"
+        "ranker.difficulties.factories.DifficultyFactory"
     )
-    user = factory.SubFactory("api.users.factories.UserFactory")
+    user = factory.SubFactory("ranker.users.factories.UserFactory")
 
     class Meta:
         model = Challenge
@@ -25,7 +25,9 @@ class ChallengeFactory(factory.django.DjangoModelFactory):
 
 class ChallengeStepFactory(factory.django.DjangoModelFactory):
     title = factory.Faker("sentence", nb_words=3)
-    challenge = factory.SubFactory("api.challenges.factories.ChallengeFactory")
+    challenge = factory.SubFactory(
+        "ranker.challenges.factories.ChallengeFactory"
+    )
 
     class Meta:
         model = ChallengeStep

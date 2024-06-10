@@ -6,7 +6,7 @@ from django.http import JsonResponse
 urlpatterns = [
     path("__debug__/", include("debug_toolbar.urls")),
     path("admin/", admin.site.urls),
-    path("", include("api.urls")),
+    path("", include("ranker.urls")),
 ]
 
 

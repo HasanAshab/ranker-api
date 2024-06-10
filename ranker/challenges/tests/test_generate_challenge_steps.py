@@ -26,7 +26,7 @@ class ChallengeStepsGenerationTestCase(APITestCase):
             status.HTTP_401_UNAUTHORIZED,
         )
 
-    @patch("api.challenges.gpt.ChallengeStepsGPTCompletion.create")
+    @patch("ranker.challenges.gpt.ChallengeStepsGPTCompletion.create")
     def test_generate_challenge_steps(self, mocked_challenge_steps_generator):
         mocked_challenge_steps_generator.return_value = ["test"]
         challenge = ChallengeFactory(user=self.user)

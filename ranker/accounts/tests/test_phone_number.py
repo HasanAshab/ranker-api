@@ -24,7 +24,7 @@ class PhoneNumberTestCase(APITestCase):
             status.HTTP_401_UNAUTHORIZED,
         )
 
-    @patch("api.common.utils.twilio_verification.send_through_sms")
+    @patch("ranker.common.utils.twilio_verification.send_through_sms")
     def test_update_phone_number_without_otp(self, mocked_verification_sender):
         phone_number = "+15005550006"
 
@@ -40,7 +40,7 @@ class PhoneNumberTestCase(APITestCase):
         self.assertEqual(self.user.phone_number, "")
         mocked_verification_sender.assert_called_once_with(phone_number)
 
-    @patch("api.common.utils.twilio_verification.is_valid")
+    @patch("ranker.common.utils.twilio_verification.is_valid")
     def test_update_phone_number_with_valid_otp(
         self, mocked_verification_checker
     ):
@@ -60,7 +60,7 @@ class PhoneNumberTestCase(APITestCase):
         self.assertEqual(self.user.phone_number, phone_number)
         mocked_verification_checker.assert_called_once_with(phone_number, otp)
 
-    @patch("api.common.utils.twilio_verification.is_valid")
+    @patch("ranker.common.utils.twilio_verification.is_valid")
     def test_update_phone_number_with_invalid_otp(
         self, mocked_verification_checker
     ):

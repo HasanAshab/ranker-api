@@ -73,14 +73,14 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.google",
     "allauth.socialaccount.providers.facebook",
     "allauth.socialaccount.providers.twitter",
-    "api.common",
-    "api.authentication",
-    "api.accounts",
-    "api.users",
-    "api.recent_searches",
-    "api.level_titles",
-    "api.difficulties",
-    "api.challenges",
+    "ranker.common",
+    "ranker.authentication",
+    "ranker.accounts",
+    "ranker.users",
+    "ranker.recent_searches",
+    "ranker.level_titles",
+    "ranker.difficulties",
+    "ranker.challenges",
 ]
 
 MIDDLEWARE = [
@@ -236,7 +236,7 @@ REST_FRAMEWORK = {
     # Test
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
     # Docs
-    "DEFAULT_SCHEMA_CLASS": "api.docs.openapi.AutoSchema",
+    "DEFAULT_SCHEMA_CLASS": "ranker.docs.openapi.AutoSchema",
 }
 
 # Api Docs
@@ -311,20 +311,20 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 # All-Auth : Headless
 HEADLESS_ONLY = True
-HEADLESS_TOKEN_STRATEGY = "api.authentication.tokens.SessionTokenStrategy"
+HEADLESS_TOKEN_STRATEGY = "ranker.authentication.tokens.SessionTokenStrategy"
 HEADLESS_FRONTEND_URLS = {
     "account_confirm_email": "/account/verify-email/{key}",
     "account_reset_password_from_key": "/account/password/reset/{key}",
 }
 
-# api.common
+# ranker.common
 TWILIO_ACCOUNT_SID = env("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = env("TWILIO_AUTH_TOKEN")
 TWILIO_VERIFY_SERVICE_SID = env("TWILIO_VERIFY_SERVICE_SID")
 
 GROQ_API_KEY = env("GROQ_API_KEY")
 
-# api.users
+# ranker.users
 USERNAME_MAX_LENGTH = 35
 USERNAME_MAX_SUGGESTIONS = 3
 USERNAME_GENERATION_MAX_ATTEMPTS = 10
