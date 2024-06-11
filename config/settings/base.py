@@ -54,7 +54,6 @@ INSTALLED_APPS = [
     "notifications",
     "django_filters",
     "django_extensions",
-    "debug_toolbar",
     "phonenumber_field",
     "colorfield",
     "rest_framework",
@@ -83,7 +82,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
@@ -140,13 +138,6 @@ DATABASES = {
 }
 
 # Mail
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-EMAIL_HOST = env("EMAIL_HOST")
-EMAIL_PORT = env("EMAIL_PORT")
-EMAIL_HOST_USER = env("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = "foo@bar.com"
 
 # User Model

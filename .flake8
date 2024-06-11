@@ -1,9 +1,9 @@
 [flake8]
 exclude =
     migrations
+    settings
     __pycache__
     manage.py
-    settings.py
     .venv
     .env
 extend-ignore = E203
