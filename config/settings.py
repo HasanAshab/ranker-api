@@ -25,7 +25,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SILENCED_SYSTEM_CHECKS = ["rest_framework.W001"]
 
 ENV_FILE = ".env"
-
 Env.read_env(BASE_DIR / ENV_FILE)
 env = Env()
 
@@ -125,7 +124,6 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",

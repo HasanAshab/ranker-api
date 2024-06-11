@@ -41,11 +41,7 @@ class LevelTitle(models.Model):
     dispatch_uid="set_level_title",
 )
 def set_level_title(sender, instance, **kwargs):
-    if not instance.level_title:
-        level_title = LevelTitle.objects.filter(
-            required_level__lte=instance.level
-        )
-        instance.level_title = level_title
+    if not instance.level_title_id:
         instance.level_title = LevelTitle.objects.get_for_user(instance)
 
 
