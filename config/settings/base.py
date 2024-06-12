@@ -42,14 +42,16 @@ INTERNAL_IPS = ["127.0.0.1"]
 
 
 # Application definition
-
-INSTALLED_APPS = [
+DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+]
+
+THIRD_PARTY_APPS = [
     "corsheaders",
     "notifications",
     "django_filters",
@@ -71,6 +73,9 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.google",
     "allauth.socialaccount.providers.facebook",
     "allauth.socialaccount.providers.twitter",
+]
+
+LOCAL_APPS = [
     "ranker.common",
     "ranker.authentication",
     "ranker.accounts",
@@ -80,6 +85,8 @@ INSTALLED_APPS = [
     "ranker.difficulties",
     "ranker.challenges",
 ]
+
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
