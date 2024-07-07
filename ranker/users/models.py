@@ -84,7 +84,10 @@ class UserModel(DirtyFieldsMixin, AbstractUser):
         db_table = "users"
 
     def __str__(self):
-        return f"{self.username} ({self.level_title.title})"
+        level_title = (
+            self.level_title.title if self.level_title_id else "Unknown"
+        )
+        return f"{self.username} ({level_title})"
 
     @property
     def is_email_verified(self) -> bool:

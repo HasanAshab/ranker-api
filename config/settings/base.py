@@ -20,7 +20,7 @@ from environ import Env
 SITE_ID = 1
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SILENCED_SYSTEM_CHECKS = ["rest_framework.W001"]
 
@@ -125,24 +125,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
-
-
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    },
-    "pg": {
-        "ENGINE": "django.db.backends.postgresql",
-        "HOST": env("DB_HOST"),
-        "PORT": env("DB_PORT"),
-        "NAME": env("DB_NAME"),
-        "USER": env("DB_USER"),
-        "PASSWORD": env("DB_PASSWORD"),
-    },
-}
 
 # Mail
 DEFAULT_FROM_EMAIL = "foo@bar.com"
