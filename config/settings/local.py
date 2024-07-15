@@ -1,8 +1,6 @@
 from .base import *
 from .base import BASE_DIR, INSTALLED_APPS, MIDDLEWARE
 
-DEBUG = True
-
 INSTALLED_APPS += [
     "debug_toolbar",
 ]
