@@ -1,12 +1,19 @@
+import time
+from django.conf import settings
 from django.http import StreamingHttpResponse
+from django.core.signing import TimestampSigner
+from rest_framework.response import Response
 from rest_framework.permissions import (
     IsAuthenticated,
 )
 from rest_framework.views import APIView
-
-# from .models import Difficulty
+from knox.models import get_token_model
+from ranker.users.models import User
 from .serializers import TokenLoginSerializer
-import time
+
+
+AuthToken = get_token_model()
+login_token_signer = TimestampSigner(salt=settings.TOKEN_LOGIN_SALT)
 
 
 class TokenSSEView(APIView):
@@ -14,9 +21,10 @@ class TokenSSEView(APIView):
 
     def token_generator(self):
         while True:
-            token = 1
+            token = login_token_signer.sign(self.request.user.username)
+            print(token)
             yield token
-            time.sleep(5)
+            time.sleep(settings.TOKEN_LOGIN_MAX_AGE)
 
     def get(self, request):
         return StreamingHttpResponse(
@@ -25,8 +33,16 @@ class TokenSSEView(APIView):
 
 
 class TokenLoginView(APIView):
-    permission_classes = (IsAuthenticated,)
     serializer_class = TokenLoginSerializer
 
     def post(self, request):
-        pass
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        username = login_token_signer.unsign(
+            serializer.data["token"], max_age=settings.TOKEN_LOGIN_MAX_AGE
+        )
+        user = User.objects.get(username=username)
+        _, api_token = AuthToken.objects.create(user)
+        print(user)
+        return Response(api_token)

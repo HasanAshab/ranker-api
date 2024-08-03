@@ -295,6 +295,12 @@ HEADLESS_FRONTEND_URLS = {
     "account_reset_password_from_key": "/account/password/reset/{key}",
 }
 
+# Ranker
+
+# ranker.authentication
+TOKEN_LOGIN_SALT = env("TOKEN_LOGIN_SALT")
+TOKEN_LOGIN_MAX_AGE = 5  # seconds
+
 # ranker.common
 TWILIO_ACCOUNT_SID = env("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = env("TWILIO_AUTH_TOKEN")
