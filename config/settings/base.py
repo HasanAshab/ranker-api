@@ -54,6 +54,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "corsheaders",
     "notifications",
+    "django_crontab",
     "django_filters",
     "django_extensions",
     "phonenumber_field",
@@ -294,6 +295,9 @@ HEADLESS_FRONTEND_URLS = {
     "account_confirm_email": "/account/verify-email/{key}",
     "account_reset_password_from_key": "/account/password/reset/{key}",
 }
+
+# Cron
+CRONJOBS = [("0 0 * * *", "ranker.users.cron.update_ranks")]
 
 # Ranker
 
