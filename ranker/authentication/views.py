@@ -6,13 +6,8 @@ from rest_framework.permissions import (
     IsAuthenticated,
 )
 from rest_framework.views import APIView
-from knox.models import get_token_model
-from ranker.users.models import User
-from .utils import login_token_signer, generate_login_token
+from .utils import generate_login_token, login_using_token
 from .serializers import TokenLoginSerializer
-
-
-AuthToken = get_token_model()
 
 
 class LoginTokenSSEView(APIView):
@@ -20,7 +15,11 @@ class LoginTokenSSEView(APIView):
 
     def token_generator(self):
         while True:
-            yield generate_login_token(self.request.user)
+            data = {
+                "event": "message",
+                "token": generate_login_token(self.request.user),
+            }
+            yield data
             time.sleep(settings.TOKEN_LOGIN_MAX_AGE)
 
     def get(self, request):
@@ -35,10 +34,5 @@ class TokenLoginView(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-
-        username = login_token_signer.unsign(
-            serializer.data["token"], max_age=settings.TOKEN_LOGIN_MAX_AGE
-        )
-        user = User.objects.get(username=username)
-        _, api_token = AuthToken.objects.create(user)
-        return Response(api_token)
+        _, api_token = login_using_token(serializer.validated_data["token"])
+        return Response({"token": api_token})

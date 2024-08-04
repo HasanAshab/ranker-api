@@ -12,11 +12,18 @@ from ranker.authentication.utils import generate_login_token
 
 @tag("auth", "token_login")
 class TokenLoginTestCase(APITestCase):
-    def test_token_login(self):
-        url = reverse("token_login")
-        user = UserFactory()
-        token = generate_login_token(user)
-        response = self.client.post(url, {"token": token})
+    url = reverse("token_login")
+
+    def setUp(self):
+        self.user = UserFactory()
+
+    def test_login_using_valid_token(self):
+        token = generate_login_token(self.user)
+        response = self.client.post(self.url, {"token": token})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsNotNone(response.data["token"])
-        print(response.data)
+
+    def test_login_using_invalid_token(self):
+        response = self.client.post(self.url, {"token": "invalid_token"})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIsNone(response.data["token"])
