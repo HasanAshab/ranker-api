@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.core.signing import TimestampSigner, BadSignature, SignatureExpired
+from rest_framework.exceptions import ValidationError
 from knox.models import get_token_model
 from ranker.users.models import User
 
@@ -18,7 +19,7 @@ def login_using_token(token):
             token, max_age=settings.TOKEN_LOGIN_MAX_AGE
         )
     except (BadSignature, SignatureExpired):
-        return (None, None)
+        raise ValidationError("Invalid token.")
     user = User.objects.get(username=username)
     _, api_token = AuthToken.objects.create(user)
     return user, api_token
