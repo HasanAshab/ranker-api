@@ -20,7 +20,7 @@ Here are some core features:
 ### Comming Soon
 - **QR Code Login:** Users can login instantly by scaning QR code securely
 - **Notifications:** Users receive notifications for weekly progress, level title achievements, and more.
-- **Regular Challenges:** Users can create regular challenges (e.g. daily, weekly, monthly).
+- **Repeated Challenges:** Users can create repeated challenges (e.g. daily, weekly, monthly).
 
 ## Setup
 

@@ -19,6 +19,11 @@ class Challenge(models.Model):
         COMPLETED = "completed", _("Completed")
         FAILED = "failed", _("Failed")
 
+    class RepeatType(models.TextChoices):
+        NONE = "N", _("One-time")
+        DAILY = "D", _("Daily")
+        WEEKLY = "W", _("Weekly")
+
     title = models.CharField(
         _("Title"),
         max_length=50,
@@ -30,6 +35,14 @@ class Challenge(models.Model):
         choices=Status,
         default=Status.ACTIVE,
         help_text=_("Status of the challenge."),
+    )
+
+    repeat_type = models.CharField(
+        _("Repeat type"),
+        max_length=1,
+        choices=RepeatType,
+        default=RepeatType.NONE,
+        help_text=_("Repeat type of the challenge."),
     )
     is_pinned = models.BooleanField(
         _("Is Pinned"),
