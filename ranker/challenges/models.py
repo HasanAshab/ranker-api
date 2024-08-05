@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.utils import timezone
+from django.dispatch import receiver
 from django.db import models
 from django.utils.translation import (
     gettext_lazy as _,
@@ -108,11 +109,6 @@ class Challenge(models.Model):
         elif status == Challenge.Status.FAILED:
             self.user.subtract_xp(xp_value)
 
-    def save(self, *args, **kwargs):
-        if self.is_pinned:
-            self.order = 0
-        return super().save(*args, **kwargs)
-
 
 class ChallengeStep(models.Model):
     title = models.CharField(
@@ -141,3 +137,13 @@ class ChallengeStep(models.Model):
 
     class Meta:
         ordering = ("order", "id")
+
+
+@receiver(
+    models.signals.pre_save,
+    sender=Challenge,
+    dispatch_uid="set_order_of_pinned_challenge",
+)
+def set_order_of_pinned_challenge(sender, instance, **kwargs):
+    if instance.is_pinned:
+        instance.order = 0

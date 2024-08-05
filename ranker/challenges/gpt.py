@@ -6,8 +6,8 @@ class ChallengeStepsGPTCompletion(GroqGPTCompletion):
     PROMPT = """Break a challenge into several (maximum 5) steps.
     You will be given the challenge.
     Your response should be in the format of array of strings (JSON).
+    I will parse your response as json so no extra spaces and talks.
     example: ["Foo", "Bar", "Baz"]
-    I will parse your response as json so no extra spaces and talks
     """
 
     FALLBACK_RESULT = [
