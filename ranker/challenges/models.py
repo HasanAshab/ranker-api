@@ -8,11 +8,12 @@ from django.utils.translation import (
 
 # from django.contrib.postgres.indexes import GinIndex
 # from django.contrib.postgres.search import SearchVector, SearchVectorField
+from dirtyfields import DirtyFieldsMixin
 from datetime_validators.validators import date_time_is_future_validator
 from .querysets import ChallengeQuerySet
 
 
-class Challenge(models.Model):
+class Challenge(DirtyFieldsMixin, models.Model):
     XP_PERCENTAGE_BONUS_FOR_DUE_DATE = 15
 
     class Status(models.TextChoices):
@@ -107,6 +108,7 @@ class Challenge(models.Model):
             xp_value += self.calculate_xp_bonus()
             self.user.add_xp(xp_value)
         elif status == Challenge.Status.FAILED:
+            # TODO: only substract 10% of xp for the difficulty
             self.user.subtract_xp(xp_value)
 
 
@@ -147,3 +149,12 @@ class ChallengeStep(models.Model):
 def set_order_of_pinned_challenge(sender, instance, **kwargs):
     if instance.is_pinned:
         instance.order = 0
+
+
+@receiver(
+    models.signals.post_save,
+    sender=Challenge,
+    dispatch_uid="foo",
+)
+def foo(sender, instance, **kwargs):
+    instance.get_dirty_fields().get("status")
