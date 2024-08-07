@@ -15,6 +15,7 @@ from .querysets import ChallengeQuerySet
 
 class Challenge(DirtyFieldsMixin, models.Model):
     XP_PERCENTAGE_BONUS_FOR_DUE_DATE = 15
+    XP_PENALTY_PERCENTAGE_FOR_FAILURE = 10
 
     class Status(models.TextChoices):
         ACTIVE = "active", _("Active")
@@ -93,8 +94,8 @@ class Challenge(DirtyFieldsMixin, models.Model):
     def is_failed(self):
         return self.status == self.Status.FAILED
 
-    def calculate_xp_bonus(self):
-        xp_bonus = 0
+    def calculate_xp_reward(self):
+        xp_bonus = self.difficulty.xp_value
         if self.due_date and self.due_date > timezone.now():
             xp_bonus += round(
                 (self.difficulty.xp_value / 100)
@@ -102,14 +103,17 @@ class Challenge(DirtyFieldsMixin, models.Model):
             )
         return xp_bonus
 
+    def calculate_failure_xp_penalty(self):
+        xp_value = self.difficulty.xp_value
+        return round(xp_value * (self.XP_PENALTY_PERCENTAGE_FOR_FAILURE / 100))
+
     def award_completion_xp(self):
-        xp_value = self.difficulty.xp_value + self.calculate_xp_bonus()
-        self.user.add_xp(xp_value)
+        xp_reward = self.calculate_xp_reward()
+        self.user.add_xp(xp_reward)
 
     def penalize_failure_xp(self):
-        xp_value = self.difficulty.xp_value
-        # TODO: only substract 10% of xp for the difficulty
-        self.user.subtract_xp(xp_value)
+        xp_penalty = self.calculate_failure_xp_penalty()
+        self.user.subtract_xp(xp_penalty)
 
 
 class ChallengeStep(models.Model):
@@ -157,9 +161,8 @@ def set_order_of_pinned_challenge(sender, instance, **kwargs):
     dispatch_uid="update_user_xp_on_status_change",
 )
 def update_user_xp_on_status_change(sender, instance, created, **kwargs):
-    if created and "status" in instance.get_dirty_fields():
-        return
-    if instance.status == Challenge.Status.COMPLETED:
-        instance.award_completion_xp()
-    elif instance.status == Challenge.Status.FAILED:
-        instance.penalize_failure_xp()
+    if not created and "status" in instance.get_dirty_fields():
+        if instance.status == Challenge.Status.COMPLETED:
+            instance.award_completion_xp()
+        elif instance.status == Challenge.Status.FAILED:
+            instance.penalize_failure_xp()
