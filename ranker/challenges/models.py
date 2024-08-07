@@ -102,14 +102,14 @@ class Challenge(DirtyFieldsMixin, models.Model):
             )
         return xp_bonus
 
-    def adjust_xp(self, status):
+    def award_completion_xp(self):
+        xp_value = self.difficulty.xp_value + self.calculate_xp_bonus()
+        self.user.add_xp(xp_value)
+
+    def penalize_failure_xp(self):
         xp_value = self.difficulty.xp_value
-        if status == Challenge.Status.COMPLETED:
-            xp_value += self.calculate_xp_bonus()
-            self.user.add_xp(xp_value)
-        elif status == Challenge.Status.FAILED:
-            # TODO: only substract 10% of xp for the difficulty
-            self.user.subtract_xp(xp_value)
+        # TODO: only substract 10% of xp for the difficulty
+        self.user.subtract_xp(xp_value)
 
 
 class ChallengeStep(models.Model):
@@ -154,7 +154,12 @@ def set_order_of_pinned_challenge(sender, instance, **kwargs):
 @receiver(
     models.signals.post_save,
     sender=Challenge,
-    dispatch_uid="foo",
+    dispatch_uid="update_user_xp_on_status_change",
 )
-def foo(sender, instance, **kwargs):
-    instance.get_dirty_fields().get("status")
+def update_user_xp_on_status_change(sender, instance, created, **kwargs):
+    if created and "status" in instance.get_dirty_fields():
+        return
+    if instance.status == Challenge.Status.COMPLETED:
+        instance.award_completion_xp()
+    elif instance.status == Challenge.Status.FAILED:
+        instance.penalize_failure_xp()

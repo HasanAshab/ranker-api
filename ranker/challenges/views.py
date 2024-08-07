@@ -59,12 +59,6 @@ class ChallengeView(RetrieveUpdateDestroyAPIView):
             "difficulty"
         )
 
-    def perform_update(self, serializer):
-        challenge = serializer.instance
-        if status := serializer.validated_data.get("status"):
-            challenge.adjust_xp(status)
-        serializer.save()
-
 
 class ChallengeActivitiesView(APIView):
     permission_classes = (IsAuthenticated,)
