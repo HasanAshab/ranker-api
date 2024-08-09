@@ -12,6 +12,7 @@ from ranker.users.factories import (
 from ranker.challenges.models import Challenge
 from ranker.challenges.factories import (
     ChallengeFactory,
+    ChallengeStepFactory,
 )
 
 
@@ -45,6 +46,21 @@ class UpdateChallengeTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(challenge.title, title)
+
+    def test_completing_challenge_also_completes_steps(self):
+        challenge = ChallengeFactory(user=self.user)
+        ChallengeStepFactory.create_batch(3, challenge=challenge)
+
+        url = self._reverse_challenge_url(challenge)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.patch(
+            url, {"status": Challenge.Status.COMPLETED}
+        )
+        challenge.refresh_from_db()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(challenge.status, Challenge.Status.COMPLETED)
+        self.assertEqual(challenge.steps.count(), 0)
 
     def test_completing_challenge_increase_xp(self):
         challenge = ChallengeFactory(user=self.user)
