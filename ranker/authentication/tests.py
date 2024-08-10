@@ -27,4 +27,5 @@ class TokenLoginTestCase(APITestCase):
         response = self.client.post(self.url, {"token": "invalid_token"})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         print(response.data)
+
         self.assertIsNone(response.data["token"])

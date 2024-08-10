@@ -14,5 +14,11 @@ class TokenLoginSerializer(serializers.Serializer):
         try:
             _, api_token = login_using_token(data["token"])
             return api_token
-        except (BadSignature, SignatureExpired):
-            raise ValidationError("Invalid token.")
+        except SignatureExpired:
+            raise ValidationError(
+                {"token": "Token expired."}, code="token_expired"
+            )
+        except BadSignature:
+            raise ValidationError(
+                {"token": "Invalid token."}, code="invalid_token"
+            )
