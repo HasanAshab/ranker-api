@@ -21,3 +21,6 @@ class ChallengeQuerySet(models.QuerySet):
 class ChallengeStepQuerySet(models.QuerySet):
     def completed(self):
         return self.filter(is_completed=True)
+
+    def active(self):
+        return self.filter(is_completed=False)

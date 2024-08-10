@@ -95,6 +95,18 @@ class Challenge(DirtyFieldsMixin, models.Model):
     def is_failed(self):
         return self.status == self.Status.FAILED
 
+    def mark_as_active(self):
+        self.status = self.Status.ACTIVE
+        self.save()
+
+    def mark_as_completed(self):
+        self.status = self.Status.COMPLETED
+        self.save()
+
+    def mark_as_failed(self):
+        self.status = self.Status.FAILED
+        self.save()
+
     def calculate_xp_reward(self):
         xp_bonus = self.difficulty.xp_value
         if self.due_date and self.due_date > timezone.now():
@@ -117,7 +129,7 @@ class Challenge(DirtyFieldsMixin, models.Model):
         self.user.subtract_xp(xp_penalty)
 
 
-class ChallengeStep(models.Model):
+class ChallengeStep(DirtyFieldsMixin, models.Model):
     title = models.CharField(
         _("Title"),
         max_length=50,
@@ -161,9 +173,9 @@ def set_order_of_pinned_challenge(sender, instance, **kwargs):
 @receiver(
     models.signals.post_save,
     sender=Challenge,
-    dispatch_uid="update_user_xp_on_status_change",
+    dispatch_uid="handle_challenge_status_change",
 )
-def update_user_xp_on_status_change(sender, instance, created, **kwargs):
+def handle_challenge_status_change(sender, instance, created, **kwargs):
     if not created and "status" in instance.get_dirty_fields():
         if instance.status == Challenge.Status.COMPLETED:
             instance.award_completion_xp()
@@ -171,3 +183,15 @@ def update_user_xp_on_status_change(sender, instance, created, **kwargs):
 
         elif instance.status == Challenge.Status.FAILED:
             instance.penalize_failure_xp()
+
+
+@receiver(
+    models.signals.post_save,
+    sender=ChallengeStep,
+    dispatch_uid="handle_challenge_step_completion",
+)
+def handle_challenge_step_completion(sender, instance, created, **kwargs):
+    if "is_completed" in instance.get_dirty_fields() and instance.is_completed:
+        challenge = instance.challenge
+        if challenge.steps.all().active().count() == 0:
+            challenge.mark_as_completed()
