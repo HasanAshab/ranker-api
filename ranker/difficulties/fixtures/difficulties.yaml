@@ -3,8 +3,8 @@
   fields:
     name: Easy
     slug: easy
-    light_color: "#a8e6cf"
-    dark_color: "#379683"
+    light_color: "#B2F0E6"
+    dark_color: "#4E8D74"
     xp_value: 50
 
 - model: difficulties.Difficulty
@@ -12,8 +12,8 @@
   fields:
     name: Medium
     slug: medium
-    light_color: "#ff8c94"
-    dark_color: "#e55039"
+    light_color: "#FFAAA5"
+    dark_color: "#D9544F"
     xp_value: 100
 
 - model: difficulties.Difficulty
@@ -21,8 +21,8 @@
   fields:
     name: Hard
     slug: hard
-    light_color: "#ffcc5c"
-    dark_color: "#ffab00"
+    light_color: "#FFD573"
+    dark_color: "#FFA500"
     xp_value: 300
 
 - model: difficulties.Difficulty
@@ -30,8 +30,8 @@
   fields:
     name: Insane
     slug: insane
-    light_color: "#d8bfd8"
-    dark_color: "#8a2be2"
+    light_color: "#E1BEE7"
+    dark_color: "#673AB7"
     xp_value: 500
 
 - model: difficulties.Difficulty
@@ -39,6 +39,6 @@
   fields:
     name: Impossible
     slug: impossible
-    light_color: "#ffeb3b"
-    dark_color: "#ffc107"
+    light_color: "#FFF176"
+    dark_color: "#FFA000"
     xp_value: 700
