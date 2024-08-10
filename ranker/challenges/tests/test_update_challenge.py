@@ -60,7 +60,7 @@ class UpdateChallengeTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(challenge.status, Challenge.Status.COMPLETED)
-        self.assertEqual(challenge.steps.count(), 0)
+        self.assertEqual(challenge.steps.all().completed().count(), 3)
 
     def test_completing_challenge_increase_xp(self):
         challenge = ChallengeFactory(user=self.user)

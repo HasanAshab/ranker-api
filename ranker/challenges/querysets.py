@@ -16,3 +16,8 @@ class ChallengeQuerySet(models.QuerySet):
 
     def unpinned(self):
         return self.filter(is_pinned=False)
+
+
+class ChallengeStepQuerySet(models.QuerySet):
+    def completed(self):
+        return self.filter(is_completed=True)

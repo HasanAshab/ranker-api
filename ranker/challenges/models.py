@@ -11,6 +11,7 @@ from django.utils.translation import (
 from dirtyfields import DirtyFieldsMixin
 from datetime_validators.validators import date_time_is_future_validator
 from .querysets import ChallengeQuerySet
+from .managers import ChallengeStepManager
 
 
 class Challenge(DirtyFieldsMixin, models.Model):
@@ -138,6 +139,8 @@ class ChallengeStep(models.Model):
         on_delete=models.CASCADE,
     )
 
+    objects = ChallengeStepManager()
+
     def __str__(self):
         return self.title
 
@@ -164,7 +167,7 @@ def update_user_xp_on_status_change(sender, instance, created, **kwargs):
     if not created and "status" in instance.get_dirty_fields():
         if instance.status == Challenge.Status.COMPLETED:
             instance.award_completion_xp()
-            instance.steps.all().delete()
+            instance.steps.mark_as_completed()
 
         elif instance.status == Challenge.Status.FAILED:
             instance.penalize_failure_xp()
