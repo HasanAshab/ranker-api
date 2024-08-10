@@ -164,7 +164,7 @@ def update_user_xp_on_status_change(sender, instance, created, **kwargs):
     if not created and "status" in instance.get_dirty_fields():
         if instance.status == Challenge.Status.COMPLETED:
             instance.award_completion_xp()
-            instance.steps.delete()
+            instance.steps.all().delete()
 
         elif instance.status == Challenge.Status.FAILED:
             instance.penalize_failure_xp()
