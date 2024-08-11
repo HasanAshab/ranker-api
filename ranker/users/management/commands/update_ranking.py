@@ -1,5 +1,7 @@
 from django.core.management.base import BaseCommand
-from ranker.users.utils import update_ranking
+from django.db import transaction
+from ranker.common.utils import chunk_queryset
+from ranker.users.models import User
 
 
 class Command(BaseCommand):
@@ -14,5 +16,13 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **kwargs):
-        update_ranking(kwargs["chunk"])
+        users = User.objects.all().order_by("-total_xp", "-date_joined")
+        current_rank = 1
+        for chunk in chunk_queryset(users, kwargs["chunk"]):
+            for user in chunk:
+                user.rank = current_rank
+                current_rank += 1
+
+            with transaction.atomic():
+                User.objects.bulk_update(chunk, ["rank"])
         self.stdout.write(self.style.SUCCESS("Ranks updated successfully"))
