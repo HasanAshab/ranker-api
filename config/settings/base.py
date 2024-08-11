@@ -297,7 +297,10 @@ HEADLESS_FRONTEND_URLS = {
 }
 
 # Cron
-CRONJOBS = [("0 0 * * *", "ranker.users.cron.update_ranks")]
+CRONJOBS = [
+    ("0 0 * * *", "ranker.users.cron.update_daily_ranking")
+    # ("0 0 * * *", "ranker.challenges.cron.reset_challenge_status")
+]
 
 # Ranker
 
