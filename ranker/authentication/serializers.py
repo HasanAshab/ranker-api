@@ -1,7 +1,13 @@
 from django.core.signing import BadSignature, SignatureExpired
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 from .utils import login_using_token
+
+
+class LoginTokenSSESerializer(serializers.Serializer):
+    token = serializers.CharField()
+
+    class Meta:
+        fields = ("token",)
 
 
 class TokenLoginSerializer(serializers.Serializer):
@@ -10,15 +16,15 @@ class TokenLoginSerializer(serializers.Serializer):
     class Meta:
         fields = ("token",)
 
-    def validate(self, data):
+    def validate_token(self, value):
         try:
-            _, api_token = login_using_token(data["token"])
+            _, api_token = login_using_token(value)
             return api_token
         except SignatureExpired:
-            raise ValidationError(
-                {"token": "Token expired."}, code="token_expired"
+            raise serializers.ValidationError(
+                "Token expired.", code="token_expired"
             )
         except BadSignature:
-            raise ValidationError(
-                {"token": "Invalid token."}, code="invalid_token"
+            raise serializers.ValidationError(
+                "Invalid token.", code="invalid_token"
             )

@@ -16,9 +16,7 @@ def generate_login_token(user):
 
 
 def login_using_token(token):
-    print(token)
-    signature = urlsafe_base64_decode(token)
-    print(token)
+    signature = urlsafe_base64_decode(token).decode("utf-8")
     username = login_token_signer.unsign(
         signature, max_age=settings.TOKEN_LOGIN_MAX_AGE
     )

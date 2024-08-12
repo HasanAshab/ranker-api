@@ -7,26 +7,26 @@ from rest_framework.permissions import (
 )
 from rest_framework.views import APIView
 from .utils import generate_login_token
-from .serializers import TokenLoginSerializer
+from .serializers import LoginTokenSSESerializer, TokenLoginSerializer
 
 
 class LoginTokenSSEView(APIView):
     permission_classes = (IsAuthenticated,)
-
-    def token_generator(self):
-        while True:
-            data = {
-                "event": "message",
-                "token": generate_login_token(self.request.user),
-            }
-            print(data)
-            yield data
-            time.sleep(settings.TOKEN_LOGIN_MAX_AGE)
+    serializer_class = LoginTokenSSESerializer
 
     def get(self, request):
         return StreamingHttpResponse(
-            self.token_generator(), content_type="text/event-stream"
+            self._token_generator(), content_type="text/event-stream"
         )
+
+    def _token_generator(self):
+        while True:
+            token = generate_login_token(self.request.user)
+            yield self._get_response_data(token)
+            time.sleep(settings.TOKEN_LOGIN_MAX_AGE)
+
+    def _get_response_data(self, token):
+        return {"success": True, "message": "OK", "data": {"token": token}}
 
 
 class TokenLoginView(APIView):
@@ -35,5 +35,5 @@ class TokenLoginView(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        api_token = serializer.save()
-        return Response({"token": api_token})
+        auth_token = serializer.validated_data["token"]
+        return Response({"token": auth_token})
