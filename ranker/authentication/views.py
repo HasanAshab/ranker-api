@@ -19,6 +19,7 @@ class LoginTokenSSEView(APIView):
                 "event": "message",
                 "token": generate_login_token(self.request.user),
             }
+            print(data)
             yield data
             time.sleep(settings.TOKEN_LOGIN_MAX_AGE)
 

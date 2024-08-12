@@ -128,7 +128,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 # Mail
-DEFAULT_FROM_EMAIL = "foo@bar.com"
+DEFAULT_FROM_EMAIL = "ranker.noreply@gmail.com"
 
 # User Model
 AUTH_USER_MODEL = "users.UserModel"
@@ -289,11 +289,13 @@ SOCIALACCOUNT_PROVIDERS = {
     },
 }
 # All-Auth : Headless
+FRONTEND_BASE_URL = "https://ranker.com"
 HEADLESS_ONLY = True
 HEADLESS_TOKEN_STRATEGY = "ranker.authentication.tokens.SessionTokenStrategy"
 HEADLESS_FRONTEND_URLS = {
-    "account_confirm_email": "/account/verify-email/{key}",
-    "account_reset_password_from_key": "/account/password/reset/{key}",
+    "account_confirm_email": FRONTEND_BASE_URL + "/account/verify-email/{key}",
+    "account_reset_password_from_key": FRONTEND_BASE_URL
+    + "/account/password/reset/{key}",
 }
 
 # Cron

@@ -11,12 +11,14 @@ login_token_signer = TimestampSigner(salt=settings.TOKEN_LOGIN_SALT)
 
 def generate_login_token(user):
     signature = login_token_signer.sign(user.username)
-    token = urlsafe_base64_encode(signature)
+    token = urlsafe_base64_encode(signature.encode("utf-8"))
     return token
 
 
 def login_using_token(token):
+    print(token)
     signature = urlsafe_base64_decode(token)
+    print(token)
     username = login_token_signer.unsign(
         signature, max_age=settings.TOKEN_LOGIN_MAX_AGE
     )
