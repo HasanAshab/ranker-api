@@ -24,7 +24,7 @@ class Challenge(DirtyFieldsMixin, models.Model):
         FAILED = "failed", _("Failed")
 
     class RepeatType(models.TextChoices):
-        NONE = "N", _("One-time")
+        ONCE = "O", _("One time Only")
         DAILY = "D", _("Daily")
         WEEKLY = "W", _("Weekly")
 
@@ -45,7 +45,7 @@ class Challenge(DirtyFieldsMixin, models.Model):
         _("Repeat type"),
         max_length=1,
         choices=RepeatType,
-        default=RepeatType.NONE,
+        default=RepeatType.ONCE,
         help_text=_("Repeat type of the challenge."),
     )
     is_pinned = models.BooleanField(
