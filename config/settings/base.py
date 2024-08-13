@@ -16,6 +16,8 @@ from corsheaders.defaults import (
     default_headers,
 )
 from environ import Env
+from command_scheduler.enums import ScheduleType
+
 
 SITE_ID = 1
 
@@ -77,6 +79,7 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
+    "command_scheduler",
     "ranker.common",
     "ranker.authentication",
     "ranker.accounts",
@@ -298,12 +301,31 @@ HEADLESS_FRONTEND_URLS = {
     + "/account/password/reset/{key}",
 }
 
-# Cron
-CRONJOBS = [
-    ("0 0 * * *", "ranker.users.cron.update_daily_ranking")
-    # ("0 0 * * *", "ranker.challenges.cron.reset_challenge_status")
-]
 
+# Command Scheduler
+
+SCHEDULED_COMMANDS = [
+    {
+        "command": "update_ranking",
+        "schedule": ScheduleType.DAILY,
+        "enabled": True,
+    },
+    {
+        "command": "reset_daily_challenges",
+        "schedule": ScheduleType.DAILY,
+        "enabled": True,
+    },
+    {
+        "task": "reset_weekly_challenges",
+        "schedule": ScheduleType.WEEKLY,
+        "enabled": True,
+    },
+    {
+        "task": "reset_monthly_challenges",
+        "schedule": ScheduleType.MONTHLY,
+        "enabled": True,
+    },
+]
 # Ranker
 
 # ranker.authentication
