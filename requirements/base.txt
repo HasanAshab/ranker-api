@@ -84,5 +84,4 @@ tzdata==2024.1
 uritemplate==4.1.1
 urllib3==1.26.12
 yarl==1.9.4
-django-crontab==0.7.1
 groq==0.8.0
