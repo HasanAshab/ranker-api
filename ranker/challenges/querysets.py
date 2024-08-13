@@ -5,6 +5,9 @@ class ChallengeQuerySet(models.QuerySet):
     def active(self):
         return self.filter(status=self.model.Status.ACTIVE)
 
+    def inactive(self):
+        return self.exclude(status=self.model.Status.ACTIVE)
+
     def completed(self):
         return self.filter(status=self.model.Status.COMPLETED)
 
@@ -16,6 +19,24 @@ class ChallengeQuerySet(models.QuerySet):
 
     def unpinned(self):
         return self.filter(is_pinned=False)
+
+    def daily(self):
+        return self.filter(repeat_type=self.model.RepeatType.DAILY)
+
+    def weekly(self):
+        return self.filter(repeat_type=self.model.RepeatType.WEEKLY)
+
+    def monthly(self):
+        return self.filter(repeat_type=self.model.RepeatType.MONTHLY)
+
+    def mark_as_active(self):
+        return self.update(status=self.model.Status.ACTIVE)
+
+    def mark_as_completed(self):
+        return self.update(status=self.model.Status.COMPLETED)
+
+    def mark_as_failed(self):
+        return self.update(status=self.model.Status.FAILED)
 
 
 class ChallengeStepQuerySet(models.QuerySet):

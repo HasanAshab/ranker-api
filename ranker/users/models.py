@@ -91,6 +91,7 @@ class UserModel(DirtyFieldsMixin, AbstractUser):
 
     @property
     def is_email_verified(self) -> bool:
+        # TODO: Check if n+1 prob occures
         return self.emailaddress_set.filter(
             primary=True, verified=True
         ).exists()
@@ -106,19 +107,21 @@ class UserModel(DirtyFieldsMixin, AbstractUser):
             return self.level
         return calculate_level(previous_xp)
 
-    def add_xp(self, amount):
+    def add_xp(self, amount, commit=True):
         if amount > settings.XP_PER_LEVEL:
             amount = settings.XP_PER_LEVEL
         self.total_xp += amount
-        self.save()
+        if commit:
+            self.save()
 
-    def subtract_xp(self, amount):
+    def subtract_xp(self, amount, commit=True):
         if amount > settings.XP_PER_LEVEL:
             amount = settings.XP_PER_LEVEL
         if amount > self.total_xp:
             amount = self.total_xp
         self.total_xp -= amount
-        self.save()
+        if commit:
+            self.save()
 
     def has_leveled_up(self):
         return self.level > self.previous_level

@@ -27,6 +27,7 @@ class Challenge(DirtyFieldsMixin, models.Model):
         ONCE = "O", _("One time Only")
         DAILY = "D", _("Daily")
         WEEKLY = "W", _("Weekly")
+        MONTHLY = "M", _("Monthly")
 
     title = models.CharField(
         _("Title"),
@@ -40,7 +41,6 @@ class Challenge(DirtyFieldsMixin, models.Model):
         default=Status.ACTIVE,
         help_text=_("Status of the challenge."),
     )
-
     repeat_type = models.CharField(
         _("Repeat type"),
         max_length=1,
@@ -95,17 +95,20 @@ class Challenge(DirtyFieldsMixin, models.Model):
     def is_failed(self):
         return self.status == self.Status.FAILED
 
-    def mark_as_active(self):
+    def mark_as_active(self, commit=True):
         self.status = self.Status.ACTIVE
-        self.save()
+        if commit:
+            self.save()
 
-    def mark_as_completed(self):
+    def mark_as_completed(self, commit=True):
         self.status = self.Status.COMPLETED
-        self.save()
+        if commit:
+            self.save()
 
-    def mark_as_failed(self):
+    def mark_as_failed(self, commit=True):
         self.status = self.Status.FAILED
-        self.save()
+        if commit:
+            self.save()
 
     def calculate_xp_reward(self):
         xp_bonus = self.difficulty.xp_value
@@ -120,13 +123,13 @@ class Challenge(DirtyFieldsMixin, models.Model):
         xp_value = self.difficulty.xp_value
         return round(xp_value * (self.XP_PENALTY_PERCENTAGE_FOR_FAILURE / 100))
 
-    def award_completion_xp(self):
+    def award_completion_xp(self, commit=True):
         xp_reward = self.calculate_xp_reward()
-        self.user.add_xp(xp_reward)
+        self.user.add_xp(xp_reward, commit)
 
-    def penalize_failure_xp(self):
+    def penalize_failure_xp(self, commit=True):
         xp_penalty = self.calculate_failure_xp_penalty()
-        self.user.subtract_xp(xp_penalty)
+        self.user.subtract_xp(xp_penalty, commit)
 
 
 class ChallengeStep(DirtyFieldsMixin, models.Model):

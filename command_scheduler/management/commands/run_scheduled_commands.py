@@ -10,7 +10,7 @@ from command_scheduler.enums import ScheduleType
 class Command(BaseCommand):
     help = "Run scheduled commands"
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **kwargs):
         now = timezone.now()
         for command_config in settings.SCHEDULED_COMMANDS:
             if not command_config.get("enabled", True):
