@@ -27,17 +27,28 @@ class ChallengeSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "status",
+            "repeat_type",
             "is_pinned",
             "due_date",
             "difficulty",
             "order",
         )
 
-    def validate(self, validated_data):
-        difficulty_id = validated_data.pop("difficulty", {}).get("id")
+    def validate(self, data):
+        repeat_type = data.get("repeat_type")
+        if (
+            "due_date" in data
+            and repeat_type
+            and repeat_type != Challenge.RepeatType.ONCE
+        ):
+            raise serializers.ValidationError(
+                "'due_date' not allowed for repeated challenges",
+                code="due_date_not_allowed",
+            )
+        difficulty_id = data.pop("difficulty", {}).get("id")
         if difficulty_id:
-            validated_data["difficulty_id"] = difficulty_id
-        return validated_data
+            data["difficulty_id"] = difficulty_id
+        return data
 
 
 class ChallengeDifficultyCountSerializer(serializers.ModelSerializer):
