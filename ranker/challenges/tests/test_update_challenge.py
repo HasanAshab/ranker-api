@@ -18,6 +18,8 @@ from ranker.challenges.factories import (
 
 @tag("challenges", "update_challenge")
 class UpdateChallengeTestCase(APITestCase):
+    fixtures = ["level_titles"]
+
     def setUp(self):
         self.user = UserFactory()
 

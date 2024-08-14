@@ -17,6 +17,7 @@ from ranker.challenges.factories import (
 
 @tag("challenges", "challenge_activities")
 class ChallengeActivitiesTestCase(APITestCase):
+    fixtures = ["level_titles"]
     url = reverse("challenge_activities")
 
     def setUp(self):

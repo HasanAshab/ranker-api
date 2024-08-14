@@ -12,6 +12,7 @@ from ranker.users.factories import (
 
 @tag("account", "phone_number")
 class PhoneNumberTestCase(APITestCase):
+    fixtures = ["level_titles"]
     url = reverse("phone_number")
 
     def setUp(self):

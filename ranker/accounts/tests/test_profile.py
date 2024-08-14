@@ -12,6 +12,7 @@ from ranker.users.factories import (
 
 @tag("account", "profile")
 class ProfileTestCase(APITestCase):
+    fixtures = ["level_titles"]
     url = reverse("profile")
 
     def setUp(self):

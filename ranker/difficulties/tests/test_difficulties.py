@@ -14,6 +14,8 @@ from ranker.difficulties.factories import (
 
 @tag("difficulties")
 class DifficultiesTestCase(APITestCase):
+    fixtures = ["level_titles"]
+
     def setUp(self):
         self.user = UserFactory()
 

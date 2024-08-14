@@ -20,6 +20,6 @@ urlpatterns = [
     path(
         "account/suggest-username/",
         SuggestUsernameView.as_view(),
-        name="suggest-username",
+        name="suggest_username",
     ),
 ]

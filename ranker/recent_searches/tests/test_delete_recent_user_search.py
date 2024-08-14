@@ -14,6 +14,8 @@ from ranker.recent_searches.factories import (
 
 @tag("recent_user_searches", "delete_recent_user_search")
 class DeleteRecentUserSearchTestCase(APITestCase):
+    fixtures = ["level_titles"]
+
     def setUp(self):
         self.user = UserFactory()
 

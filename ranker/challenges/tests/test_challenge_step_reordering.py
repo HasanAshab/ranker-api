@@ -15,6 +15,8 @@ from ranker.challenges.factories import (
 
 @tag("challenges", "challenge_steps", "challenge_step_reordering")
 class ChallengeStepReorderingTestCase(APITestCase):
+    fixtures = ["level_titles"]
+
     def setUp(self):
         self.user = UserFactory()
 

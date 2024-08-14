@@ -14,6 +14,8 @@ from ranker.challenges.factories import (
 
 @tag("challenges", "delete_challenge")
 class DeleteChallengeTestCase(APITestCase):
+    fixtures = ["level_titles"]
+
     def setUp(self):
         self.user = UserFactory()
 

@@ -14,6 +14,7 @@ from ranker.recent_searches.factories import (
 
 @tag("recent_user_searches", "list_recent_user_searches")
 class RecentUserSearchesTestCase(APITestCase):
+    fixtures = ["level_titles"]
     url = reverse("recent_searches")
 
     def setUp(self):

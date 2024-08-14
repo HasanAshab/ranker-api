@@ -12,6 +12,7 @@ from ranker.authentication.utils import generate_login_token
 
 @tag("auth", "token_login")
 class TokenLoginTestCase(APITestCase):
+    fixtures = ["level_titles"]
     url = reverse("token_login")
 
     def setUp(self):

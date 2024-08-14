@@ -4,9 +4,10 @@ from rest_framework import status
 from django.urls import reverse
 
 
-@tag("account", "suggest-username")
+@tag("account", "suggest_username")
 class SuggestUsernameViewTestCase(APITestCase):
-    url = reverse("suggest-username")
+    fixtures = ["level_titles"]
+    url = reverse("suggest_username")
 
     def test_suggest_username(self):
         data = {"prefix": "test", "max_suggestions": 3}

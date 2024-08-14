@@ -17,6 +17,7 @@ from ranker.challenges.models import Challenge
 
 @tag("challenges", "create_challenge")
 class CreateChallengeTestCase(APITestCase):
+    fixtures = ["level_titles"]
     url = reverse("challenges")
 
     def setUp(self):
