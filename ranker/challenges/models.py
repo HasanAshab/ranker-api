@@ -10,6 +10,7 @@ from django.utils.translation import (
 # from django.contrib.postgres.search import SearchVector, SearchVectorField
 from dirtyfields import DirtyFieldsMixin
 from datetime_validators.validators import date_time_is_future_validator
+from rest_framework.exceptions import ValidationError
 from .querysets import ChallengeQuerySet
 from .managers import ChallengeStepManager
 
@@ -95,6 +96,14 @@ class Challenge(DirtyFieldsMixin, models.Model):
     def is_failed(self):
         return self.status == self.Status.FAILED
 
+    @property
+    def is_repeated(self):
+        return self.repeat_type in [
+            self.RepeatType.DAILY,
+            self.RepeatType.WEEKLY,
+            self.RepeatType.MONTHLY,
+        ]
+
     def mark_as_active(self, commit=True):
         self.status = self.Status.ACTIVE
         if commit:
@@ -171,6 +180,19 @@ class ChallengeStep(DirtyFieldsMixin, models.Model):
 def set_order_of_pinned_challenge(sender, instance, **kwargs):
     if instance.is_pinned:
         instance.order = 0
+
+
+@receiver(
+    models.signals.pre_save,
+    sender=Challenge,
+    dispatch_uid="validate_fields",
+)
+def validate_fields(sender, instance, **kwargs):
+    if instance.due_date and instance.is_repeated:
+        raise ValidationError(
+            {"due_date": "'due_date' not allowed for repeated challenges"},
+            code="due_date_not_allowed",
+        )
 
 
 @receiver(

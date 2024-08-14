@@ -1,7 +1,7 @@
+from datetime import timedelta
 from django.test import tag
 from django.urls import reverse
-
-# from django.utils import timezone
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import (
     APITestCase,
@@ -34,7 +34,7 @@ class CreateChallengeTestCase(APITestCase):
         payload = {
             "title": "test",
             "difficulty": {"id": difficulty.pk},
-            "due_date": "",
+            "due_date": timezone.now() + timedelta(days=1),
         }
 
         self.client.force_authenticate(user=self.user)
@@ -44,15 +44,32 @@ class CreateChallengeTestCase(APITestCase):
             response.status_code,
             status.HTTP_201_CREATED,
         )
-        self.assertIsNotNone(self.user.challenge_set.first())
+        self.assertTrue(self.user.challenge_set.exists())
 
-    def test_repeated_challenge_not_allow_due_date(self):
+    def test_can_not_create_repeated_challenge_with_due_date(self):
         difficulty = DifficultyFactory()
         payload = {
             "title": "test",
             "difficulty": {"id": difficulty.pk},
-            "repeat_type": Challenge.RepeatModel.DAILY,
-            "due_date": "",
+            "repeat_type": Challenge.RepeatType.DAILY,
+            "due_date": timezone.now() + timedelta(days=1),
+        }
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(self.url, payload)
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST,
+        )
+        self.assertFalse(self.user.challenge_set.exists())
+
+    def test_can_create_repeat_once_challenge_with_due_date(self):
+        difficulty = DifficultyFactory()
+        payload = {
+            "title": "test",
+            "difficulty": {"id": difficulty.pk},
+            "repeat_type": Challenge.RepeatType.ONCE,
+            "due_date": timezone.now() + timedelta(days=1),
         }
 
         self.client.force_authenticate(user=self.user)
@@ -62,4 +79,4 @@ class CreateChallengeTestCase(APITestCase):
             response.status_code,
             status.HTTP_201_CREATED,
         )
-        self.assertIsNotNone(self.user.challenge_set.first())
+        self.assertTrue(self.user.challenge_set.exists())

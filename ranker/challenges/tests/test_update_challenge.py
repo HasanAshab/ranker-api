@@ -170,3 +170,32 @@ class UpdateChallengeTestCase(APITestCase):
         response = self.client.patch(url, data={"title": "New Title"})
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_can_not_update_repeated_challenge_with_due_date(self):
+        data = {
+            "due_date": timezone.now() + timedelta(days=1),
+        }
+        challenge = ChallengeFactory(user=self.user, repeated=True)
+        url = self._reverse_challenge_url(challenge)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.patch(url, data)
+        challenge.refresh_from_db()
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIsNone(challenge.due_date)
+
+    def test_can_update_repeat_once_challenge_with_due_date(self):
+        data = {
+            "due_date": timezone.now() + timedelta(days=1),
+        }
+        challenge = ChallengeFactory(
+            user=self.user, repeat_type=Challenge.RepeatType.ONCE
+        )
+
+        url = self._reverse_challenge_url(challenge)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.patch(url, data)
+        challenge.refresh_from_db()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsNotNone(challenge.due_date)

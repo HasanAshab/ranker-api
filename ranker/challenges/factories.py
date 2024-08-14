@@ -21,6 +21,7 @@ class ChallengeFactory(factory.django.DjangoModelFactory):
         has_due_date = factory.Trait(
             due_date=timezone.now() + timedelta(days=1)
         )
+        repeated = factory.Trait(repeat_type=Challenge.RepeatType.DAILY)
 
 
 class ChallengeStepFactory(factory.django.DjangoModelFactory):
