@@ -306,26 +306,34 @@ HEADLESS_FRONTEND_URLS = {
 
 SCHEDULED_COMMANDS = [
     {
+        "enabled": True,
+        "schedule": ScheduleType.DAILY,
         "command": "update_ranking",
-        "schedule": ScheduleType.DAILY,
-        "enabled": True,
+        "kwargs": {"chunk": 1000},
     },
     {
-        "command": "reset_daily_challenges",
-        "schedule": ScheduleType.DAILY,
         "enabled": True,
+        "schedule": ScheduleType.DAILY,
+        "command": "reset_repeated_challenges",
+        "args": ["D"],
+        "kwargs": {"chunk": 1000},
     },
     {
-        "task": "reset_weekly_challenges",
+        "enabled": True,
         "schedule": ScheduleType.WEEKLY,
-        "enabled": True,
+        "task": "reset_repeated_challenges",
+        "args": ["W"],
+        "kwargs": {"chunk": 1000},
     },
     {
-        "task": "reset_monthly_challenges",
-        "schedule": ScheduleType.MONTHLY,
         "enabled": True,
+        "schedule": ScheduleType.MONTHLY,
+        "task": "reset_repeated_challenges",
+        "args": ["M"],
+        "kwargs": {"chunk": 1000},
     },
 ]
+
 # Ranker
 
 # ranker.authentication

@@ -2,3 +2,4 @@
 1. emailaddress n+1 prob
 2. test reset regular challenge
 3. due_date not allowed for regular challenge
+4. SCHEDULED_COMMANDS settings dont hard code RepeatType

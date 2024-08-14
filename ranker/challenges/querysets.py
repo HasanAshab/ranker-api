@@ -20,6 +20,11 @@ class ChallengeQuerySet(models.QuerySet):
     def unpinned(self):
         return self.filter(is_pinned=False)
 
+    def repeated(self, repeat_type=None):
+        if repeat_type is None:
+            return self.exclude(repeat_type=self.model.RepeatType.ONCE)
+        return self.filter(repeat_type=repeat_type)
+
     def daily(self):
         return self.filter(repeat_type=self.model.RepeatType.DAILY)
 

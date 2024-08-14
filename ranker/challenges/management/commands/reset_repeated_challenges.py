@@ -8,9 +8,19 @@ from ranker.challenges.models import Challenge
 
 
 class Command(BaseCommand):
-    help = "Reset daily challenges of all users"
+    help = "Reset repeated challenges of all users"
 
     def add_arguments(self, parser):
+        parser.add_argument(
+            "repeat_type",
+            type=str,
+            choices=[
+                Challenge.RepeatType.DAILY,
+                Challenge.RepeatType.WEEKLY,
+                Challenge.RepeatType.MONTHLY,
+            ],
+            help="Repeat type to be reset",
+        )
         parser.add_argument(
             "--chunk",
             type=int,
@@ -18,9 +28,11 @@ class Command(BaseCommand):
             help="Chunk size",
         )
 
-    def handle(self, *args, **kwargs):
+    def handle(self, repeat_type, **kwargs):
         # return self.seed()
-        daily_challenges = Challenge.objects.daily().select_related("user")
+        daily_challenges = Challenge.objects.repeated(
+            repeat_type
+        ).select_related("user")
         for challenge_chunk in chunk_queryset(
             daily_challenges, kwargs["chunk"]
         ):
@@ -34,7 +46,7 @@ class Command(BaseCommand):
                 Challenge.objects.bulk_update(challenge_chunk, ["status"])
                 User.objects.bulk_update(user_chunk, ["total_xp"])
 
-        Challenge.objects.daily().inactive().mark_as_active()
+        Challenge.objects.repeated(repeat_type).inactive().mark_as_active()
         self.stdout.write("Successfully reset daily challenges of all users")
 
 
