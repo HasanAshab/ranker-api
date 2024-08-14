@@ -9,9 +9,6 @@ from allauth.account.models import (
 
 
 class UserFactory(factory.django.DjangoModelFactory):
-    level_title = factory.SubFactory(
-        "ranker.level_titles.factories.LevelTitleFactory"
-    )
     email = factory.Faker("email")
     username = factory.Faker("user_name")
     name = factory.Faker("name")

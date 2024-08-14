@@ -1,5 +1,5 @@
-* repeat_type -> repeat_frequency
 1. emailaddress n+1 prob
 2. test reset regular challenge
-3. due_date not allowed for regular challenge
 4. SCHEDULED_COMMANDS settings dont hard code RepeatType
+5. check for bugs in level title demotion when a user fails several repeated challenge
+6. load fixures on each

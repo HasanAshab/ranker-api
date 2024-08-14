@@ -29,7 +29,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, repeat_type, **kwargs):
-        # return self.seed()
+        self.seed()
         daily_challenges = Challenge.objects.repeated(
             repeat_type
         ).select_related("user")
@@ -49,28 +49,27 @@ class Command(BaseCommand):
         Challenge.objects.repeated(repeat_type).inactive().mark_as_active()
         self.stdout.write("Successfully reset daily challenges of all users")
 
+        self.user1.refresh_from_db()
+        self.user2.refresh_from_db()
+        print(self.user1, self.user2)
 
-"""
     def seed(self):
         from ranker.difficulties.models import Difficulty
+        from ranker.users.factories import UserFactory
+        from ranker.challenges.factories import ChallengeFactory
 
-        diff = Difficulty.objects.first()
-        print(diff)
-        # Clear existing data if needed (be careful in production)
         Challenge.objects.all().delete()
         User.objects.all().delete()
 
-        # Create mock users
-        users = [
-            User(username=f"user{i}", total_xp=random.randint(0, 1000))
-            for i in range(10)
-        ]
-        User.objects.bulk_create(users)
+        diff = Difficulty.objects.first()
+        print(diff, diff.xp_value)
 
-        challenge1 = Challenge.create(
-            user=user, repeat_type=Challenge.RepeatType.DAILY, difficulty=diff
+        self.user1 = UserFactory(username="hasan", total_xp=50)
+        self.user2 = UserFactory(username="hossein", total_xp=100)
+
+        ChallengeFactory.create_batch(
+            2,
+            user=self.user1,
+            repeat_type=Challenge.RepeatType.DAILY,
+            difficulty=diff,
         )
-        challenge1 = Challenge.create(
-            user=user, repeat_type=Challenge.RepeatType.DAILY, difficulty=diff
-        )
-"""

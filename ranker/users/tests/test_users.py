@@ -12,6 +12,8 @@ from ranker.users.factories import (
 
 @tag("users", "list_users")
 class UsersTestCase(APITestCase):
+    fixtures = ["level_titles"]
+
     def setUp(self):
         self.user = UserFactory()
 
