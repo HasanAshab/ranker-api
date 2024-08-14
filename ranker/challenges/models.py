@@ -47,7 +47,7 @@ class Challenge(DirtyFieldsMixin, models.Model):
         max_length=1,
         choices=RepeatType,
         default=RepeatType.ONCE,
-        help_text=_("Repeat type of the challenge."),
+        help_text=_("How often the challenge repeats."),
     )
     is_pinned = models.BooleanField(
         _("Is Pinned"),
@@ -58,7 +58,7 @@ class Challenge(DirtyFieldsMixin, models.Model):
         _("Due Date"),
         null=True,
         blank=True,
-        help_text=_("Due date of the challenge."),
+        help_text=_("Due date to complete the challenge."),
         validators=[date_time_is_future_validator],
     )
     order = models.IntegerField(
