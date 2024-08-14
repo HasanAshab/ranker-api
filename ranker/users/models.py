@@ -18,6 +18,7 @@ from phonenumber_field.modelfields import (
     PhoneNumberField,
 )
 from dirtyfields import DirtyFieldsMixin
+from rest_framework.exceptions import ValidationError
 from ranker.common.utils import LazyProxy
 from ranker.accounts.utils import generate_name_from_username
 from .utils import calculate_level
@@ -141,6 +142,34 @@ User: UserModel = LazyProxy(get_user_model)
 def set_default_rank(sender, instance, **kwargs):
     if instance._state.adding and not instance.rank:
         instance.rank = User.objects.count() + 1
+
+
+@receiver(
+    models.signals.pre_save,
+    sender=settings.AUTH_USER_MODEL,
+    dispatch_uid="validate_xp_change",
+)
+def validate_xp_change(sender, instance, **kwargs):
+    """
+    Prevents the user from leveling up or down by more than one level
+    at a time to avoid potential bugs in level title assignment logic.
+
+    The function checks if the difference between the
+    current and previous level exceeds 1. If it does,
+    a ValidationError is raised. This restriction exists
+    because the current title assignment logic only supports
+    changes of one level at a time and may produce incorrect
+    results if larger jumps occur.
+    """
+
+    if abs(instance.level - instance.previous_level) > 1:
+        raise ValidationError(
+            {
+                "total_xp": "Can't add or subtract more than"
+                f"{settings.XP_PER_LEVEL} XP at a time"
+            },
+            code="invalid_xp_change",
+        )
 
 
 @receiver(user_signed_up, dispatch_uid="generate_name")

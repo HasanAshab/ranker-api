@@ -178,7 +178,7 @@ class ChallengeStep(DirtyFieldsMixin, models.Model):
     dispatch_uid="set_order_of_pinned_challenge",
 )
 def set_order_of_pinned_challenge(sender, instance, **kwargs):
-    if instance.is_pinned:
+    if instance._state.adding and instance.is_pinned:
         instance.order = 0
 
 

@@ -36,6 +36,16 @@ class LevelTitle(models.Model):
 
 
 @receiver(
+    models.signals.post_delete,
+    sender=LevelTitle,
+    dispatch_uid="demote_level_title",
+)
+def demote_level_title(sender, instance, **kwargs):
+    level_title = LevelTitle.objects.get_previous(instance)
+    instance.users.update(level_title=level_title)
+
+
+@receiver(
     models.signals.pre_save,
     sender=settings.AUTH_USER_MODEL,
     dispatch_uid="set_level_title",
@@ -66,13 +76,3 @@ def update_level_title(sender, instance, **kwargs):
             required_level__lte=instance.level
         ).first()
         instance.level_title = level_title
-
-
-@receiver(
-    models.signals.post_delete,
-    sender=LevelTitle,
-    dispatch_uid="demote_level_title",
-)
-def demote_level_title(sender, instance, **kwargs):
-    level_title = LevelTitle.objects.get_previous(instance)
-    instance.users.update(level_title=level_title)

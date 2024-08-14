@@ -56,7 +56,6 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "corsheaders",
     "notifications",
-    "django_crontab",
     "django_filters",
     "django_extensions",
     "phonenumber_field",
