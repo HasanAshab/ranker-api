@@ -15,10 +15,10 @@ class Command(BaseCommand):
             help="Chunk size",
         )
 
-    def handle(self, *args, **kwargs):
+    def handle(self, *args, **options):
         users = User.objects.all().order_by("-total_xp", "-date_joined")
         current_rank = 1
-        for chunk in chunk_queryset(users, kwargs["chunk"]):
+        for chunk in chunk_queryset(users, options["chunk"]):
             for user in chunk:
                 user.rank = current_rank
                 current_rank += 1

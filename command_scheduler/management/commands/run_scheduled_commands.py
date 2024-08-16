@@ -32,6 +32,9 @@ class Command(BaseCommand):
 
     def _call_command(self, command_config):
         command_name = command_config["command"]
-        args = command_config.get("args", [])
-        kwargs = command_config.get("kargs", {})
-        management.call_command(command_name, *args, **kwargs)
+        args = command_config.get("args", {})
+        positional_args = args.get("args", [])
+        optional_args = args.get("options", {})
+        management.call_command(
+            command_name, *positional_args, **optional_args
+        )

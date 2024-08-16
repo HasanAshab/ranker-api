@@ -17,6 +17,7 @@ from corsheaders.defaults import (
 )
 from environ import Env
 from command_scheduler.enums import ScheduleType
+from command_scheduler.utils import args
 
 
 SITE_ID = 1
@@ -308,28 +309,26 @@ SCHEDULED_COMMANDS = [
         "enabled": True,
         "schedule": ScheduleType.DAILY,
         "command": "update_ranking",
-        "kwargs": {"chunk": 1000},
+        "args": args(chunk=1000),
     },
     {
         "enabled": True,
         "schedule": ScheduleType.DAILY,
         "command": "reset_repeated_challenges",
-        "args": ["D"],
-        "kwargs": {"chunk": 1000},
+        "args": args("D", chunk=1000),
     },
     {
         "enabled": True,
         "schedule": ScheduleType.WEEKLY,
         "task": "reset_repeated_challenges",
         "args": ["W"],
-        "kwargs": {"chunk": 1000},
+        "args": args("W", chunk=1000),
     },
     {
         "enabled": True,
         "schedule": ScheduleType.MONTHLY,
         "task": "reset_repeated_challenges",
-        "args": ["M"],
-        "kwargs": {"chunk": 1000},
+        "args": args("M", chunk=1000),
     },
 ]
 

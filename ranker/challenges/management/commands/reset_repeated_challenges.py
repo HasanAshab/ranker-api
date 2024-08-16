@@ -28,13 +28,13 @@ class Command(BaseCommand):
             help="Chunk size",
         )
 
-    def handle(self, repeat_type, **kwargs):
+    def handle(self, repeat_type, **options):
         self.seed()
         daily_challenges = Challenge.objects.repeated(
             repeat_type
         ).select_related("user")
         for challenge_chunk in chunk_queryset(
-            daily_challenges, kwargs["chunk"]
+            daily_challenges, options["chunk"]
         ):
             user_chunk = set()
             for challenge in challenge_chunk:
