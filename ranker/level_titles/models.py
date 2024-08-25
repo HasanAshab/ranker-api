@@ -61,18 +61,6 @@ def set_level_title(sender, instance, **kwargs):
     dispatch_uid="update_level_title",
 )
 def update_level_title(sender, instance, **kwargs):
-    if instance.has_leveled_up():
-        level_title = LevelTitle.objects.filter(
-            required_level=instance.level,
-        ).first()
-        if level_title:
-            instance.level_title = level_title
-
-    if (
-        instance.has_leveled_down()
-        and instance.level < instance.level_title.required_level
-    ):
-        level_title = LevelTitle.objects.filter(
-            required_level__lte=instance.level
-        ).first()
+    if instance.level != instance.previous_level:
+        level_title = LevelTitle.objects.get_for_user(instance)
         instance.level_title = level_title
