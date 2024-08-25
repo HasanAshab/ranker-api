@@ -28,21 +28,33 @@ class Command(BaseCommand):
             help="Chunk size",
         )
 
-    def handle(self, repeat_type, **options):
+    def handle(self, repeat_type, **kwargs):
         self.seed()
-        daily_challenges = Challenge.objects.repeated(
-            repeat_type
-        ).select_related("user")
+        daily_challenges = (
+            Challenge.objects.active()
+            .repeated(repeat_type)
+            .select_related("user")
+        )
         for challenge_chunk in chunk_queryset(
-            daily_challenges, options["chunk"]
+            daily_challenges, kwargs["chunk"]
         ):
             user_chunk = set()
             for challenge in challenge_chunk:
+                if challenge.user in user_chunk:
+                    challenge.user = next(
+                        (
+                            user
+                            for user in user_chunk
+                            if user == challenge.user
+                        ),
+                        None,
+                    )
                 user_chunk.add(challenge.user)
                 challenge.penalize_failure_xp(commit=False)
                 challenge.mark_as_active(commit=False)
 
             with transaction.atomic():
+                print(user_chunk)
                 Challenge.objects.bulk_update(challenge_chunk, ["status"])
                 User.objects.bulk_update(user_chunk, ["total_xp"])
 
@@ -51,7 +63,10 @@ class Command(BaseCommand):
 
         self.user1.refresh_from_db()
         self.user2.refresh_from_db()
-        print(self.user1, self.user2)
+        print(self.user1, self.user1.total_xp)
+        print(self.user2, self.user2.total_xp)
+
+        print(self.user2.challenge_set.completed().count())
 
     def seed(self):
         from ranker.difficulties.models import Difficulty
@@ -67,9 +82,20 @@ class Command(BaseCommand):
         self.user1 = UserFactory(username="hasan", total_xp=50)
         self.user2 = UserFactory(username="hossein", total_xp=100)
 
+        ChallengeFactory(
+            user=self.user2,
+            repeat_type=Challenge.RepeatType.DAILY,
+            difficulty=diff,
+        )
         ChallengeFactory.create_batch(
             2,
             user=self.user1,
             repeat_type=Challenge.RepeatType.DAILY,
             difficulty=diff,
+        )
+        ChallengeFactory(
+            user=self.user2,
+            repeat_type=Challenge.RepeatType.DAILY,
+            difficulty=diff,
+            completed=True,
         )
