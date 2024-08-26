@@ -24,8 +24,6 @@ from .utils import calculate_level
 
 
 class UserModel(DirtyFieldsMixin, AbstractUser):
-    REQUIRED_FIELDS = ("gender",)
-
     class Gender(models.TextChoices):
         MALE = "M", _("Male")
         FEMALE = "F", _("Female")
@@ -108,18 +106,15 @@ class UserModel(DirtyFieldsMixin, AbstractUser):
         return calculate_level(previous_xp)
 
     def add_xp(self, amount, commit=True):
-        if amount > settings.XP_PER_LEVEL:
-            amount = settings.XP_PER_LEVEL
         self.total_xp += amount
         if commit:
             self.save()
 
     def subtract_xp(self, amount, commit=True):
-        if amount > settings.XP_PER_LEVEL:
-            amount = settings.XP_PER_LEVEL
         if amount > self.total_xp:
-            amount = self.total_xp
-        self.total_xp -= amount
+            self.total_xp = 0
+        else:
+            self.total_xp -= amount
         if commit:
             self.save()
 

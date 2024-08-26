@@ -7,4 +7,4 @@ from drf_pagination_meta_wrap.mixins import WrapPaginationMetadataMixin
 class RecentUserSearchPagination(
     WrapPaginationMetadataMixin, CursorPagination
 ):
-    ordering = ("-searched_at", "-id")
+    ordering = ("-searched", "-id")

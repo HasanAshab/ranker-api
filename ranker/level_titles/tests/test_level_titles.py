@@ -14,7 +14,6 @@ from ranker.level_titles.factories import (
 
 @tag("level_titles", "list_level_titles")
 class LevelTitlesTestCase(APITestCase):
-    fixtures = ["level_titles"]
     url = reverse("level_titles")
 
     def test_list_level_titles_needs_authentication(self):

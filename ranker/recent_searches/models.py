@@ -14,10 +14,10 @@ class RecentUserSearch(models.Model):
         related_name="searchers",
     )
 
-    searched_at = models.DateTimeField(auto_now=True)
+    searched = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.user} searched for {self.searched_user}"
 
     class Meta:
-        ordering = ["-searched_at"]
+        ordering = ["-searched"]
