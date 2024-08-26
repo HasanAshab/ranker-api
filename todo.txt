@@ -1,3 +1,5 @@
 1. emailaddress n+1 prob
 4. SCHEDULED_COMMANDS settings dont hard code RepeatType
 6. rename timestamp fields in standard
+7. test token sse 
+8. notifications

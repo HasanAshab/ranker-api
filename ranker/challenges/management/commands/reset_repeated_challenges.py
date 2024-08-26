@@ -19,7 +19,7 @@ class Command(BaseCommand):
                 Challenge.RepeatType.WEEKLY,
                 Challenge.RepeatType.MONTHLY,
             ],
-            help="Repeat type to be reset",
+            help="Repeat type to reset",
         )
         parser.add_argument(
             "--chunk",
