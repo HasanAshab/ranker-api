@@ -39,7 +39,7 @@ class UserListSerializer(
         )
 
         if "search" in request.query_params:
-            return profile_url + "?is_search=true"
+            return profile_url + "?source=search"
 
         return {
             **super().get_links(user),
