@@ -37,24 +37,17 @@ class Command(BaseCommand):
         for challenge_chunk in chunk_queryset(
             daily_challenges, kwargs["chunk"]
         ):
-            user_chunk = set()
+            user_updates = {}
             for challenge in challenge_chunk:
-                if challenge.user in user_chunk:
-                    challenge.user = next(
-                        (
-                            user
-                            for user in user_chunk
-                            if user == challenge.user
-                        ),
-                        None,
-                    )
-                user_chunk.add(challenge.user)
+                if challenge.user.pk in user_updates:
+                    challenge.user = user_updates[challenge.user.pk]
                 challenge.penalize_failure_xp(commit=False)
                 challenge.mark_as_active(commit=False)
+                user_updates[challenge.user.pk] = challenge.user
 
             with transaction.atomic():
                 Challenge.objects.bulk_update(challenge_chunk, ["status"])
-                User.objects.bulk_update(user_chunk, ["total_xp"])
+                User.objects.bulk_update(user_updates.values(), ["total_xp"])
         Challenge.objects.repeated(repeat_type).inactive().mark_as_active()
 
         self.stdout.write(
