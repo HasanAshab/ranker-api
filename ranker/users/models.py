@@ -89,7 +89,6 @@ class UserModel(DirtyFieldsMixin, AbstractUser):
 
     @property
     def is_email_verified(self) -> bool:
-        # TODO: Check if n+1 prob occures
         return self.emailaddress_set.filter(
             primary=True, verified=True
         ).exists()

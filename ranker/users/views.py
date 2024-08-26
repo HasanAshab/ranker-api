@@ -27,7 +27,7 @@ class UsersView(ListAPIView):
 
 class UserDetailsView(RetrieveDestroyAPIView):
     permission_classes = (IsAuthenticated, DeleteUserPermission)
-    queryset = User.objects.select_related("level_title")
+    queryset = User.objects.all().select_related("level_title")
     lookup_field = "username"
     serializer_class = UserDetailsSerializer
 
