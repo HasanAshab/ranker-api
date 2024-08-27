@@ -23,6 +23,7 @@ class TokenLoginTestCase(APITestCase):
     def test_login_using_valid_token(self):
         token = generate_login_token(self.user)
         response = self.client.post(self.url, {"token": token})
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("token", response.data)
 
