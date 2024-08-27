@@ -23,7 +23,7 @@ def login_using_token(token):
 
     try:
         username = login_token_signer.unsign(
-            signature, max_age=settings.TOKEN_LOGIN_MAX_AGE
+            signature, max_age=settings.LOGIN_TOKEN_MAX_AGE
         )
     except SignatureExpired:
         raise TokenExpiredException

@@ -23,7 +23,7 @@ class LoginTokenSSEView(APIView):
         while True:
             token = generate_login_token(self.request.user)
             yield self._get_response_data(token)
-            time.sleep(settings.TOKEN_LOGIN_MAX_AGE)
+            time.sleep(settings.LOGIN_TOKEN_MAX_AGE)
 
     def _get_response_data(self, token):
         return {"success": True, "message": "OK", "data": {"token": token}}

@@ -336,7 +336,7 @@ SCHEDULED_COMMANDS = [
 
 # ranker.authentication
 TOKEN_LOGIN_SALT = env("TOKEN_LOGIN_SALT")
-TOKEN_LOGIN_MAX_AGE = 5  # seconds
+LOGIN_TOKEN_MAX_AGE = 5  # seconds
 
 # ranker.common
 TWILIO_ACCOUNT_SID = env("TWILIO_ACCOUNT_SID")
