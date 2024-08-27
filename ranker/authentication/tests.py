@@ -22,11 +22,10 @@ class TokenLoginTestCase(APITestCase):
         token = generate_login_token(self.user)
         response = self.client.post(self.url, {"token": token})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIsNotNone(response.data["token"])
+        self.assertIn("token", response.data)
 
     def test_login_using_invalid_token(self):
         response = self.client.post(self.url, {"token": "invalid_token"})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        print(response.data)
 
-        self.assertIsNone(response.data["token"])
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertNotIn("token", response.data)

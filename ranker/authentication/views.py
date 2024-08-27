@@ -6,7 +6,7 @@ from rest_framework.permissions import (
     IsAuthenticated,
 )
 from rest_framework.views import APIView
-from .utils import generate_login_token
+from .utils import generate_login_token, login_using_token
 from .serializers import LoginTokenSSESerializer, TokenLoginSerializer
 
 
@@ -35,5 +35,6 @@ class TokenLoginView(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        auth_token = serializer.validated_data["token"]
+        token = serializer.validated_data["token"]
+        _, auth_token = login_using_token(token)
         return Response({"token": auth_token})
