@@ -8,6 +8,7 @@ from ranker.users.factories import UserFactory
 
 @tag("auth", "login_token_sse")
 class LoginTokenSSETestCase(APITestCase):
+    fixtures = ["level_titles"]
     url = reverse("login_token_sse")
 
     def setUp(self):
@@ -25,11 +26,10 @@ class LoginTokenSSETestCase(APITestCase):
         )
 
     @patch("ranker.authentication.views.generate_login_token")
-    @patch("time.sleep", return_value=None)  # Mock sleep to avoid delays
-    def test_token_streaming(self, mock_sleep, mock_generate_login_token):
+    def test_token_streaming(self, mock_generate_login_token):
         mock_generate_login_token.return_value = "testtoken"
 
-        response = self.client.get(self.url, stream=True)
+        response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response["Content-Type"], "text/event-stream")
