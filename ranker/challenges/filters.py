@@ -16,7 +16,7 @@ class ChallengeFilter(filters.FilterSet):
 
     class Meta:
         model = Challenge
-        fields = ("difficulty", "is_pinned", "due_date")
+        fields = ("difficulty", "is_pinned", "due_date", "repeat_type")
 
     def filter_due_date(self, queryset, name, value):
         return queryset.exclude(due_date__isnull=value)
