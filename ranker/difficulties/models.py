@@ -30,6 +30,13 @@ class Difficulty(models.Model):
             "Number of xp value associated with this difficulty level."
         ),
     )
+    xp_penalty = models.PositiveSmallIntegerField(
+        _("XP Penalty"),
+        help_text=_(
+            "The amount of XP deducted when"
+            "a challenge of this difficulty is failed."
+        ),
+    )
 
     objects = DifficultyQuerySet.as_manager()
 

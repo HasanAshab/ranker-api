@@ -121,7 +121,7 @@ class UpdateChallengeTestCase(APITestCase):
 
     def test_failing_challenge_decrease_xp(self):
         challenge = ChallengeFactory(user=self.user)
-        self.user.total_xp = challenge.calculate_failure_xp_penalty()
+        self.user.total_xp = challenge.difficulty.xp_penalty
 
         url = self._reverse_challenge_url(challenge)
         self.client.force_authenticate(user=self.user)

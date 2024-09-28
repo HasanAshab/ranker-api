@@ -128,16 +128,12 @@ class Challenge(DirtyFieldsMixin, models.Model):
             )
         return xp_bonus
 
-    def calculate_failure_xp_penalty(self):
-        xp_value = self.difficulty.xp_value
-        return round(xp_value * (self.XP_PENALTY_PERCENTAGE_FOR_FAILURE / 100))
-
     def award_completion_xp(self, commit=True):
         xp_reward = self.calculate_xp_reward()
         self.user.add_xp(xp_reward, commit)
 
     def penalize_failure_xp(self, commit=True):
-        xp_penalty = self.calculate_failure_xp_penalty()
+        xp_penalty = self.difficulty.xp_penalty
         self.user.subtract_xp(xp_penalty, commit)
 
 
