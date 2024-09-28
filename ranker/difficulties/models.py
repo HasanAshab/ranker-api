@@ -1,5 +1,3 @@
-from django.conf import settings
-from django.core.validators import MaxValueValidator
 from django.db import models
 from django.utils.translation import (
     gettext_lazy as _,
@@ -26,11 +24,8 @@ class Difficulty(models.Model):
     dark_color = ColorField(
         _("Dark Color"), help_text=_("The display color for dark theme.")
     )
-    xp_value = models.PositiveIntegerField(
+    xp_value = models.PositiveSmallIntegerField(
         _("XP Value"),
-        validators=[
-            MaxValueValidator(settings.XP_PER_LEVEL),
-        ],
         help_text=_(
             "Number of xp value associated with this difficulty level."
         ),
