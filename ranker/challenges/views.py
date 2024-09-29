@@ -65,7 +65,7 @@ class ChallengeActivitiesView(APIView):
 
     @extend_schema(
         responses={
-            200: ChallengeActivitiesSerializer,
+            status.HTTP_200_OK: ChallengeActivitiesSerializer,
         }
     )
     def get(self, request):
@@ -121,7 +121,7 @@ class ChallengeOrdersView(APIView):
 
     @extend_schema(
         responses={
-            200: standard_openapi_response(),
+            status.HTTP_200_OK: standard_openapi_response(),
         }
     )
     def patch(self, request):
@@ -192,7 +192,7 @@ class ChallengeStepOrdersView(APIView):
 
     @extend_schema(
         responses={
-            200: standard_openapi_response(),
+            status.HTTP_200_OK: standard_openapi_response(),
         }
     )
     def patch(self, request, pk):

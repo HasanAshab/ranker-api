@@ -26,7 +26,7 @@ class SuggestUsernameView(APIView):
     @extend_schema(
         parameters=[SuggestUsernameSerializer],
         responses={
-            200: standard_openapi_response(
+            status.HTTP_200_OK: standard_openapi_response(
                 "SuggestUsername",
                 {"data": serializers.ListField(child=serializers.CharField())},
             ),
@@ -52,7 +52,7 @@ class PhoneNumberView(APIView):
     @extend_schema(
         request=PhoneNumberSerializer,
         responses={
-            200: standard_openapi_response(),
+            status.HTTP_200_OK: standard_openapi_response(),
             202: standard_openapi_response(
                 description="Verification code sent to the phone number"
             ),

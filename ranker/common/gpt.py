@@ -1,26 +1,24 @@
 from abc import abstractmethod
-from groq import Groq
 from django.conf import settings
 
 
 class BaseGPTCompletion:
     MAX_ATTEMPTS = 3
-    FALLBACK_RESULT = None
     API_KEY = None
-
-    @property
-    @abstractmethod
-    def PROMPT():
-        pass
-
-    client = None
+    fallback_result = None
 
     def __init__(self, message):
         self._message = message
         self._client = self.get_client()
 
+    @property
+    @abstractmethod
+    def system_message():
+        pass
+
+    @abstractmethod
     def get_client(self):
-        return self.client(api_key=self.get_api_key())
+        pass
 
     def get_api_key(self):
         if not self.API_KEY:
@@ -28,13 +26,13 @@ class BaseGPTCompletion:
         return self.API_KEY
 
     def get_fallback_result(self):
-        return self.FALLBACK_RESULT
+        return self.fallback_result
 
     def get_result(self):
         completion = self._client.chat.completions.create(
             model=self.MODEL,
             messages=[
-                {"role": "system", "content": self.PROMPT},
+                {"role": "system", "content": self.system_message},
                 {"role": "user", "content": self._message},
             ],
         )
@@ -62,7 +60,11 @@ class BaseGPTCompletion:
 
 class GroqGPTCompletion(BaseGPTCompletion):
     MODEL = "llama3-8b-8192"
-    client = Groq
 
     def get_api_key(self):
         return settings.GROQ_API_KEY
+
+    def get_client(self):
+        from groq import Groq
+
+        return Groq(api_key=self.get_api_key())
