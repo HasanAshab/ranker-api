@@ -81,6 +81,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     "command_scheduler",
     "ranker.common",
+    "ranker.docs",
     "ranker.authentication",
     "ranker.accounts",
     "ranker.users",
@@ -344,6 +345,9 @@ TWILIO_AUTH_TOKEN = env("TWILIO_AUTH_TOKEN")
 TWILIO_VERIFY_SERVICE_SID = env("TWILIO_VERIFY_SERVICE_SID")
 
 GROQ_API_KEY = env("GROQ_API_KEY")
+
+# ranker.docs
+SCHEMA_DIR = STATIC_ROOT / "docs"
 
 # ranker.users
 USERNAME_MAX_LENGTH = 35

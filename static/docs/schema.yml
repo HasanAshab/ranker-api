@@ -1274,6 +1274,22 @@ paths:
         description: |-
           * `ordered` - Ordered
           * `difficulty` - Difficulty
+      - in: query
+        name: repeat_type
+        schema:
+          type: string
+          enum:
+          - D
+          - M
+          - O
+          - W
+        description: |-
+          How often the challenge repeats.
+
+          * `O` - One time Only
+          * `D` - Daily
+          * `W` - Weekly
+          * `M` - Monthly
       - name: search
         required: false
         in: query
@@ -3767,14 +3783,23 @@ paths:
                         maxLength: 25
                       xp_value:
                         type: integer
-                        maximum: 1000
+                        maximum: 9223372036854775807
                         minimum: 0
+                        format: int64
                         description: Number of xp value associated with this difficulty
                           level.
+                      xp_penalty:
+                        type: integer
+                        maximum: 9223372036854775807
+                        minimum: 0
+                        format: int64
+                        description: The amount of XP deducted whena challenge of
+                          this difficulty is failed.
                     required:
                     - id
                     - name
                     - slug
+                    - xp_penalty
                     - xp_value
           description: ''
   /api/level-titles/:
@@ -5341,12 +5366,20 @@ components:
           type: integer
           readOnly: true
           description: Number of xp value associated with this difficulty level.
+        xp_penalty:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          description: The amount of XP deducted whena challenge of this difficulty
+            is failed.
       required:
       - dark_color
       - id
       - light_color
       - name
       - slug
+      - xp_penalty
       - xp_value
     ChallengeDifficultyCount:
       type: object
@@ -5378,14 +5411,23 @@ components:
           maxLength: 25
         xp_value:
           type: integer
-          maximum: 1000
+          maximum: 9223372036854775807
           minimum: 0
+          format: int64
           description: Number of xp value associated with this difficulty level.
+        xp_penalty:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          description: The amount of XP deducted whena challenge of this difficulty
+            is failed.
       required:
       - challenge_count
       - id
       - name
       - slug
+      - xp_penalty
       - xp_value
     ChallengeStep:
       type: object
@@ -5467,6 +5509,36 @@ components:
       - attr
       - code
       - detail
+    ChallengesCreateDifficultyXpPenaltyErrorComponent:
+      type: object
+      properties:
+        attr:
+          enum:
+          - difficulty.xp_penalty
+          type: string
+          description: '* `difficulty.xp_penalty` - difficulty.xp_penalty'
+        code:
+          enum:
+          - invalid
+          - max_string_length
+          - max_value
+          - min_value
+          - 'null'
+          - required
+          type: string
+          description: |-
+            * `invalid` - invalid
+            * `max_string_length` - max_string_length
+            * `max_value` - max_value
+            * `min_value` - min_value
+            * `null` - null
+            * `required` - required
+        detail:
+          type: string
+      required:
+      - attr
+      - code
+      - detail
     ChallengesCreateDueDateErrorComponent:
       type: object
       properties:
@@ -5503,6 +5575,7 @@ components:
       - $ref: '#/components/schemas/ChallengesCreateDueDateErrorComponent'
       - $ref: '#/components/schemas/ChallengesCreateDifficultyNonFieldErrorsErrorComponent'
       - $ref: '#/components/schemas/ChallengesCreateDifficultyIdErrorComponent'
+      - $ref: '#/components/schemas/ChallengesCreateDifficultyXpPenaltyErrorComponent'
       - $ref: '#/components/schemas/ChallengesCreateOrderErrorComponent'
       discriminator:
         propertyName: attr
@@ -5515,6 +5588,7 @@ components:
           due_date: '#/components/schemas/ChallengesCreateDueDateErrorComponent'
           difficulty.non_field_errors: '#/components/schemas/ChallengesCreateDifficultyNonFieldErrorsErrorComponent'
           difficulty.id: '#/components/schemas/ChallengesCreateDifficultyIdErrorComponent'
+          difficulty.xp_penalty: '#/components/schemas/ChallengesCreateDifficultyXpPenaltyErrorComponent'
           order: '#/components/schemas/ChallengesCreateOrderErrorComponent'
     ChallengesCreateErrorResponse400:
       oneOf:
@@ -5711,11 +5785,13 @@ components:
     ChallengesListError:
       oneOf:
       - $ref: '#/components/schemas/ChallengesListDifficultyErrorComponent'
+      - $ref: '#/components/schemas/ChallengesListRepeatTypeErrorComponent'
       - $ref: '#/components/schemas/ChallengesListOrderingErrorComponent'
       discriminator:
         propertyName: attr
         mapping:
           difficulty: '#/components/schemas/ChallengesListDifficultyErrorComponent'
+          repeat_type: '#/components/schemas/ChallengesListRepeatTypeErrorComponent'
           ordering: '#/components/schemas/ChallengesListOrderingErrorComponent'
     ChallengesListErrorResponse400:
       oneOf:
@@ -5734,6 +5810,25 @@ components:
           - ordering
           type: string
           description: '* `ordering` - ordering'
+        code:
+          enum:
+          - invalid_choice
+          type: string
+          description: '* `invalid_choice` - invalid_choice'
+        detail:
+          type: string
+      required:
+      - attr
+      - code
+      - detail
+    ChallengesListRepeatTypeErrorComponent:
+      type: object
+      properties:
+        attr:
+          enum:
+          - repeat_type
+          type: string
+          description: '* `repeat_type` - repeat_type'
         code:
           enum:
           - invalid_choice
@@ -5938,6 +6033,36 @@ components:
       - attr
       - code
       - detail
+    ChallengesPartialUpdateDifficultyXpPenaltyErrorComponent:
+      type: object
+      properties:
+        attr:
+          enum:
+          - difficulty.xp_penalty
+          type: string
+          description: '* `difficulty.xp_penalty` - difficulty.xp_penalty'
+        code:
+          enum:
+          - invalid
+          - max_string_length
+          - max_value
+          - min_value
+          - 'null'
+          - required
+          type: string
+          description: |-
+            * `invalid` - invalid
+            * `max_string_length` - max_string_length
+            * `max_value` - max_value
+            * `min_value` - min_value
+            * `null` - null
+            * `required` - required
+        detail:
+          type: string
+      required:
+      - attr
+      - code
+      - detail
     ChallengesPartialUpdateDueDateErrorComponent:
       type: object
       properties:
@@ -5974,6 +6099,7 @@ components:
       - $ref: '#/components/schemas/ChallengesPartialUpdateDueDateErrorComponent'
       - $ref: '#/components/schemas/ChallengesPartialUpdateDifficultyNonFieldErrorsErrorComponent'
       - $ref: '#/components/schemas/ChallengesPartialUpdateDifficultyIdErrorComponent'
+      - $ref: '#/components/schemas/ChallengesPartialUpdateDifficultyXpPenaltyErrorComponent'
       - $ref: '#/components/schemas/ChallengesPartialUpdateOrderErrorComponent'
       discriminator:
         propertyName: attr
@@ -5986,6 +6112,7 @@ components:
           due_date: '#/components/schemas/ChallengesPartialUpdateDueDateErrorComponent'
           difficulty.non_field_errors: '#/components/schemas/ChallengesPartialUpdateDifficultyNonFieldErrorsErrorComponent'
           difficulty.id: '#/components/schemas/ChallengesPartialUpdateDifficultyIdErrorComponent'
+          difficulty.xp_penalty: '#/components/schemas/ChallengesPartialUpdateDifficultyXpPenaltyErrorComponent'
           order: '#/components/schemas/ChallengesPartialUpdateOrderErrorComponent'
     ChallengesPartialUpdateErrorResponse400:
       oneOf:
@@ -6774,6 +6901,36 @@ components:
       - attr
       - code
       - detail
+    ChallengesUpdateDifficultyXpPenaltyErrorComponent:
+      type: object
+      properties:
+        attr:
+          enum:
+          - difficulty.xp_penalty
+          type: string
+          description: '* `difficulty.xp_penalty` - difficulty.xp_penalty'
+        code:
+          enum:
+          - invalid
+          - max_string_length
+          - max_value
+          - min_value
+          - 'null'
+          - required
+          type: string
+          description: |-
+            * `invalid` - invalid
+            * `max_string_length` - max_string_length
+            * `max_value` - max_value
+            * `min_value` - min_value
+            * `null` - null
+            * `required` - required
+        detail:
+          type: string
+      required:
+      - attr
+      - code
+      - detail
     ChallengesUpdateDueDateErrorComponent:
       type: object
       properties:
@@ -6810,6 +6967,7 @@ components:
       - $ref: '#/components/schemas/ChallengesUpdateDueDateErrorComponent'
       - $ref: '#/components/schemas/ChallengesUpdateDifficultyNonFieldErrorsErrorComponent'
       - $ref: '#/components/schemas/ChallengesUpdateDifficultyIdErrorComponent'
+      - $ref: '#/components/schemas/ChallengesUpdateDifficultyXpPenaltyErrorComponent'
       - $ref: '#/components/schemas/ChallengesUpdateOrderErrorComponent'
       discriminator:
         propertyName: attr
@@ -6822,6 +6980,7 @@ components:
           due_date: '#/components/schemas/ChallengesUpdateDueDateErrorComponent'
           difficulty.non_field_errors: '#/components/schemas/ChallengesUpdateDifficultyNonFieldErrorsErrorComponent'
           difficulty.id: '#/components/schemas/ChallengesUpdateDifficultyIdErrorComponent'
+          difficulty.xp_penalty: '#/components/schemas/ChallengesUpdateDifficultyXpPenaltyErrorComponent'
           order: '#/components/schemas/ChallengesUpdateOrderErrorComponent'
     ChallengesUpdateErrorResponse400:
       oneOf:
@@ -7048,13 +7207,22 @@ components:
           maxLength: 25
         xp_value:
           type: integer
-          maximum: 1000
+          maximum: 9223372036854775807
           minimum: 0
+          format: int64
           description: Number of xp value associated with this difficulty level.
+        xp_penalty:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          description: The amount of XP deducted whena challenge of this difficulty
+            is failed.
       required:
       - id
       - name
       - slug
+      - xp_penalty
       - xp_value
     Error401:
       type: object
