@@ -13,7 +13,6 @@ from django.contrib.auth.validators import (
 from django.utils.translation import (
     gettext_lazy as _,
 )
-from allauth.account.signals import user_signed_up
 from phonenumber_field.modelfields import (
     PhoneNumberField,
 )
@@ -131,7 +130,11 @@ def set_default_rank(sender, instance, **kwargs):
         instance.rank = User.objects.count() + 1
 
 
-@receiver(user_signed_up, dispatch_uid="generate_name")
-def generate_name(sender, request, user, **kwargs):
-    user.name = generate_name_from_username(user.username)
-    user.save()
+@receiver(
+    models.signals.pre_save,
+    sender=settings.AUTH_USER_MODEL,
+    dispatch_uid="set_name",
+)
+def set_name(sender, instance, **kwargs):
+    if instance._state.adding and not instance.name:
+        instance.name = generate_name_from_username(instance.username)
