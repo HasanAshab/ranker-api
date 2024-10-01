@@ -1,10 +1,10 @@
 from django.core.management.base import (
     BaseCommand,
 )
+from knox.models import get_token_model
 from ranker.users.factories import (
     UserFactory,
 )
-from knox.models import get_token_model
 
 
 AuthToken = get_token_model()
