@@ -13,6 +13,7 @@ class ChallengeDifficultySerializer(serializers.ModelSerializer):
             "name",
             "slug",
             "xp_value",
+            "xp_penalty",
             "light_color",
             "dark_color",
         )

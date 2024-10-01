@@ -38,6 +38,7 @@ class ChallengePagination(WrapPaginationMetadataMixin, LimitOffsetPagination):
                         "light_color": {"type": "string"},
                         "dark_color": {"type": "string"},
                         "xp_value": {"type": "integer"},
+                        "xp_penalty": {"type": "integer"},
                     },
                 },
             }
