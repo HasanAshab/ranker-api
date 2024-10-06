@@ -315,6 +315,12 @@ SCHEDULED_COMMANDS = [
     {
         "enabled": True,
         "schedule": ScheduleType.DAILY,
+        "command": "remove_expired_challenges",
+        "args": args(chunk=1000),
+    },
+    {
+        "enabled": True,
+        "schedule": ScheduleType.DAILY,
         "command": "reset_repeated_challenges",
         "args": args("D", chunk=1000),
     },

@@ -35,7 +35,10 @@ class ChallengeQuerySet(models.QuerySet):
     def monthly(self):
         return self.filter(repeat_type=self.model.RepeatType.MONTHLY)
 
-    def not_due_yet(self):
+    def expired(self):
+        return self.filter(due_date__lt=timezone.now())
+
+    def unexpired(self):
         return self.filter(
             models.Q(due_date__isnull=True)
             | models.Q(due_date__gt=timezone.now())

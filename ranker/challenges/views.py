@@ -44,7 +44,7 @@ class ChallengesView(ListCreateAPIView):
     def get_queryset(self):
         return (
             self.request.user.challenge_set.active()
-            .not_due_yet()
+            .unexpired()
             .select_related("difficulty")
         )
 

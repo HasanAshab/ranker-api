@@ -29,13 +29,13 @@ class Command(BaseCommand):
         )
 
     def handle(self, repeat_type, **kwargs):
-        daily_challenges = (
+        repeated_challenges = (
             Challenge.objects.active()
             .repeated(repeat_type)
             .select_related("user")
         )
         for challenge_chunk in chunk_queryset(
-            daily_challenges, kwargs["chunk"]
+            repeated_challenges, kwargs["chunk"]
         ):
             user_updates = {}
             for challenge in challenge_chunk:
