@@ -100,12 +100,16 @@ class ChallengeActivitiesView(APIView):
             },
         }
 
-        difficulties_queryset = (
-            Difficulty.objects.with_challenge_count().filter(
-                challenge__user=self.request.user,
-                challenge__status=Challenge.Status.COMPLETED,
+        difficulties_queryset = Difficulty.objects.annotate(
+            challenge_count=models.Count(
+                "challenge",
+                filter=(
+                    models.Q(challenge__user=self.request.user)
+                    & models.Q(challenge__status=Challenge.Status.COMPLETED)
+                ),
             )
-        )
+        ).filter(challenge_count__gt=0)
+
         difficulties = ChallengeDifficultyCountSerializer(
             difficulties_queryset, many=True
         ).data
