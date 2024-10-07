@@ -57,8 +57,10 @@ class ChallengeView(RetrieveUpdateDestroyAPIView):
     serializer_class = ChallengeSerializer
 
     def get_queryset(self):
-        return self.request.user.challenge_set.active().select_related(
-            "difficulty"
+        return (
+            self.request.user.challenge_set.active()
+            .unexpired()
+            .select_related("difficulty")
         )
 
 
