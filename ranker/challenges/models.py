@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.utils import timezone
 from django.dispatch import receiver
 from django.db import models
 from django.utils.translation import (
@@ -16,8 +15,6 @@ from .managers import ChallengeStepManager
 
 
 class Challenge(DirtyFieldsMixin, models.Model):
-    XP_PERCENTAGE_BONUS_FOR_DUE_DATE = 15
-    XP_PENALTY_PERCENTAGE_FOR_FAILURE = 10
 
     class Status(models.TextChoices):
         ACTIVE = "active", _("Active")
@@ -119,17 +116,8 @@ class Challenge(DirtyFieldsMixin, models.Model):
         if commit:
             self.save()
 
-    def calculate_xp_reward(self):
-        xp_bonus = self.difficulty.xp_value
-        if self.due_date and self.due_date > timezone.now():
-            xp_bonus += round(
-                (self.difficulty.xp_value / 100)
-                * Challenge.XP_PERCENTAGE_BONUS_FOR_DUE_DATE
-            )
-        return xp_bonus
-
     def award_completion_xp(self, commit=True):
-        xp_reward = self.calculate_xp_reward()
+        xp_reward = self.difficulty.xp_value
         self.user.add_xp(xp_reward, commit)
 
     def penalize_failure_xp(self, commit=True):

@@ -79,46 +79,6 @@ class UpdateChallengeTestCase(APITestCase):
         self.assertEqual(challenge.status, Challenge.Status.COMPLETED)
         self.assertEqual(self.user.total_xp, challenge.difficulty.xp_value)
 
-    def test_completing_due_dated_challenge_increase_xp_with_bonus(self):
-        challenge = ChallengeFactory(user=self.user, has_due_date=True)
-        original_xp_value = challenge.difficulty.xp_value
-        xp_value = round(
-            original_xp_value
-            + (
-                (original_xp_value / 100)
-                * Challenge.XP_PERCENTAGE_BONUS_FOR_DUE_DATE
-            )
-        )
-
-        url = self._reverse_challenge_url(challenge)
-        self.client.force_authenticate(user=self.user)
-        response = self.client.patch(
-            url, {"status": Challenge.Status.COMPLETED}
-        )
-        challenge.refresh_from_db()
-        self.user.refresh_from_db()
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(challenge.status, Challenge.Status.COMPLETED)
-        self.assertEqual(self.user.total_xp, xp_value)
-
-    def test_completing_challenge_after_due_date_does_not_receive_bonus(self):
-        challenge = ChallengeFactory(
-            user=self.user, due_date=timezone.now() - timedelta(days=1)
-        )
-
-        url = self._reverse_challenge_url(challenge)
-        self.client.force_authenticate(user=self.user)
-        response = self.client.patch(
-            url, {"status": Challenge.Status.COMPLETED}
-        )
-        challenge.refresh_from_db()
-        self.user.refresh_from_db()
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(challenge.status, Challenge.Status.COMPLETED)
-        self.assertEqual(self.user.total_xp, challenge.difficulty.xp_value)
-
     def test_failing_challenge_decrease_xp(self):
         challenge = ChallengeFactory(user=self.user)
         self.user.total_xp = challenge.difficulty.xp_penalty
@@ -161,6 +121,19 @@ class UpdateChallengeTestCase(APITestCase):
         url = self._reverse_challenge_url(challenge)
         self.client.force_authenticate(user=self.user)
         response = self.client.patch(url, data={"title": "New Title"})
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_can_not_update_expired_challenge(self):
+        challenge = ChallengeFactory(
+            user=self.user, due_date=timezone.now() - timedelta(days=1)
+        )
+
+        url = self._reverse_challenge_url(challenge)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.patch(
+            url, {"status": Challenge.Status.COMPLETED}
+        )
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
